@@ -1,7 +1,2 @@
-*
-!.vscode
-!config
-!force-app
-!.forceignore
-!.gitignore
-!sfdx-project.json
+.sfdx
+README.md

@@ -1,0 +1,35 @@
+<template>
+    <lightning-layout multiple-rows="true">
+        <template if:false={collapsed}>
+            <lightning-layout-item size="12" 
+                small-device-size="12" 
+                medium-device-size="6" 
+                large-device-size="6">
+                <div class="slds-m-around_x-small">
+                    <c-lwc-batch-input 
+                        onchangecommunfield={changeCommunField}>
+                    </c-lwc-batch-input>
+                </div>
+            </lightning-layout-item>
+            <lightning-layout-item size="12" 
+                small-device-size="12" 
+                medium-device-size="6" 
+                large-device-size="6">    
+                <div class="slds-m-around_x-small">
+                    <c-lwc-search-product
+                        onaddproducts={addProducts}>
+                    </c-lwc-search-product>
+                </div>
+            </lightning-layout-item>
+        </template>
+        <lightning-layout-item size="12">
+            <div class="slds-m-around_x-small">
+                <c-lwc-batch-products 
+                    collapsed={collapsed}
+                    onsave={save}
+                    oncollapsepanel={collapsePanel}>
+                </c-lwc-batch-products>
+            </div>
+        </lightning-layout-item>
+    </lightning-layout>
+</template>

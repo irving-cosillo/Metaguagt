@@ -1,0 +1,21 @@
+<template>
+    <lightning-record-edit-form object-api-name="Product__c" record-id={recordId}>
+        <div class="slds-modal__header" style="margin: -10px -30px 0 -30px;">
+            <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Cambio de Precio</h2>
+        </div>
+        <div id="modal-content-id-1"
+                class="slds-modal__content slds-p-around_medium" 
+                style="height: 102px; margin: 0px -30px 0px -30px;">  
+            <lightning-input-field field-name="Related_Price__c">
+            </lightning-input-field>      
+        </div>
+        <div class="slds-modal__footer" style="margin: 18px -30px -30px -30px; padding: 16px 30px 16px 0px;">
+            <lightning-button 
+                label="Cancelar" variant="neutral" onclick={cancel} class="slds-m-right_medium">
+            </lightning-button>
+            <lightning-button 
+                type="submit" label="Cambiar" variant="brand">
+            </lightning-button>
+        </div>
+    </lightning-record-edit-form> 
+</template>

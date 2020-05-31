@@ -1,0 +1,66 @@
+<template>
+    <lightning-record-edit-form object-api-name="Product_Price__c" onsuccess={success}>
+        <div class="slds-modal__header" style="margin: -10px -30px 0 -30px;">
+            <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Nuevo Precio</h2>
+        </div>
+        <div id="modal-content-id-1" onchange={fieldChange}
+                class="slds-modal__content slds-p-around_medium" 
+                style="height: 421px; margin: 0px -30px 0px -30px;">    
+            <lightning-layout multiple-rows="true">
+                <lightning-layout-item size="6" 
+                    small-device-size="12" 
+                    medium-device-size="6" 
+                    large-device-size="6" 
+                    padding="horizontal-small">
+                    <lightning-input-field 
+                        field-name="Quantity__c" variant="label-stacked">
+                    </lightning-input-field>
+                    <lightning-input-field 
+                        field-name="Profit__c" variant="label-stacked">
+                    </lightning-input-field>
+                    <lightning-input-field 
+                        field-name="Unit_Cost_GTQ__c" variant="label-stacked">
+                    </lightning-input-field>
+                    <lightning-input-field 
+                        field-name="Dollar_Cost__c" variant="label-stacked">
+                    </lightning-input-field>
+                    <lightning-input-field 
+                        field-name="Unit_Cost_USD__c" variant="label-stacked">
+                    </lightning-input-field>
+                    <lightning-input-field 
+                        field-name="Product__c" variant="label-stacked" value={recordId} disabled>
+                    </lightning-input-field>
+                </lightning-layout-item>
+                <lightning-layout-item size="6" 
+                    small-device-size="12" 
+                    medium-device-size="6" 
+                    large-device-size="6" 
+                    padding="horizontal-small">
+                    <lightning-input-field 
+                        field-name="Taxes__c" variant="label-stacked">
+                    </lightning-input-field>
+                    <lightning-input-field 
+                        field-name="Internal_Shipping__c" variant="label-stacked">
+                    </lightning-input-field>
+                    <lightning-input-field 
+                        field-name="External_Shipping__c" variant="label-stacked">
+                    </lightning-input-field>
+                    <lightning-input-field 
+                        field-name="External_Shipping_USD__c" variant="label-stacked">
+                    </lightning-input-field>
+                    <lightning-input-field 
+                        field-name="Unit_Price_GTQ__c" variant="label-stacked">
+                    </lightning-input-field>
+                </lightning-layout-item>
+            </lightning-layout>
+        </div>
+        <div class="slds-modal__footer" style="margin: 18px -30px -30px -30px; padding: 16px 30px 16px 0px;">
+            <lightning-button 
+                label="Cancelar" variant="neutral" onclick={cancel} class="slds-m-right_medium">
+            </lightning-button>
+            <lightning-button 
+                type="submit" label="Agregar" variant="brand">
+            </lightning-button>
+        </div>
+    </lightning-record-edit-form>
+</template>

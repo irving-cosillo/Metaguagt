@@ -1,0 +1,125 @@
+<template>
+    <template if:true={quote}>
+        <lightning-card>
+            <div class="slds-m-top_large slds-m-horizontal_small">
+                <lightning-layout multiple-rows="true">
+                    <lightning-layout-item flexibility="auto, no-grow">   
+                        <div style="margin-top: -24px">
+                            <lightning-record-edit-form 
+                                onsubmit={handleSubmit}
+                                object-api-name="Quote__c" 
+                                record-id={recordId}>
+                                <lightning-input-field
+                                    disabled={quote.Converted__c}
+                                    onchange={discountChange}
+                                    field-name="Discount__c">
+                                </lightning-input-field>
+                            </lightning-record-edit-form>
+                        </div>
+                    </lightning-layout-item>
+                    <lightning-layout-item flexibility="auto">
+                    </lightning-layout-item>   
+                    <template if:false={quote.Converted__c}>
+                        <lightning-layout-item flexibility="auto, no-grow">
+                            <lightning-button
+                                class="slds-m-right_medium"
+                                label="Convertir a Orden"
+                                onclick={openOrdersModal}>
+                            </lightning-button>
+                        </lightning-layout-item>
+                        <lightning-layout-item flexibility="auto, no-grow">
+                            <lightning-button
+                                class="slds-m-right_medium"
+                                label="Cambiar Moneda"
+                                onclick={changeCurrency}>
+                            </lightning-button>
+                        </lightning-layout-item>
+                        <lightning-layout-item flexibility="auto, no-grow">
+                            <lightning-button-group class="slds-m-right_medium">
+                                <template if:true={isButtonVisible}>
+                                    <lightning-button 
+                                        label="Eliminar Productos"
+                                        onclick={deleteProducts}>
+                                    </lightning-button>
+                                </template>
+                                <lightning-button 
+                                    label="Agregar Productos"
+                                    onclick={openProductsModal}>
+                                </lightning-button>
+                            </lightning-button-group>
+                        </lightning-layout-item>
+                        <lightning-layout-item flexibility="auto, no-grow">
+                            <lightning-button 
+                                variant="brand"
+                                label="Guardar"
+                                onclick={save}>
+                            </lightning-button>
+                        </lightning-layout-item>
+                    </template>
+                </lightning-layout>
+            </div>
+            <c-lwc-quote-table
+                converted={quote.Converted__c}
+                quote-id={quote.Id}
+                quote-discount={quote.Discount__c}
+                quote-lines={quoteLines}
+                products-of-lines={productsOfLines}
+                onshowbutton={showButton} 
+                currency-code={quote.Currency_Code__c}>
+            </c-lwc-quote-table>
+        </lightning-card>
+    </template>
+    <template if:true={showModal}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_medium" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <lightning-button-icon icon-name="utility:close" class="slds-float_right" onclick={closeModal} alternative-text="close"></lightning-button-icon>
+                    <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">
+                        {modalHeading}
+                    </h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <template if:true={isProductsModal}>
+                        <c-lwc-search-product
+                            button-hidden>
+                        </c-lwc-search-product>
+                    </template>
+                    <template if:true={isOrdersModal}>
+                        <lightning-record-edit-form 
+                            onsubmit={handleSubmit}
+                            object-api-name="Purchase_Order__c">
+                            <lightning-input-field
+                                onchange={contactChange}
+                                field-name="Authorization_Contact__c">
+                            </lightning-input-field>
+                        </lightning-record-edit-form>
+                    </template>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning-button 
+                        variant="neutral" 
+                        label="Close" 
+                        onclick={closeModal}>
+                    </lightning-button>
+                    <template if:true={isProductsModal}>
+                        <lightning-button 
+                            variant="brand" 
+                            label="Agregar" 
+                            onclick={add}
+                            class="slds-m-left_x-small">
+                        </lightning-button>
+                    </template>
+                    <template if:true={isOrdersModal}>
+                        <lightning-button 
+                            variant="brand" 
+                            label="Agregar" 
+                            onclick={convert}
+                            class="slds-m-left_x-small">
+                        </lightning-button>
+                    </template>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>

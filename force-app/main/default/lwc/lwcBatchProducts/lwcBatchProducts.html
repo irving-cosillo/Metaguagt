@@ -1,0 +1,43 @@
+<template>
+    <template if:true={hasData}>
+        <lightning-card>
+            <div slot="actions">
+                <template if:true={hasSelectedRows}>
+                    <lightning-button 
+                        class="slds-m-right_small"
+                        label="Eliminar Seleccionados"
+                        variant="neutral"
+                        onclick={removeSelectedRows}>
+                    </lightning-button>
+                </template>
+                <lightning-button 
+                    class="slds-m-right_small"
+                    label="Asignar Porcentajes"
+                    variant="neutral"
+                    onclick={assignPercentages}>
+                </lightning-button>
+                <lightning-button-group>
+                    <lightning-button 
+                        label={collapseLabel}
+                        variant="neutral"
+                        onclick={collapsePanel}>
+                    </lightning-button>
+                    <lightning-button 
+                        label="Ingresar"
+                        variant="brand"
+                        onclick={save}>
+                    </lightning-button>
+                </lightning-button-group>
+            </div>
+            <div class="slds-m-around_medium">
+                <lightning-datatable
+                    key-field="Id"
+                    data={data}
+                    columns={columns}
+                    onrowselection={rowSelection}
+                    oncellchange={cellChange}>
+                </lightning-datatable>
+            </div>
+        </lightning-card>
+    </template>
+</template>

@@ -1,0 +1,37 @@
+<template>
+    <lightning-card>
+        <div style="min-height: 250px;">
+            <lightning-record-edit-form object-api-name="Product_Price__c">
+                <lightning-layout multiple-rows="true" onchange={changeCommunField}>
+                    <lightning-layout-item size="12" 
+                        small-device-size="12" 
+                        medium-device-size="6" 
+                        large-device-size="6" 
+                        padding="horizontal-small">
+                        <lightning-input-field
+                            field-name="Dollar_Cost__c">
+                        </lightning-input-field>
+                        <lightning-input-field
+                            field-name="Taxes__c">
+                        </lightning-input-field>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="12" 
+                        small-device-size="12" 
+                        medium-device-size="6" 
+                        large-device-size="6" 
+                        padding="horizontal-small">
+                        <lightning-input-field 
+                            field-name="Internal_Shipping__c">
+                        </lightning-input-field>
+                        <lightning-input-field 
+                            field-name="External_Shipping__c">
+                        </lightning-input-field>
+                        <lightning-input-field
+                            field-name="External_Shipping_USD__c">
+                        </lightning-input-field>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </lightning-record-edit-form>
+        </div>
+    </lightning-card>
+</template>

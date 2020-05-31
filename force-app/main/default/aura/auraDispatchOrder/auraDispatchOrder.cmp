@@ -1,0 +1,26 @@
+<aura:component implements="force:lightningQuickActionWithoutHeader,force:appHostable,force:hasRecordId,force:hasSObjectName,flexipage:availableForAllPageTypes,lightning:actionOverride"> 
+    <aura:html tag="style">
+        .slds-modal__container {
+         min-width: 90vw;
+        }
+    </aura:html>    
+    <aura:attribute name="sobjecttype" type="String" default="{!v.sObjectName}"/>
+    <aura:attribute name="recordId" type="Id" />
+    <aura:if isTrue="{!v.sobjecttype == 'Purchase_Order__c'}">
+        <c:lwcDispatchOrderModal
+            objectName="{!v.sObjectName}"
+            recordId="{!v.recordId}" 
+            onsave="{!c.save}"
+            oncancel="{!c.cancel}">
+        </c:lwcDispatchOrderModal>
+    <aura:set attribute="else">
+        <c:lwcDispatchOrder
+            objectName="{!v.sObjectName}"
+            recordId="{!v.recordId}" 
+            onsave="{!c.save}"
+            oncancel="{!c.cancel}">
+        </c:lwcDispatchOrder>
+    </aura:set>
+  </aura:if> 
+    
+</aura:component>

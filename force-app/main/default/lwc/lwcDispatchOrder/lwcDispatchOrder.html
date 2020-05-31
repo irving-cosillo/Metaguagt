@@ -1,0 +1,49 @@
+<template>
+    <template if:false={hasPO}>
+        <lightning-card>
+            <h3 slot="title" class="slds-align_absolute-center slds-m-top_medium">
+                Nueva Orden de Despacho
+            </h3>
+            <div class="slds-p-horizontal_medium">
+                <lightning-record-edit-form object-api-name="Dispatch_Order__c">
+                    <lightning-input-field field-name="Purchase_Order__c" onchange={POChanged}>
+                    </lightning-input-field>  
+                </lightning-record-edit-form>
+                <div class="slds-m-top_medium slds-p-around_x-small">  
+                    <template if:true={hasData}>
+                        <lightning-datatable
+                            key-field="Id"
+                            data={data}
+                            columns={columns}
+                            oncellchange={cellChange}
+                            hide-checkbox-column>
+                        </lightning-datatable>   
+                    </template>
+                </div>
+                <div slot="footer">
+                    <div class="slds-clearfix">
+                        <div class="slds-float_right slds-m-around_x-small slds-m-top_small">
+                            <lightning-button 
+                                label="Cancelar" variant="neutral" onclick={cancel} class="slds-m-right_medium">
+                            </lightning-button>
+                            <lightning-button 
+                                label="Crear" variant="brand" onclick={save}>
+                            </lightning-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </lightning-card>
+    </template>
+    <template if:true={hasPO}>
+        <template if:true={hasData}>
+            <lightning-datatable
+                key-field="Id"
+                data={data}
+                columns={columns}
+                oncellchange={cellChange}
+                hide-checkbox-column>
+            </lightning-datatable>   
+        </template>
+    </template>
+</template>

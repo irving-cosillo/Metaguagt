@@ -1,0 +1,28 @@
+<template>
+    <div class="slds-m-around_medium">
+        <template if:true={hasData}>
+            <lightning-datatable
+                key-field="rowId"
+                data={data}
+                columns={columns}
+                onrowselection={selectRows}
+                onrowaction={handleRowAction}
+                oncellchange={cellChange}>
+            </lightning-datatable>
+            <div class="slds-clearfix slds-m-top_small slds-m-right_large">
+                <div class="slds-float_right slds-m-right_large">
+                    <b>
+                        Total: 
+                        <lightning-formatted-number 
+                            class="slds-m-left_small"
+                            value={total} 
+                            format-style="currency" 
+                            currency-display-as="symbol"
+                            currency-code={currencyCode}>
+                        </lightning-formatted-number>
+                    </b>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>
