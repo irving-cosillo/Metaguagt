@@ -2,7 +2,44 @@
     "compilerOptions": {
         "experimentalDecorators": true,
         "baseUrl": ".",
-        "paths": {}
+        "paths": {
+            "c/lwcProductPrice": [
+                "lwcProductPrice/lwcProductPrice.js"
+            ],
+            "c/lwcProductPriceBatch": [
+                "lwcProductPriceBatch/lwcProductPriceBatch.js"
+            ],
+            "c/lwcSearchProduct": [
+                "lwcSearchProduct/lwcSearchProduct.js"
+            ],
+            "c/lwcBatchInput": [
+                "lwcBatchInput/lwcBatchInput.js"
+            ],
+            "c/lwcBatchProducts": [
+                "lwcBatchProducts/lwcBatchProducts.js"
+            ],
+            "c/lwcQuote": [
+                "lwcQuote/lwcQuote.js"
+            ],
+            "c/lwcPriceChange": [
+                "lwcPriceChange/lwcPriceChange.js"
+            ],
+            "c/lwcQuoteTable": [
+                "lwcQuoteTable/lwcQuoteTable.js"
+            ],
+            "c/lwcNumbersToLetters": [
+                "lwcNumbersToLetters/lwcNumbersToLetters.js"
+            ],
+            "c/lwcPurchaseOrder": [
+                "lwcPurchaseOrder/lwcPurchaseOrder.js"
+            ],
+            "c/lwcDispatchOrder": [
+                "lwcDispatchOrder/lwcDispatchOrder.js"
+            ],
+            "c/lwcDispatchOrderModal": [
+                "lwcDispatchOrderModal/lwcDispatchOrderModal.js"
+            ]
+        }
     },
     "include": [
         "**/*",
