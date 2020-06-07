@@ -1,35 +1,85 @@
 public with sharing class ClassDispatchOrder {
     @AuraEnabled
     public static Id createDispatchOrder(Id purchaseOrderId, List<Dispatch_Order_Line__c> dispatchOrderLines){
-        try {    
-            Dispatch_Order__c dispatchOrder = new Dispatch_Order__c();
-            dispatchOrder.Purchase_Order__c = purchaseOrderId;
-            insert(dispatchOrder);
-        
-            List<Id> purchasOrderLinesId = new List<Id>();
-            for(Integer i = 0; i < dispatchOrderLines.size(); i++){
-                dispatchOrderLines[i].Dispatch_Order__c = dispatchOrder.Id;
-                purchasOrderLinesId.add(dispatchOrderLines[i].Purchase_Order_Line__c);
-            }
-            insert(dispatchOrderLines);
+        Dispatch_Order__c dispatchOrder = new Dispatch_Order__c();
+        dispatchOrder.Purchase_Order__c = purchaseOrderId;
+        dispatchOrder.State__c = 'Pendiente de Despacho';
+        insert(dispatchOrder);
 
-            Map<Id, Purchase_Order_Line__c> purchaseOrderLines = new Map<Id, Purchase_Order_Line__c>([
-                SELECT Id, Dispatched_Quantity__c 
-                FROM Purchase_Order_Line__c         
-                WHERE Id IN : purchasOrderLinesId
-            ]);
-
-            String key;
-            for(Integer i = 0; i < dispatchOrderLines.size(); i++){
-                key = purchasOrderLinesId[i];
-                purchaseOrderLines.get(key).Dispatched_Quantity__c += dispatchOrderLines[i].Quantity__c;
-            }
-            upsert(purchaseOrderLines.values());
-
-            return dispatchOrder.Id;
-
-        } catch(Exception e){
-            throw new AuraHandledException('La orden de despacho no logró ser creada, por favor contactar al administrador del sistema.');
+        for(Integer i = 0; i < dispatchOrderLines.size(); i++){
+            dispatchOrderLines[i].Dispatch_Order__c = dispatchOrder.Id;
         }
+        insert(dispatchOrderLines);
+
+        List<Id> purchasOrderLinesId = new List<Id>();
+        for(Integer i = 0; i < dispatchOrderLines.size(); i++){
+            purchasOrderLinesId.add(dispatchOrderLines[i].Purchase_Order_Line__c);
+        }
+
+        Map<Id, Purchase_Order_Line__c> purchaseOrderLines = new Map<Id, Purchase_Order_Line__c>([
+            SELECT Id, Dispatch_Pending_Quantity__c
+            FROM Purchase_Order_Line__c
+            WHERE Id IN : purchasOrderLinesId
+        ]);
+
+        String key;
+        for(Integer i = 0; i < dispatchOrderLines.size(); i++){
+            key = purchasOrderLinesId[i];
+            purchaseOrderLines.get(key).Dispatch_Pending_Quantity__c += dispatchOrderLines[i].Quantity__c;
+        }
+        upsert(purchaseOrderLines.values());
+
+        return dispatchOrder.Id;
+    }
+
+    @AuraEnabled
+    public static void dispatchOrder(String dispatchOrderId){
+        Dispatch_Order__c dispatchOrder = [SELECT Id, State__c, Purchase_Order__c FROM Dispatch_Order__c WHERE Id =: dispatchOrderId LIMIT 1];
+        dispatchOrder.State__c = 'Despachada';
+        update (dispatchOrder);
+
+        List<Dispatch_Order_Line__c> dispatchOrderLines = [SELECT Id, Quantity__c, Purchase_Order_Line__c FROM Dispatch_Order_Line__c WHERE Dispatch_Order__c =: dispatchOrder.Id];
+
+        Purchase_Order__c purchaseOrder = [SELECT Id FROM Purchase_Order__c WHERE Id =: dispatchOrder.Purchase_Order__c LIMIT 1];
+        Map<Id, Purchase_Order_Line__c> purchaseOrderLines = new Map<Id, Purchase_Order_Line__c>([
+            SELECT Id, Dispatched_Quantity__c, Dispatch_Pending_Quantity__c, Product__c
+            FROM Purchase_Order_Line__c
+            WHERE Purchase_Order__c =: dispatchOrder.Purchase_Order__c
+        ]);
+
+        Decimal dispatchQuantity;
+        String purchaseOrderLineId;
+        Map<String, Decimal> productStock = new Map<String, Decimal>();
+        for(Dispatch_Order_Line__c dispatchOrderLine : dispatchOrderLines ){
+            dispatchQuantity = dispatchOrderLine.Quantity__c;
+            purchaseOrderLineId = dispatchOrderLine.Purchase_Order_Line__c;
+            productStock.put(purchaseOrderLines.get(purchaseOrderLineId).Product__c, dispatchQuantity);
+            purchaseOrderLines.get(purchaseOrderLineId).Dispatched_Quantity__c += dispatchQuantity;
+            purchaseOrderLines.get(purchaseOrderLineId).Dispatch_Pending_Quantity__c -= dispatchQuantity;
+        }
+        update(purchaseOrderLines.values());
+
+        Set<String> productsId = productStock.keySet();
+        Map<Id, Product__c> products = new Map<Id, Product__c>([
+            SELECT Stock__c
+            FROM Product__c
+            WHERE Id IN : productsId
+        ]);
+
+        for(String productId : productsId){
+            products.get(productId).Stock__c -= productStock.get(productId);
+        }
+        update(products.values());
+
+
+        Boolean completed = true;
+        for(Purchase_Order_Line__c purchaseOrderLine : purchaseOrderLines.values()){
+            if(purchaseOrderLine.Quantity__c != purchaseOrderLine.Dispatched_Quantity__c){
+                completed = false;
+            }
+        }
+
+        purchaseOrder.Dispatch_Status__c = completed ? 'Completado' : 'Parcialmente';
+        update(purchaseOrder);
     }
 }

@@ -17,6 +17,7 @@ export default class LwcDispatchOrder extends NavigationMixin(LightningElement) 
         {label: 'Descripción', fieldName: 'Product_Name__c', type: 'text', wrapText : true},
         {label: 'Tiempo de Entrega', fieldName: 'Delivery_Time__c', type: 'text'},
         {label: 'Cantidad Pedida', fieldName: 'Quantity__c', type: 'number'},
+        {label: 'Cantidad Pendiente de Despacho', fieldName: 'Dispatch_Pending_Quantity__c', type: 'number'},
         {label: 'Cantidad Despachada', fieldName: 'Dispatched_Quantity__c', type: 'number'},
         {label: 'Stock', fieldName: 'Stock__c', type: 'number'},
         {label: 'Cantidad a Despachar', fieldName: 'Dispatch_Quantity__c', type: 'number', editable: true},
@@ -46,7 +47,7 @@ export default class LwcDispatchOrder extends NavigationMixin(LightningElement) 
         const draftValue = event.detail.draftValues[0];
         const index = data.findIndex(x => x.Id === draftValue.Id);
         this.template.querySelector("lightning-datatable").draftValues = [];
-        Object.assign(data[index], draftValue); 
+        Object.assign(data[index], draftValue);
         this.data = data;
     }
 
@@ -62,9 +63,9 @@ export default class LwcDispatchOrder extends NavigationMixin(LightningElement) 
                 }
             });
 
-            createDispatchOrder({ purchaseOrderId : this.purchaseOrderId, dispatchOrderLines})    
+            createDispatchOrder({ purchaseOrderId : this.purchaseOrderId, dispatchOrderLines})
             .then( recordId => {
-                console.log(recordId);
+                eval("$A.get('e.force:refreshView').fire();");
                 this[NavigationMixin.Navigate]({
                     type: 'standard__recordPage',
                     attributes: {
@@ -79,21 +80,22 @@ export default class LwcDispatchOrder extends NavigationMixin(LightningElement) 
                 }));
             }).catch( error => {
                 this.dispatchEvent(new CustomEvent('cancel'));
+                const message = error.body.message ? error.body.message :'Por favor contactar al administrador del sistema.';
                 this.dispatchEvent( new ShowToastEvent({
                     title: '',
-                    message: 'Error: ' + error.body.message,
+                    message: 'Error: ' + message,
                     variant: 'error'
                 }));
-            });  
+            });
         }
     }
 
     isValid(){
         let isGreater = false;
         let isLower = false;
-        
+
         this.data.forEach(line => {
-            if(line.Dispatch_Quantity__c > line.Quantity__c - line.Dispatched_Quantity__c ){
+            if(line.Dispatch_Quantity__c > line.Quantity__c - line.Dispatch_Pending_Quantity__c ){
                 isGreater = true;
             }
             if(line.Dispatch_Quantity__c < 0 ){

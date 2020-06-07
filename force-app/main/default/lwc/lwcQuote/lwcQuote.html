@@ -85,14 +85,16 @@
                         </c-lwc-search-product>
                     </template>
                     <template if:true={isOrdersModal}>
-                        <lightning-record-edit-form 
-                            onsubmit={handleSubmit}
-                            object-api-name="Purchase_Order__c">
-                            <lightning-input-field
-                                onchange={contactChange}
-                                field-name="Authorization_Contact__c">
-                            </lightning-input-field>
-                        </lightning-record-edit-form>
+                        <div style="height: 300px;">
+                            <lightning-record-edit-form 
+                                onsubmit={handleSubmit}
+                                object-api-name="Purchase_Order__c">
+                                <lightning-input-field
+                                    onchange={contactChange}
+                                    field-name="Authorization_Contact__c">
+                                </lightning-input-field>
+                            </lightning-record-edit-form>
+                        </div>
                     </template>
                 </div>
                 <footer class="slds-modal__footer">

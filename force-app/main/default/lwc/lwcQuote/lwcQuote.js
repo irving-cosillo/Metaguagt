@@ -9,16 +9,15 @@ import { NavigationMixin } from 'lightning/navigation';
 
 export default class LwcQuote extends NavigationMixin(LightningElement) {
     @api recordId;
-    
+
     quote;
     quoteLines;
     productsOfLines;
-    
+
     showModal = false;
-    showConvertModal = false;
-    isButtonVisible = false;
-    isProductsModal = false;
     isOrdersModal = false;
+    isProductsModal = false;
+    isButtonVisible = false;
     modalHeading;
     authorizedContact;
 
@@ -31,7 +30,7 @@ export default class LwcQuote extends NavigationMixin(LightningElement) {
             }
         });
     }
-    
+
     connectedCallback(){
         window.console.clear();
         getQuote({quoteId : this.recordId}).then( quote => {
@@ -42,7 +41,7 @@ export default class LwcQuote extends NavigationMixin(LightningElement) {
                     this.quote = quote;
                 });
             });
-        });    
+        });
     }
 
     add(){
@@ -51,10 +50,10 @@ export default class LwcQuote extends NavigationMixin(LightningElement) {
         this.closeModal();
     }
 
-    save(){ 
+    save(action){
         const data = this.template.querySelector("c-lwc-quote-table").getData();
         const totalInLetters = this.template.querySelector("c-lwc-quote-table").getTotalInLetters();
-        
+
         let deliveryTime;
         data.forEach((item, index) => {
             if (index === 0){
@@ -65,10 +64,11 @@ export default class LwcQuote extends NavigationMixin(LightningElement) {
         });
         this.quote.Total_In_Letters__c = totalInLetters;
         this.quote.Delivery_Time__c = deliveryTime;
-        this.showModal = false;   
-        saveQuote({ quote : this.quote, data}).then(() => {   
-            eval("$A.get('e.force:refreshView').fire();");
-            if (!this.quote.Converted__c){
+        this.showModal = false;
+
+        saveQuote({ quote : this.quote, data}).then(() => {
+            if (action !== 'convert'){
+                eval("$A.get('e.force:refreshView').fire();");
                 this.dispatchEvent( new ShowToastEvent({
                     title: '',
                     message: 'Cotización guardada con éxito.',
@@ -76,6 +76,10 @@ export default class LwcQuote extends NavigationMixin(LightningElement) {
                 }));
             } else {
                 createPurchaseOrder({quoteId: this.recordId, contactId : this.authorizedContact}).then( purchaseOrderId => {
+                    let quote = {...this.quote};
+                    quote.Converted__c = true;
+                    this.quote = quote;
+                    eval("$A.get('e.force:refreshView').fire();");
                     this.navigateToRecordViewPage(purchaseOrderId);
                     this.dispatchEvent( new ShowToastEvent({
                         title: '',
@@ -83,27 +87,16 @@ export default class LwcQuote extends NavigationMixin(LightningElement) {
                         variant: 'success'
                     }));
                 }).catch( error => {
-                    this.dispatchEvent( new ShowToastEvent({
-                        title: '',
-                        message: 'Error: ' + error.body.message,
-                        variant: 'error'
-                    }));
-                });  
+                    this.errorMessage(error);
+                });
             }
         }).catch(error => {
-            this.dispatchEvent( new ShowToastEvent({
-                title: '',
-                message: 'Error: ' + error.body.message,
-                variant: 'error'
-            }));
+            this.errorMessage(error);
         })
     }
 
-    convert(){ 
-        let quote = {...this.quote};
-        quote.Converted__c = true;
-        this.quote = quote;
-        this.save();
+    convert(){
+        this.save('convert');
     }
 
     discountChange(event){
@@ -134,8 +127,8 @@ export default class LwcQuote extends NavigationMixin(LightningElement) {
 
     openOrdersModal(){
         this.modalHeading = 'Orden de Compra';
-        this.isProductsModal = false;
         this.isOrdersModal = true;
+        this.isProductsModal = false;
         this.showModal = true;
     }
 
@@ -152,5 +145,15 @@ export default class LwcQuote extends NavigationMixin(LightningElement) {
         let quote = {...this.quote};
         quote.Currency_Code__c = quote.Currency_Code__c === "GTQ" ? "USD" : "GTQ";
         this.quote = quote;
+    }
+
+    errorMessage(error){
+        const message = error.body.message ? error.body.message :'Por favor contactar al administrador del sistema.';
+        console.log(message);
+        this.dispatchEvent( new ShowToastEvent({
+            title: '',
+            message: 'Error: ' + message,
+            variant: 'error'
+        }));
     }
 }

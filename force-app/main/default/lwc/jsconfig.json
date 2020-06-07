@@ -12,12 +12,6 @@
             "c/lwcSearchProduct": [
                 "lwcSearchProduct/lwcSearchProduct.js"
             ],
-            "c/lwcBatchInput": [
-                "lwcBatchInput/lwcBatchInput.js"
-            ],
-            "c/lwcBatchProducts": [
-                "lwcBatchProducts/lwcBatchProducts.js"
-            ],
             "c/lwcQuote": [
                 "lwcQuote/lwcQuote.js"
             ],
@@ -38,6 +32,9 @@
             ],
             "c/lwcDispatchOrderModal": [
                 "lwcDispatchOrderModal/lwcDispatchOrderModal.js"
+            ],
+            "c/lwcDispatchOrderMessage": [
+                "lwcDispatchOrderMessage/lwcDispatchOrderMessage.js"
             ]
         }
     },
