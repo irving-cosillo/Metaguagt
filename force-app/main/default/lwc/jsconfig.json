@@ -35,6 +35,9 @@
             ],
             "c/lwcDispatchOrderMessage": [
                 "lwcDispatchOrderMessage/lwcDispatchOrderMessage.js"
+            ],
+            "c/lwcDispatchOrderLines": [
+                "lwcDispatchOrderLines/lwcDispatchOrderLines.js"
             ]
         }
     },

@@ -87,11 +87,11 @@ export default class LwcQuote extends NavigationMixin(LightningElement) {
                         variant: 'success'
                     }));
                 }).catch( error => {
-                    this.errorMessage(error);
+                    this.errorMessage(error.body.message);
                 });
             }
         }).catch(error => {
-            this.errorMessage(error);
+            this.errorMessage(error.body.message);
         })
     }
 
@@ -147,9 +147,7 @@ export default class LwcQuote extends NavigationMixin(LightningElement) {
         this.quote = quote;
     }
 
-    errorMessage(error){
-        const message = error.body.message ? error.body.message :'Por favor contactar al administrador del sistema.';
-        console.log(message);
+    errorMessage(message){
         this.dispatchEvent( new ShowToastEvent({
             title: '',
             message: 'Error: ' + message,

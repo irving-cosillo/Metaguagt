@@ -80,10 +80,9 @@ export default class LwcDispatchOrder extends NavigationMixin(LightningElement) 
                 }));
             }).catch( error => {
                 this.dispatchEvent(new CustomEvent('cancel'));
-                const message = error.body.message ? error.body.message :'Por favor contactar al administrador del sistema.';
                 this.dispatchEvent( new ShowToastEvent({
                     title: '',
-                    message: 'Error: ' + message,
+                    message: 'Error: ' + error.body.message,
                     variant: 'error'
                 }));
             });
@@ -93,6 +92,7 @@ export default class LwcDispatchOrder extends NavigationMixin(LightningElement) 
     isValid(){
         let isGreater = false;
         let isLower = false;
+        let noLines = true;
 
         this.data.forEach(line => {
             if(line.Dispatch_Quantity__c > line.Quantity__c - line.Dispatch_Pending_Quantity__c ){
@@ -101,7 +101,18 @@ export default class LwcDispatchOrder extends NavigationMixin(LightningElement) 
             if(line.Dispatch_Quantity__c < 0 ){
                 isLower = true;
             }
+            if(line.Dispatch_Quantity__c && line.Dispatch_Quantity__c > 0){
+                noLines = false;
+            }
         });
+
+        if(noLines){
+            this.dispatchEvent( new ShowToastEvent({
+                title: '',
+                message: 'Error:  Debe de ingresar la cantidad de al menos un producto.',
+                variant: 'error'
+            }));
+        }
 
         if(isGreater){
             this.dispatchEvent( new ShowToastEvent({
@@ -119,7 +130,7 @@ export default class LwcDispatchOrder extends NavigationMixin(LightningElement) 
             }));
         }
 
-        return !isLower && !isGreater;
+        return !isLower && !isGreater && !noLines;
     }
 
     cancel(){

@@ -35,14 +35,15 @@ public with sharing class ClassDispatchOrder {
     @AuraEnabled
     public static void dispatchOrder(String dispatchOrderId){
         Dispatch_Order__c dispatchOrder = [SELECT Id, State__c, Purchase_Order__c FROM Dispatch_Order__c WHERE Id =: dispatchOrderId LIMIT 1];
-        dispatchOrder.State__c = 'Despachada';
-        update (dispatchOrder);
-
         List<Dispatch_Order_Line__c> dispatchOrderLines = [SELECT Id, Quantity__c, Purchase_Order_Line__c FROM Dispatch_Order_Line__c WHERE Dispatch_Order__c =: dispatchOrder.Id];
+
+        if(dispatchOrder.State__c == 'Despachada'){
+            throw new AuraHandledException('La orden ya ha sido despachada.');
+        }
 
         Purchase_Order__c purchaseOrder = [SELECT Id FROM Purchase_Order__c WHERE Id =: dispatchOrder.Purchase_Order__c LIMIT 1];
         Map<Id, Purchase_Order_Line__c> purchaseOrderLines = new Map<Id, Purchase_Order_Line__c>([
-            SELECT Id, Dispatched_Quantity__c, Dispatch_Pending_Quantity__c, Product__c
+            SELECT Id, Quantity__c, Dispatched_Quantity__c, Dispatch_Pending_Quantity__c, Product_Id__c
             FROM Purchase_Order_Line__c
             WHERE Purchase_Order__c =: dispatchOrder.Purchase_Order__c
         ]);
@@ -53,11 +54,10 @@ public with sharing class ClassDispatchOrder {
         for(Dispatch_Order_Line__c dispatchOrderLine : dispatchOrderLines ){
             dispatchQuantity = dispatchOrderLine.Quantity__c;
             purchaseOrderLineId = dispatchOrderLine.Purchase_Order_Line__c;
-            productStock.put(purchaseOrderLines.get(purchaseOrderLineId).Product__c, dispatchQuantity);
+            productStock.put(purchaseOrderLines.get(purchaseOrderLineId).Product_Id__c, dispatchQuantity);
             purchaseOrderLines.get(purchaseOrderLineId).Dispatched_Quantity__c += dispatchQuantity;
             purchaseOrderLines.get(purchaseOrderLineId).Dispatch_Pending_Quantity__c -= dispatchQuantity;
         }
-        update(purchaseOrderLines.values());
 
         Set<String> productsId = productStock.keySet();
         Map<Id, Product__c> products = new Map<Id, Product__c>([
@@ -67,10 +67,11 @@ public with sharing class ClassDispatchOrder {
         ]);
 
         for(String productId : productsId){
+            if(products.get(productId).Stock__c < productStock.get(productId)){
+                throw new AuraHandledException('No hay producto suficiente en bodega para ser despachado.');
+            }
             products.get(productId).Stock__c -= productStock.get(productId);
         }
-        update(products.values());
-
 
         Boolean completed = true;
         for(Purchase_Order_Line__c purchaseOrderLine : purchaseOrderLines.values()){
@@ -79,7 +80,21 @@ public with sharing class ClassDispatchOrder {
             }
         }
 
+        dispatchOrder.State__c = 'Despachada';
         purchaseOrder.Dispatch_Status__c = completed ? 'Completado' : 'Parcialmente';
+
+        update(purchaseOrderLines.values());
+        update(products.values());
+        update(dispatchOrder);
         update(purchaseOrder);
+    }
+
+    @AuraEnabled
+    public static List<Dispatch_Order_Line__c> getDispatchOrderLines(String dispatchOrderId){
+        return [
+            SELECT Id, Quantity__c, Stock__c, Product_Name__c, Product_Description__c
+            FROM Dispatch_Order_Line__c
+            WHERE Dispatch_Order__c =: dispatchOrderId
+        ];
     }
 }

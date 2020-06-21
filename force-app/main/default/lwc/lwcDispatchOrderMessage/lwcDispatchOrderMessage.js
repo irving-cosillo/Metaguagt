@@ -12,12 +12,14 @@ export default class LwcDispatchOrderMessage extends LightningElement {
                 message: 'La orden fue despachada con éxito.',
                 variant: 'success'
             }));
-        }).catch(() => {
+        }).catch( error => {
             this.dispatchEvent( new ShowToastEvent({
                 title: '',
-                message: 'Error: Por favor contactar al administrador del sistema.',
+                message: 'Error: ' + error.body.message,
                 variant: 'error'
             }));
+        }).finally(()=>{
+            this.cancel();
         })
     }
 
