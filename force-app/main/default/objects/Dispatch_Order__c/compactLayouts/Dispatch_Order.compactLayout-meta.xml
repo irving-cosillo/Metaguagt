@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Dispatch_Order</fullName>
+    <fields>Name</fields>
+    <fields>Purchase_Order__c</fields>
+    <fields>Account__c</fields>
+    <fields>State__c</fields>
+    <fields>Invoice__c</fields>
+    <fields>CreatedById</fields>
+    <fields>LastModifiedById</fields>
+    <label>Orden de Despacho</label>
+</CompactLayout>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>Acero 304</fullName>
+        <default>false</default>
+        <label>Acero 304</label>
+    </customValue>
+    <customValue>
+        <fullName>Acero 316</fullName>
+        <default>false</default>
+        <label>Acero 316</label>
+    </customValue>
+    <customValue>
+        <fullName>Tungsteno</fullName>
+        <default>false</default>
+        <label>Tungsteno</label>
+    </customValue>
+    <customValue>
+        <fullName>Cobalto</fullName>
+        <default>false</default>
+        <label>Cobalto</label>
+    </customValue>
+    <masterLabel>Material</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Inventory_State__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF( Stock__c &lt; (Stock_Maximum__c -  Stock_Minimum__c) * 0.15 , &quot;Solicitar Material&quot;, 
+ IF( Stock__c &lt; (Stock_Maximum__c -  Stock_Minimum__c) * 0.50 , &quot;Planificar Pedido&quot;, &quot;Inventario Suficiente&quot;) )</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Estado en Inventario</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

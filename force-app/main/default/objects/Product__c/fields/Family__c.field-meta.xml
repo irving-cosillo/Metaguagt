@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Family__c</fullName>
+    <externalId>false</externalId>
+    <label>Familia</label>
+    <required>true</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>Brand__c</controllingField>
+        <restricted>true</restricted>
+        <valueSetName>Family</valueSetName>
+        <valueSettings>
+            <controllingFieldValue>Stanley</controllingFieldValue>
+            <controllingFieldValue>Greenfield</controllingFieldValue>
+            <controllingFieldValue>Cleveland</controllingFieldValue>
+            <controllingFieldValue>Chicago Latrobe</controllingFieldValue>
+            <controllingFieldValue>Incor</controllingFieldValue>
+            <controllingFieldValue>Genérico</controllingFieldValue>
+            <controllingFieldValue>Micro 100</controllingFieldValue>
+            <controllingFieldValue>Fandher</controllingFieldValue>
+            <valueName>Herramienta de Corte</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Kestra</controllingFieldValue>
+            <valueName>Soldadura</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Genérico</controllingFieldValue>
+            <valueName>Herramienta Manual</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Flexitallic</controllingFieldValue>
+            <valueName>Sellos Hidráulicos</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Flexitallic</controllingFieldValue>
+            <controllingFieldValue>General Chains</controllingFieldValue>
+            <controllingFieldValue>Mausa</controllingFieldValue>
+            <controllingFieldValue>Dedini</controllingFieldValue>
+            <controllingFieldValue>Imbil</controllingFieldValue>
+            <controllingFieldValue>Resonance</controllingFieldValue>
+            <valueName>Promocional</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Workland</controllingFieldValue>
+            <valueName>Calzado Industrial</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>General Chains</controllingFieldValue>
+            <valueName>Repuestos</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Kana</controllingFieldValue>
+            <valueName>Cadena Industrial</valueName>
+        </valueSettings>
+    </valueSet>
+</CustomField>

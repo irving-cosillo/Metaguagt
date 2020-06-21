@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Negative_Validation</fullName>
+    <active>true</active>
+    <errorConditionFormula>OR( Dollar_Cost__c &lt; 0, External_Shipping_GTQ__c &lt; 0, External_Shipping_USD__c &lt; 0, Internal_Shipping__c &lt; 0, Taxes__c &lt; 0)</errorConditionFormula>
+    <errorMessage>No es posible ingresar cantidades negativas.</errorMessage>
+</ValidationRule>

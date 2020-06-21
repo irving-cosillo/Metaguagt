@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>Espirometálico tipo CG</fullName>
+        <default>false</default>
+        <label>Espirometálico tipo CG</label>
+    </customValue>
+    <customValue>
+        <fullName>Espirometálico tipo CGI</fullName>
+        <default>false</default>
+        <label>Espirometálico tipo CGI</label>
+    </customValue>
+    <customValue>
+        <fullName>Tipo RC</fullName>
+        <default>false</default>
+        <label>Tipo RC</label>
+    </customValue>
+    <customValue>
+        <fullName>Tipo Domo</fullName>
+        <default>false</default>
+        <label>Tipo Domo</label>
+    </customValue>
+    <customValue>
+        <fullName>Tipo Oval</fullName>
+        <default>false</default>
+        <label>Tipo Oval</label>
+    </customValue>
+    <customValue>
+        <fullName>Tipo Empaque</fullName>
+        <default>false</default>
+        <label>Tipo Empaque</label>
+    </customValue>
+    <customValue>
+        <fullName>Estopa</fullName>
+        <default>false</default>
+        <label>Estopa</label>
+    </customValue>
+    <customValue>
+        <fullName>Regalo para cliente</fullName>
+        <default>false</default>
+        <label>Regalo para cliente</label>
+    </customValue>
+    <customValue>
+        <fullName>Catálogo</fullName>
+        <default>false</default>
+        <label>Catálogo</label>
+    </customValue>
+    <customValue>
+        <fullName>Modelo 71820</fullName>
+        <default>false</default>
+        <label>Modelo 71820</label>
+    </customValue>
+    <customValue>
+        <fullName>Modelo 71821</fullName>
+        <default>false</default>
+        <label>Modelo 71821</label>
+    </customValue>
+    <customValue>
+        <fullName>Modelo 71822</fullName>
+        <default>false</default>
+        <label>Modelo 71822</label>
+    </customValue>
+    <customValue>
+        <fullName>Modelo 71823</fullName>
+        <default>false</default>
+        <label>Modelo 71823</label>
+    </customValue>
+    <customValue>
+        <fullName>Modelo 71824</fullName>
+        <default>false</default>
+        <label>Modelo 71824</label>
+    </customValue>
+    <customValue>
+        <fullName>Modelo 71825</fullName>
+        <default>false</default>
+        <label>Modelo 71825</label>
+    </customValue>
+    <customValue>
+        <fullName>Modelo 71826</fullName>
+        <default>false</default>
+        <label>Modelo 71826</label>
+    </customValue>
+    <customValue>
+        <fullName>Modelo 71827</fullName>
+        <default>false</default>
+        <label>Modelo 71827</label>
+    </customValue>
+    <customValue>
+        <fullName>Modelo 71828</fullName>
+        <default>false</default>
+        <label>Modelo 71828</label>
+    </customValue>
+    <customValue>
+        <fullName>Modelo 71829</fullName>
+        <default>false</default>
+        <label>Modelo 71829</label>
+    </customValue>
+    <customValue>
+        <fullName>Modelo 71830</fullName>
+        <default>false</default>
+        <label>Modelo 71830</label>
+    </customValue>
+    <customValue>
+        <fullName>Modelo 71831</fullName>
+        <default>false</default>
+        <label>Modelo 71831</label>
+    </customValue>
+    <customValue>
+        <fullName>Modelo 71832</fullName>
+        <default>false</default>
+        <label>Modelo 71832</label>
+    </customValue>
+    <customValue>
+        <fullName>Modelo 71833</fullName>
+        <default>false</default>
+        <label>Modelo 71833</label>
+    </customValue>
+    <customValue>
+        <fullName>Modelo 71834</fullName>
+        <default>false</default>
+        <label>Modelo 71834</label>
+    </customValue>
+    <customValue>
+        <fullName>Modelo 71835</fullName>
+        <default>false</default>
+        <label>Modelo 71835</label>
+    </customValue>
+    <customValue>
+        <fullName>Buril de Tungsteno</fullName>
+        <default>false</default>
+        <label>Buril de Tungsteno</label>
+    </customValue>
+    <customValue>
+        <fullName>Buril de Cobalto</fullName>
+        <default>false</default>
+        <label>Buril de Cobalto</label>
+    </customValue>
+    <customValue>
+        <fullName>Rodos</fullName>
+        <default>false</default>
+        <label>Rodos</label>
+    </customValue>
+    <customValue>
+        <fullName>Pines</fullName>
+        <default>false</default>
+        <label>Pines</label>
+    </customValue>
+    <customValue>
+        <fullName>Bujes</fullName>
+        <default>false</default>
+        <label>Bujes</label>
+    </customValue>
+    <customValue>
+        <fullName>Contrapines</fullName>
+        <default>false</default>
+        <label>Contrapines</label>
+    </customValue>
+    <customValue>
+        <fullName>Tablillas</fullName>
+        <default>false</default>
+        <label>Tablillas</label>
+    </customValue>
+    <customValue>
+        <fullName>Laterales</fullName>
+        <default>false</default>
+        <label>Laterales</label>
+    </customValue>
+    <customValue>
+        <fullName>Perno</fullName>
+        <default>false</default>
+        <label>Perno</label>
+    </customValue>
+    <customValue>
+        <fullName>Contraperno</fullName>
+        <default>false</default>
+        <label>Contraperno</label>
+    </customValue>
+    <customValue>
+        <fullName>Tipo 2RC</fullName>
+        <default>false</default>
+        <label>Tipo 2RC</label>
+    </customValue>
+    <customValue>
+        <fullName>Tipo 3RC</fullName>
+        <default>false</default>
+        <label>Tipo 3RC</label>
+    </customValue>
+    <customValue>
+        <fullName>JCI</fullName>
+        <default>false</default>
+        <label>JCI</label>
+    </customValue>
+    <customValue>
+        <fullName>JDS</fullName>
+        <default>false</default>
+        <label>JDS</label>
+    </customValue>
+    <customValue>
+        <fullName>Electrodo</fullName>
+        <default>false</default>
+        <label>Electrodo</label>
+    </customValue>
+    <customValue>
+        <fullName>Microalambre</fullName>
+        <default>false</default>
+        <label>Microalambre</label>
+    </customValue>
+    <customValue>
+        <fullName>Robot</fullName>
+        <default>false</default>
+        <label>Robot</label>
+    </customValue>
+    <customValue>
+        <fullName>Rueda de Esmeril</fullName>
+        <default>false</default>
+        <label>Rueda de Esmeril</label>
+    </customValue>
+    <customValue>
+        <fullName>Cortador Vertical</fullName>
+        <default>false</default>
+        <label>Cortador Vertical</label>
+    </customValue>
+    <customValue>
+        <fullName>Machuelo</fullName>
+        <default>false</default>
+        <label>Machuelo</label>
+    </customValue>
+    <customValue>
+        <fullName>Broca</fullName>
+        <default>false</default>
+        <label>Broca</label>
+    </customValue>
+    <customValue>
+        <fullName>Buril</fullName>
+        <default>false</default>
+        <label>Buril</label>
+    </customValue>
+    <customValue>
+        <fullName>Varios</fullName>
+        <default>false</default>
+        <label>Varios</label>
+    </customValue>
+    <masterLabel>Subfamilia</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>

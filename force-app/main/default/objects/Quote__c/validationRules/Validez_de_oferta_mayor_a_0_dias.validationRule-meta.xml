@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Validez_de_oferta_mayor_a_0_dias</fullName>
+    <active>true</active>
+    <errorConditionFormula>Offer_Time__c &lt;= 0</errorConditionFormula>
+    <errorDisplayField>Offer_Time__c</errorDisplayField>
+    <errorMessage>La validez de la oferta debe de ser mayor a 0 días.</errorMessage>
+</ValidationRule>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Price_Batch__c</fullName>
+    <externalId>false</externalId>
+    <label>Lote de Precios</label>
+    <referenceTo>Price_Batch__c</referenceTo>
+    <relationshipLabel>Lineas de Lote de Precios</relationshipLabel>
+    <relationshipName>Lineas_de_Lote_de_Precios</relationshipName>
+    <relationshipOrder>0</relationshipOrder>
+    <reparentableMasterDetail>false</reparentableMasterDetail>
+    <trackTrending>false</trackTrending>
+    <type>MasterDetail</type>
+    <writeRequiresMasterRead>false</writeRequiresMasterRead>
+</CustomField>

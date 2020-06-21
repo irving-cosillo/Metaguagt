@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>Unidad</fullName>
+        <default>false</default>
+        <label>Unidad</label>
+    </customValue>
+    <customValue>
+        <fullName>Par</fullName>
+        <default>false</default>
+        <label>Par</label>
+    </customValue>
+    <customValue>
+        <fullName>Caja 5 pies</fullName>
+        <default>false</default>
+        <label>Caja 5 pies</label>
+    </customValue>
+    <customValue>
+        <fullName>Caja 10 pies</fullName>
+        <default>false</default>
+        <label>Caja 10 pies</label>
+    </customValue>
+    <customValue>
+        <fullName>Juego</fullName>
+        <default>false</default>
+        <label>Juego</label>
+    </customValue>
+    <customValue>
+        <fullName>Libra</fullName>
+        <default>false</default>
+        <label>Libra</label>
+    </customValue>
+    <masterLabel>Unidad de Medida</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>

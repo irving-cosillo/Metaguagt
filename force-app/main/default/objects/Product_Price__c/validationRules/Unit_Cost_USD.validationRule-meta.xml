@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Unit_Cost_USD</fullName>
+    <active>true</active>
+    <errorConditionFormula>Unit_Cost_USD__c &lt; 0</errorConditionFormula>
+    <errorDisplayField>Unit_Cost_USD__c</errorDisplayField>
+    <errorMessage>El costo unitario en Dolares no puede ser menor a 0</errorMessage>
+</ValidationRule>

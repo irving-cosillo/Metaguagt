@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Subfamily__c</fullName>
+    <externalId>false</externalId>
+    <label>Subfamilia</label>
+    <required>true</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>Family__c</controllingField>
+        <restricted>true</restricted>
+        <valueSetName>Subfamily</valueSetName>
+        <valueSettings>
+            <controllingFieldValue>Calzado Industrial</controllingFieldValue>
+            <valueName>Modelo 71820</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Calzado Industrial</controllingFieldValue>
+            <valueName>Modelo 71821</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Calzado Industrial</controllingFieldValue>
+            <valueName>Modelo 71822</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Calzado Industrial</controllingFieldValue>
+            <valueName>Modelo 71823</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Calzado Industrial</controllingFieldValue>
+            <valueName>Modelo 71824</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Calzado Industrial</controllingFieldValue>
+            <valueName>Modelo 71825</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Calzado Industrial</controllingFieldValue>
+            <valueName>Modelo 71826</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Calzado Industrial</controllingFieldValue>
+            <valueName>Modelo 71827</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Calzado Industrial</controllingFieldValue>
+            <valueName>Modelo 71828</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Calzado Industrial</controllingFieldValue>
+            <valueName>Modelo 71829</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Calzado Industrial</controllingFieldValue>
+            <valueName>Modelo 71830</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Sellos Hidráulicos</controllingFieldValue>
+            <valueName>Espirometálico tipo CG</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Sellos Hidráulicos</controllingFieldValue>
+            <valueName>Espirometálico tipo CGI</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Sellos Hidráulicos</controllingFieldValue>
+            <valueName>Tipo Domo</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Sellos Hidráulicos</controllingFieldValue>
+            <valueName>Tipo Oval</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Sellos Hidráulicos</controllingFieldValue>
+            <valueName>Tipo Empaque</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Sellos Hidráulicos</controllingFieldValue>
+            <valueName>Estopa</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Cadena Industrial</controllingFieldValue>
+            <valueName>Tipo RC</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Cadena Industrial</controllingFieldValue>
+            <valueName>Tipo 2RC</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Cadena Industrial</controllingFieldValue>
+            <valueName>Tipo 3RC</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Herramienta de Corte</controllingFieldValue>
+            <valueName>Buril de Tungsteno</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Herramienta de Corte</controllingFieldValue>
+            <valueName>Buril de Cobalto</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Herramienta de Corte</controllingFieldValue>
+            <valueName>JCI</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Herramienta de Corte</controllingFieldValue>
+            <valueName>JDS</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Herramienta de Corte</controllingFieldValue>
+            <valueName>Rueda de Esmeril</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Herramienta de Corte</controllingFieldValue>
+            <valueName>Cortador Vertical</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Herramienta de Corte</controllingFieldValue>
+            <valueName>Machuelo</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Herramienta de Corte</controllingFieldValue>
+            <valueName>Broca</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Herramienta de Corte</controllingFieldValue>
+            <valueName>Buril</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Herramienta de Corte</controllingFieldValue>
+            <controllingFieldValue>Herramienta Manual</controllingFieldValue>
+            <valueName>Varios</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Promocional</controllingFieldValue>
+            <valueName>Regalo para cliente</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Promocional</controllingFieldValue>
+            <valueName>Catálogo</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Repuestos</controllingFieldValue>
+            <valueName>Rodos</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Repuestos</controllingFieldValue>
+            <valueName>Pines</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Repuestos</controllingFieldValue>
+            <valueName>Bujes</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Repuestos</controllingFieldValue>
+            <valueName>Contrapines</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Repuestos</controllingFieldValue>
+            <valueName>Tablillas</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Repuestos</controllingFieldValue>
+            <valueName>Laterales</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Repuestos</controllingFieldValue>
+            <valueName>Perno</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Repuestos</controllingFieldValue>
+            <valueName>Contraperno</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Soldadura</controllingFieldValue>
+            <valueName>Electrodo</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Soldadura</controllingFieldValue>
+            <valueName>Microalambre</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Soldadura</controllingFieldValue>
+            <valueName>Robot</valueName>
+        </valueSettings>
+    </valueSet>
+</CustomField>

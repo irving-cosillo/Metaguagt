@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Unit__c</fullName>
+    <externalId>false</externalId>
+    <label>Unidad de Medida</label>
+    <required>true</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>Subfamily__c</controllingField>
+        <restricted>true</restricted>
+        <valueSetName>unit</valueSetName>
+        <valueSettings>
+            <controllingFieldValue>Modelo 71826</controllingFieldValue>
+            <controllingFieldValue>Modelo 71827</controllingFieldValue>
+            <controllingFieldValue>Modelo 71828</controllingFieldValue>
+            <controllingFieldValue>Modelo 71829</controllingFieldValue>
+            <controllingFieldValue>Modelo 71830</controllingFieldValue>
+            <controllingFieldValue>Modelo 71831</controllingFieldValue>
+            <controllingFieldValue>Modelo 71832</controllingFieldValue>
+            <controllingFieldValue>Modelo 71833</controllingFieldValue>
+            <controllingFieldValue>Modelo 71834</controllingFieldValue>
+            <controllingFieldValue>Modelo 71835</controllingFieldValue>
+            <controllingFieldValue>Varios</controllingFieldValue>
+            <controllingFieldValue>Modelo 71820</controllingFieldValue>
+            <controllingFieldValue>Modelo 71821</controllingFieldValue>
+            <controllingFieldValue>Modelo 71822</controllingFieldValue>
+            <controllingFieldValue>Modelo 71823</controllingFieldValue>
+            <controllingFieldValue>Modelo 71824</controllingFieldValue>
+            <controllingFieldValue>Modelo 71825</controllingFieldValue>
+            <valueName>Par</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>JCI</controllingFieldValue>
+            <controllingFieldValue>JDS</controllingFieldValue>
+            <controllingFieldValue>Varios</controllingFieldValue>
+            <valueName>Juego</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Electrodo</controllingFieldValue>
+            <controllingFieldValue>Microalambre</controllingFieldValue>
+            <controllingFieldValue>Varios</controllingFieldValue>
+            <valueName>Libra</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Robot</controllingFieldValue>
+            <controllingFieldValue>Rueda de Esmeril</controllingFieldValue>
+            <controllingFieldValue>Cortador Vertical</controllingFieldValue>
+            <controllingFieldValue>Machuelo</controllingFieldValue>
+            <controllingFieldValue>Broca</controllingFieldValue>
+            <controllingFieldValue>Buril</controllingFieldValue>
+            <controllingFieldValue>Tipo Domo</controllingFieldValue>
+            <controllingFieldValue>Buril de Tungsteno</controllingFieldValue>
+            <controllingFieldValue>Varios</controllingFieldValue>
+            <controllingFieldValue>Tipo Oval</controllingFieldValue>
+            <controllingFieldValue>Buril de Cobalto</controllingFieldValue>
+            <controllingFieldValue>Tipo Empaque</controllingFieldValue>
+            <controllingFieldValue>Rodos</controllingFieldValue>
+            <controllingFieldValue>Estopa</controllingFieldValue>
+            <controllingFieldValue>Pines</controllingFieldValue>
+            <controllingFieldValue>Regalo para cliente</controllingFieldValue>
+            <controllingFieldValue>Bujes</controllingFieldValue>
+            <controllingFieldValue>Catálogo</controllingFieldValue>
+            <controllingFieldValue>Contrapines</controllingFieldValue>
+            <controllingFieldValue>Tablillas</controllingFieldValue>
+            <controllingFieldValue>Laterales</controllingFieldValue>
+            <controllingFieldValue>Espirometálico tipo CG</controllingFieldValue>
+            <controllingFieldValue>Espirometálico tipo CGI</controllingFieldValue>
+            <controllingFieldValue>Perno</controllingFieldValue>
+            <controllingFieldValue>Contraperno</controllingFieldValue>
+            <valueName>Unidad</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Varios</controllingFieldValue>
+            <controllingFieldValue>Tipo RC</controllingFieldValue>
+            <controllingFieldValue>Tipo 2RC</controllingFieldValue>
+            <controllingFieldValue>Tipo 3RC</controllingFieldValue>
+            <valueName>Caja 5 pies</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Varios</controllingFieldValue>
+            <controllingFieldValue>Tipo RC</controllingFieldValue>
+            <controllingFieldValue>Tipo 2RC</controllingFieldValue>
+            <controllingFieldValue>Tipo 3RC</controllingFieldValue>
+            <valueName>Caja 10 pies</valueName>
+        </valueSettings>
+    </valueSet>
+</CustomField>

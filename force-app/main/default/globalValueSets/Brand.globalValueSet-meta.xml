@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>Micro 100</fullName>
+        <default>false</default>
+        <label>Micro 100</label>
+    </customValue>
+    <customValue>
+        <fullName>Fandher</fullName>
+        <default>false</default>
+        <label>Fandher</label>
+    </customValue>
+    <customValue>
+        <fullName>Flexitallic</fullName>
+        <default>false</default>
+        <label>Flexitallic</label>
+    </customValue>
+    <customValue>
+        <fullName>Workland</fullName>
+        <default>false</default>
+        <label>Workland</label>
+    </customValue>
+    <customValue>
+        <fullName>General Chains</fullName>
+        <default>false</default>
+        <label>General Chains</label>
+    </customValue>
+    <customValue>
+        <fullName>Kana</fullName>
+        <default>false</default>
+        <label>Kana</label>
+    </customValue>
+    <customValue>
+        <fullName>Mausa</fullName>
+        <default>false</default>
+        <label>Mausa</label>
+    </customValue>
+    <customValue>
+        <fullName>Dedini</fullName>
+        <default>false</default>
+        <label>Dedini</label>
+    </customValue>
+    <customValue>
+        <fullName>Imbil</fullName>
+        <default>false</default>
+        <label>Imbil</label>
+    </customValue>
+    <customValue>
+        <fullName>Resonance</fullName>
+        <default>false</default>
+        <label>Resonance</label>
+    </customValue>
+    <customValue>
+        <fullName>Stanley</fullName>
+        <default>false</default>
+        <label>Stanley</label>
+    </customValue>
+    <customValue>
+        <fullName>Kestra</fullName>
+        <default>false</default>
+        <label>Kestra</label>
+    </customValue>
+    <customValue>
+        <fullName>Greenfield</fullName>
+        <default>false</default>
+        <label>Greenfield</label>
+    </customValue>
+    <customValue>
+        <fullName>Cleveland</fullName>
+        <default>false</default>
+        <label>Cleveland</label>
+    </customValue>
+    <customValue>
+        <fullName>Chicago Latrobe</fullName>
+        <default>false</default>
+        <label>Chicago Latrobe</label>
+    </customValue>
+    <customValue>
+        <fullName>Incor</fullName>
+        <default>false</default>
+        <label>Incor</label>
+    </customValue>
+    <customValue>
+        <fullName>Genérico</fullName>
+        <default>false</default>
+        <label>Genérico</label>
+    </customValue>
+    <masterLabel>Marca</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Dollar</fullName>
+    <active>true</active>
+    <errorConditionFormula>Dollar_Cost__c &lt; 0</errorConditionFormula>
+    <errorDisplayField>Dollar_Cost__c</errorDisplayField>
+    <errorMessage>La tasa de compra de dolar no puede ser menor a 0</errorMessage>
+</ValidationRule>

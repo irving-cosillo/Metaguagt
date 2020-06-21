@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>External_Shipping_GTQ</fullName>
+    <active>true</active>
+    <errorConditionFormula>External_Shipping__c &lt; 0</errorConditionFormula>
+    <errorDisplayField>External_Shipping__c</errorDisplayField>
+    <errorMessage>El flete externo en Quetzales no puede ser menor a 0</errorMessage>
+</ValidationRule>

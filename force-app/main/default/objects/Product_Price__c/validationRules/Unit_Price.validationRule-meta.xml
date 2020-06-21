@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Unit_Price</fullName>
+    <active>true</active>
+    <errorConditionFormula>Unit_Price_GTQ__c &lt; 0</errorConditionFormula>
+    <errorDisplayField>Unit_Price_GTQ__c</errorDisplayField>
+    <errorMessage>El precio de venta no puede ser menor a 0</errorMessage>
+</ValidationRule>

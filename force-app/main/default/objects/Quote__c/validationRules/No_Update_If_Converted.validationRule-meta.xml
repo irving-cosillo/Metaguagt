@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>No_Update_If_Converted</fullName>
+    <active>true</active>
+    <errorConditionFormula>OR(
+ AND(ISCHANGED( Delivery_Time__c ), Converted__c ),
+ AND(ISCHANGED( Delivery_Address__c ), Converted__c ),
+ AND(ISCHANGED( Currency_Code__c ), Converted__c ),
+ AND(ISCHANGED( Contact__c ), Converted__c ),
+ AND(ISCHANGED( Payment__c ), Converted__c ),
+ AND(ISCHANGED( Discount__c ), Converted__c ),
+ AND(ISCHANGED( Offer_Time__c ), Converted__c ),
+ AND(ISCHANGED( Sales_User__c ), Converted__c )
+ )</errorConditionFormula>
+    <errorMessage>La cotización no puede ser editada ya que fue convertida a Orden de Trabajo.</errorMessage>
+</ValidationRule>

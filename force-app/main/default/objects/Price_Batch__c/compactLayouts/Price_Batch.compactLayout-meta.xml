@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Price_Batch</fullName>
+    <fields>Name</fields>
+    <fields>CreatedById</fields>
+    <fields>Converted__c</fields>
+    <fields>Total_GTQ__c</fields>
+    <fields>Dollar_Cost__c</fields>
+    <fields>Taxes__c</fields>
+    <fields>Internal_Shipping__c</fields>
+    <fields>External_Shipping_GTQ__c</fields>
+    <fields>External_Shipping_USD__c</fields>
+    <label>Lote de Precios</label>
+</CompactLayout>

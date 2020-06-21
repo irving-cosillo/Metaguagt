@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>METAGUA</fullName>
+        <default>false</default>
+        <label>METAGUA</label>
+    </customValue>
+    <customValue>
+        <fullName>Metales Milenium</fullName>
+        <default>false</default>
+        <label>Metales Milenium</label>
+    </customValue>
+    <customValue>
+        <fullName>SIMSA</fullName>
+        <default>false</default>
+        <label>SIMSA</label>
+    </customValue>
+    <masterLabel>Empresa</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>

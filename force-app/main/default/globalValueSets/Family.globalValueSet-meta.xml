@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>Sellos Hidráulicos</fullName>
+        <default>false</default>
+        <label>Sellos Hidráulicos</label>
+    </customValue>
+    <customValue>
+        <fullName>Cadena Industrial</fullName>
+        <default>false</default>
+        <label>Cadena Industrial</label>
+    </customValue>
+    <customValue>
+        <fullName>Herramienta de Corte</fullName>
+        <default>false</default>
+        <label>Herramienta de Corte</label>
+    </customValue>
+    <customValue>
+        <fullName>Promocional</fullName>
+        <default>false</default>
+        <label>Promocional</label>
+    </customValue>
+    <customValue>
+        <fullName>Calzado Industrial</fullName>
+        <default>false</default>
+        <label>Calzado Industrial</label>
+    </customValue>
+    <customValue>
+        <fullName>Repuestos</fullName>
+        <default>false</default>
+        <label>Repuestos</label>
+    </customValue>
+    <customValue>
+        <fullName>Soldadura</fullName>
+        <default>false</default>
+        <label>Soldadura</label>
+    </customValue>
+    <customValue>
+        <fullName>Herramienta Manual</fullName>
+        <default>false</default>
+        <label>Herramienta Manual</label>
+    </customValue>
+    <masterLabel>Familia</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>
