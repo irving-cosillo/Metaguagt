@@ -38,6 +38,15 @@
             ],
             "c/lwcDispatchOrderLines": [
                 "lwcDispatchOrderLines/lwcDispatchOrderLines.js"
+            ],
+            "c/lwcInvoice": [
+                "lwcInvoice/lwcInvoice.js"
+            ],
+            "c/lwcInvoiceContainer": [
+                "lwcInvoiceContainer/lwcInvoiceContainer.js"
+            ],
+            "c/lwcInvoiceModal": [
+                "lwcInvoiceModal/lwcInvoiceModal.js"
             ]
         }
     },

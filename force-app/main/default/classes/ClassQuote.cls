@@ -32,6 +32,7 @@ public with sharing class ClassQuote {
     public static List<Quote_Line__c> getProductsOfLines(String quoteId) {
         return [SELECT  Product__r.Id,
                         Product__r.Name,
+                        Product__r.Old_Code__c,
                         Product__r.Description__c,
                         Product__r.Brand__c,
                         Product__r.Family__c,

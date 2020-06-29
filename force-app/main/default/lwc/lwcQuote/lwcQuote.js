@@ -19,6 +19,7 @@ export default class LwcQuote extends NavigationMixin(LightningElement) {
     isProductsModal = false;
     isButtonVisible = false;
     modalHeading;
+    orderId;
     authorizedContact;
 
     navigateToRecordViewPage(recordId) {
@@ -75,7 +76,7 @@ export default class LwcQuote extends NavigationMixin(LightningElement) {
                     variant: 'success'
                 }));
             } else {
-                createPurchaseOrder({quoteId: this.recordId, contactId : this.authorizedContact}).then( purchaseOrderId => {
+                createPurchaseOrder({quoteId: this.recordId, contactId : this.authorizedContact, orderId : this.orderId}).then( purchaseOrderId => {
                     let quote = {...this.quote};
                     quote.Converted__c = true;
                     this.quote = quote;
@@ -103,6 +104,10 @@ export default class LwcQuote extends NavigationMixin(LightningElement) {
         let quote = {...this.quote};
         quote.Discount__c = event.target.value;
         this.quote = quote;
+    }
+
+    orderIdChange(event){
+        this.orderId = event.target.value;
     }
 
     contactChange(event){

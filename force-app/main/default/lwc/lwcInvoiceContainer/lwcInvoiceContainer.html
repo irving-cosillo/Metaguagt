@@ -1,0 +1,38 @@
+<template>
+    <lightning-card>
+        <h3 slot="title" class="slds-align_absolute-center slds-m-top_medium">
+            Nueva Factura
+        </h3>
+        <div class="slds-p-horizontal_medium">
+            <div class="slds-m-top_medium slds-p-around_x-small">
+                <lightning-record-edit-form object-api-name="Invoice__c">
+                    <div class="slds-p-horizontal_x-small">
+                        <lightning-input-field
+                            field-name="Purchase_Order__c"
+                            onchange={POChanged}>
+                        </lightning-input-field>
+                    </div>
+                </lightning-record-edit-form>
+                <c-lwc-invoice record-id={purchaseOrderId}></c-lwc-invoice>
+            </div>
+            <div slot="footer">
+                <div class="slds-clearfix">
+                    <div class="slds-float_right slds-m-around_x-small slds-m-top_small">
+                        <lightning-button
+                            label="Cancelar"
+                            variant="neutral"
+                            onclick={cancel}
+                            class="slds-m-right_medium">
+                        </lightning-button>
+                        <lightning-button
+                            label="Crear"
+                            variant="brand"
+                            onclick={save}
+                            class="slds-m-right_small">
+                        </lightning-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </lightning-card>
+</template>

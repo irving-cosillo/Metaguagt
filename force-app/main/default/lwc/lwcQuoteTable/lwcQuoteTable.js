@@ -22,9 +22,9 @@ export default class LwcQuoteTable extends LightningElement {
         {label: 'Días/Semanas', fieldName: 'Time__c', type: 'number', editable: true},
         {label: 'T. Entrega', fieldName: 'Delivery_Time__c', type: 'text'},
         {label: 'Cantidad', fieldName: 'Quantity__c', type: 'number', editable: true},
-        {label: 'Precio', fieldName: 'Price__c', type: 'currency', 
+        {label: 'Precio', fieldName: 'Price__c', type: 'currency',
             typeAttributes: { currencyCode: this.currency }},
-        {label: 'Importe', fieldName: 'Subtotal__c', type: 'currency', 
+        {label: 'Importe', fieldName: 'Subtotal__c', type: 'currency',
             typeAttributes: { currencyCode: this.currency }},
     ];
 
@@ -346,7 +346,7 @@ export default class LwcQuoteTable extends LightningElement {
         let data = [];
         let lineProducts = [];
         this.data.forEach((row, index) => {
-            if(!this.selectedRows.find(item => 
+            if(!this.selectedRows.find(item =>
                 item.Type__c === "Father" && item.Name === row.Name ||
                 item.Type__c !== "Father" && item.rowId === row.rowId )){
                 data.push(row);

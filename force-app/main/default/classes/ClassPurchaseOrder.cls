@@ -1,7 +1,7 @@
 public with sharing class ClassPurchaseOrder {
 
     @AuraEnabled
-    public static Id createPurchaseOrder(String quoteId, String contactId){
+    public static Id createPurchaseOrder(String quoteId, String contactId, String orderId){
         Quote__c quote;
         List<Quote__c> quotes = [SELECT Contact__c, Account__c, Delivery_Address__c, Converted__c
                           FROM Quote__c
@@ -23,6 +23,7 @@ public with sharing class ClassPurchaseOrder {
         purchaseOrder.Account__c = quote.Account__c;
         purchaseOrder.Delivery_Address__c = quote.Delivery_Address__c;
         purchaseOrder.Authorization_Contact__c = contactId;
+        purchaseOrder.Order_Id__c = orderId;
         purchaseOrder.Invoice_Status__c = 'Pendiente';
         purchaseOrder.Dispatch_Status__c = 'Pendiente';
         insert(purchaseOrder);
