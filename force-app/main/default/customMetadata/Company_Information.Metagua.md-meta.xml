@@ -7,6 +7,10 @@
         <value xsi:type="xsd:string">Complejo Indutsrial Rodezno, Bodega 33. Km 63.5 Autopista a Puerto Quetzal, Escuintla - Escuintla, Guatemala.</value>
     </values>
     <values>
+        <field>Invoice_Email__c</field>
+        <value xsi:type="xsd:string">correo.pruebas@metaguagt.com</value>
+    </values>
+    <values>
         <field>Legal_Name__c</field>
         <value xsi:type="xsd:string">Metalizadora Guatemalteca y/o Hugo Rolando López Carranza</value>
     </values>

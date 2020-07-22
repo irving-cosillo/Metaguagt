@@ -9,4 +9,47 @@
         <value>Precios</value>
     </caseValues>
     <gender>Masculine</gender>
+    <layouts>
+        <layout>Precio de Producto Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <validationRules>
+        <errorMessage><!-- La tasa de compra de dolar no puede ser menor a 0 --></errorMessage>
+        <name>Dollar</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- El flete externo en Quetzales no puede ser menor a 0 --></errorMessage>
+        <name>External_Shipping_GTQ</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- El flete externos en Dolares no puede ser menor a 0 --></errorMessage>
+        <name>External_Shipping_USD</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- El flete interno no puede ser menor a 0 --></errorMessage>
+        <name>Internal_Shipping</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- La cantidad no puede ser menor o igual a 0 --></errorMessage>
+        <name>Quantity</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Los impuestos aduanales no pueden ser menores a 0 --></errorMessage>
+        <name>Taxes</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- El costo unitario en Quetzales no puede ser menor a 0 --></errorMessage>
+        <name>Unit_Cost_GTQ</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- El costo unitario en Dolares no puede ser menor a 0 --></errorMessage>
+        <name>Unit_Cost_USD</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- El precio de venta no puede ser menor a 0 --></errorMessage>
+        <name>Unit_Price</name>
+    </validationRules>
 </CustomObjectTranslation>

@@ -9,4 +9,15 @@
         <value>Lotes de Precios</value>
     </caseValues>
     <gender>Feminine</gender>
+    <layouts>
+        <layout>Lote de Precios Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <validationRules>
+        <errorMessage><!-- No es posible ingresar cantidades negativas. --></errorMessage>
+        <name>Negative_Validation</name>
+    </validationRules>
 </CustomObjectTranslation>

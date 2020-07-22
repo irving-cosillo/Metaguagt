@@ -7,4 +7,6 @@ public with sharing class EntityInvoice {
     public List<Dispatch_Order__c> dispatchOrders {get; set;}
     @AuraEnabled
     public List<Dispatch_Order_Line__c> dispatchOrderLines {get; set;}
+    @AuraEnabled
+    public String companyEmail {get; set;}
 }

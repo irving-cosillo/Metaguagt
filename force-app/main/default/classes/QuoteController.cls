@@ -73,5 +73,3 @@ public with sharing class QuoteController {
        todaysDate = String.valueOf(day) + ' de ' + month + ' de ' + String.valueOf(year);
     }
 }
-
-

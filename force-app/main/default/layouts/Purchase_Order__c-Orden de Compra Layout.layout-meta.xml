@@ -32,6 +32,10 @@
                 <behavior>Required</behavior>
                 <field>Authorization_Contact__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Order_Id__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
@@ -114,9 +118,14 @@
             <sortOrder>4</sortOrder>
         </platformActionListItems>
         <platformActionListItems>
-            <actionName>Purchase_Order__c.New_Dispatch_Order</actionName>
+            <actionName>Purchase_Order__c.New_Invoice</actionName>
             <actionType>QuickAction</actionType>
             <sortOrder>5</sortOrder>
+        </platformActionListItems>
+        <platformActionListItems>
+            <actionName>Purchase_Order__c.New_Dispatch_Order</actionName>
+            <actionType>QuickAction</actionType>
+            <sortOrder>6</sortOrder>
         </platformActionListItems>
     </platformActionList>
     <quickActionList>
@@ -155,8 +164,12 @@
         <relatedList>Dispatch_Order__c.Purchase_Order__c</relatedList>
     </relatedLists>
     <relatedLists>
+        <excludeButtons>MassChangeOwner</excludeButtons>
         <fields>NAME</fields>
-        <fields>CREATED_DATE</fields>
+        <fields>Currency_Code__c</fields>
+        <fields>Amount__c</fields>
+        <fields>Date__c</fields>
+        <fields>Category__c</fields>
         <relatedList>Invoice__c.Purchase_Order__c</relatedList>
     </relatedLists>
     <relatedLists>

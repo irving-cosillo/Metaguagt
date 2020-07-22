@@ -22,10 +22,12 @@ export default class LwcQuoteTable extends LightningElement {
         {label: 'Días/Semanas', fieldName: 'Time__c', type: 'number', editable: true},
         {label: 'T. Entrega', fieldName: 'Delivery_Time__c', type: 'text'},
         {label: 'Cantidad', fieldName: 'Quantity__c', type: 'number', editable: true},
-        {label: 'Precio', fieldName: 'Price__c', type: 'currency',
-            typeAttributes: { currencyCode: this.currency }},
-        {label: 'Importe', fieldName: 'Subtotal__c', type: 'currency',
-            typeAttributes: { currencyCode: this.currency }},
+        {label: 'Precio', fieldName: 'Price__c', type: 'currency', typeAttributes : {
+            currencyCode : this.currency, currencyDisplayAs : 'symbol', maximumFractionDigits : '2'}
+        },
+        {label: 'Importe', fieldName: 'Subtotal__c', type: 'currency', typeAttributes : {
+            currencyCode : this.currency, currencyDisplayAs : 'symbol', maximumFractionDigits : '2'}
+        },
     ];
 
     @api
@@ -46,6 +48,7 @@ export default class LwcQuoteTable extends LightningElement {
         this.setColumnsCurrencyCode();
         this.changeDataCurrency();
         this.updateTotal();
+        this.setColumnsCurrencyCode();
     }
 
     @api
@@ -105,16 +108,12 @@ export default class LwcQuoteTable extends LightningElement {
         columnsWithoutActions.find(column => column.fieldName === "Subtotal__c").typeAttributes.currencyCode = this.currency;
         columnsWithoutActions.find(column => column.fieldName === "Time__c").editable = this.editable;
         columnsWithoutActions.find(column => column.fieldName === "Quantity__c").editable = this.editable;
-        if(this.editable){
-            this.columns = columnsWithoutActions.concat({
-                type: "action",
-                typeAttributes: {
-                    rowActions: this.getRowActions
-                }
-            });
-        } else {
-            this.columns = columnsWithoutActions;
-        }
+        this.columns = !this.editable ? columnsWithoutActions : columnsWithoutActions.concat({
+            type: "action",
+            typeAttributes: {
+                rowActions: this.getRowActions
+            }
+        });
     }
 
     connectedCallback() {

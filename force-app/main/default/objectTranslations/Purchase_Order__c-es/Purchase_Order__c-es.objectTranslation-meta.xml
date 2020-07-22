@@ -9,4 +9,15 @@
         <value>Ordenes de Compra</value>
     </caseValues>
     <gender>Feminine</gender>
+    <layouts>
+        <layout>Orden de Compra Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <quickActions>
+        <label><!-- Nueva Orden de Despacho --></label>
+        <name>New_Dispatch_Order</name>
+    </quickActions>
 </CustomObjectTranslation>

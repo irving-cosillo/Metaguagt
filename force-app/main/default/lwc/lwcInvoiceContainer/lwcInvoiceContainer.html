@@ -13,7 +13,10 @@
                         </lightning-input-field>
                     </div>
                 </lightning-record-edit-form>
-                <c-lwc-invoice record-id={purchaseOrderId}></c-lwc-invoice>
+                <c-lwc-invoice
+                    oncancel={cancel}
+                    record-id={purchaseOrderId}>
+                </c-lwc-invoice>
             </div>
             <div slot="footer">
                 <div class="slds-clearfix">

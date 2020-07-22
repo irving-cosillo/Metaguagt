@@ -155,7 +155,8 @@ export default class LwcProductPriceBatch extends LightningElement {
                 data[rowIndex].Price = this.calculatePrice(data[rowIndex]);
             }
 
-            const profit = (1 - this.getCost(data[rowIndex]) / data[rowIndex].Price) * 100;
+            const unitCost = this.getCost(data[rowIndex]) / data[rowIndex].Quantity;
+            const profit = (1 - unitCost / data[rowIndex].Price) * 100;
             data[rowIndex].Relative_Profit = Math.round(profit * 10) / 10;
             this.data = data;
         }

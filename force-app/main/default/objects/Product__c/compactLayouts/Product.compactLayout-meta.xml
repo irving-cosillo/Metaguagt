@@ -3,6 +3,7 @@
     <fullName>Product</fullName>
     <fields>Description__c</fields>
     <fields>Name</fields>
+    <fields>Old_Code__c</fields>
     <fields>Brand__c</fields>
     <fields>Stock__c</fields>
     <fields>Inventory_State__c</fields>

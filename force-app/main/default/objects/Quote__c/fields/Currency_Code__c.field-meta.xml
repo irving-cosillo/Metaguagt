@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Currency_Code__c</fullName>
+    <defaultValue>&quot;GTQ&quot;</defaultValue>
     <externalId>false</externalId>
     <label>Moneda</label>
     <required>true</required>
