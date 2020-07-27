@@ -1,6 +1,6 @@
 public with sharing class ClassInvoice {
     @AuraEnabled
-    public static EntityInvoice getPurchaseOrderInfo(String purchaseOrderId){
+    public static ClassInvoice.EntityInvoice getPurchaseOrderInfo(String purchaseOrderId){
         List<Purchase_Order__c> purchaseOrderList = [
             SELECT
                 Order_Id__c,
@@ -38,7 +38,7 @@ public with sharing class ClassInvoice {
         ];
         Company_Information__mdt company = [SELECT Invoice_Email__c FROM Company_Information__mdt LIMIT 1];
 
-        EntityInvoice invoice = new EntityInvoice();
+        ClassInvoice.EntityInvoice invoice = new ClassInvoice.EntityInvoice();
         invoice.quote = quote;
         invoice.purchaseOrder = purchaseOrder;
         invoice.dispatchOrders = dispatchOrders;
@@ -139,5 +139,18 @@ public with sharing class ClassInvoice {
         public String description {get; set;}
         public Double quantity {get; set;}
         public Double price {get; set;}
+    }
+
+    public class EntityInvoice {
+        @AuraEnabled
+        public Quote__c quote {get; set;}
+        @AuraEnabled
+        public Purchase_Order__c purchaseOrder {get; set;}
+        @AuraEnabled
+        public List<Dispatch_Order__c> dispatchOrders {get; set;}
+        @AuraEnabled
+        public List<Dispatch_Order_Line__c> dispatchOrderLines {get; set;}
+        @AuraEnabled
+        public String companyEmail {get; set;}
     }
 }
