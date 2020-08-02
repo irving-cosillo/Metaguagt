@@ -3,7 +3,7 @@ public with sharing class ClassDispatchOrder {
     public static Id createDispatchOrder(Id purchaseOrderId, List<Dispatch_Order_Line__c> dispatchOrderLines){
         Dispatch_Order__c dispatchOrder = new Dispatch_Order__c();
         dispatchOrder.Purchase_Order__c = purchaseOrderId;
-        dispatchOrder.State__c = 'Pendiente de Despacho';
+        dispatchOrder.State__c = 'Pendiente de despacho';
         insert(dispatchOrder);
 
         for(Integer i = 0; i < dispatchOrderLines.size(); i++){

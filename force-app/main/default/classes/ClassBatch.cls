@@ -1,9 +1,12 @@
 public with sharing class ClassBatch {
     @AuraEnabled
     public static void submitBatch(Price_Batch__c batch, List<Price_Batch_Line__c> batchLines){
-        List<Price_Batch_Line__c> batchLinesToDelete = [SELECT Id
-                                                    FROM Price_Batch_Line__c
-                                                    WHERE Id NOT IN : batchLines AND Price_Batch__c =: batch.Id];
+        List<Price_Batch_Line__c> batchLinesToDelete = [
+            SELECT Id
+            FROM Price_Batch_Line__c
+            WHERE Id NOT IN : batchLines AND Price_Batch__c =: batch.Id
+        ];
+
         delete batchLinesToDelete;
         upsert batchLines;
 

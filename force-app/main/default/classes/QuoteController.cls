@@ -5,12 +5,12 @@ public with sharing class QuoteController {
     public List<Quote_Line__c> childLines {get;set;}
     public List<Quote_Line__c> fatherLines {get;set;}
     public Company_Information__mdt company {get;set;}
-    public List<Integer> rowspanList {get; set;}
     public String todaysDate {get; set;}
 
     public QuoteController(ApexPages.StandardController stdController) {
         Id quoteId = stdController.getRecord().Id;
-        quote = [SELECT Name,
+        quote = [SELECT Id,
+                        Name,
                         Discount__c,
                         Currency_Code__c,
                         Account__c,
@@ -68,7 +68,7 @@ public with sharing class QuoteController {
                           NIT__c
                    FROM Company_Information__mdt LIMIT 1];
 
-       List<String> months = new List<String>{'enero', 'febrero', 'marzo', 'abril', 
+       List<String> months = new List<String>{'enero', 'febrero', 'marzo', 'abril',
        'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'};
 
        Integer day = System.today().day();

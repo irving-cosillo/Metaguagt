@@ -2,18 +2,18 @@ public with sharing class ClassPurchaseOrder {
 
     @AuraEnabled
     public static Id createPurchaseOrder(String quoteId, String contactId, String orderId){
-        Quote__c quote;
-        List<Quote__c> quotes = [SELECT Contact__c, Account__c, Delivery_Address__c, Converted__c
-                          FROM Quote__c
-                          WHERE Id =: quoteId
-                          LIMIT 1];
+        List<Quote__c> quotes = [
+            SELECT Contact__c, Account__c, Delivery_Address__c, Converted__c
+            FROM Quote__c
+            WHERE Id =: quoteId
+            LIMIT 1
+        ];
 
         if(quotes == null || quotes.size() <= 0){
             throw new AuraHandledException('No se encontro ninguna Cotización.');
-        } else {
-            quote = quotes[0];
         }
 
+        Quote__c quote = quotes[0];
         quote.Converted__c = true;
         update(quote);
 
@@ -28,11 +28,13 @@ public with sharing class ClassPurchaseOrder {
         purchaseOrder.Dispatch_Status__c = 'Pendiente';
         insert(purchaseOrder);
 
-        List<Quote_Line__c> quoteLines = [SELECT Id
-                                          FROM Quote_Line__c
-                                          WHERE Quote__c =: quoteId
-                                          AND Type__c != 'Father'
-                                          ORDER BY Index__c ASC];
+        List<Quote_Line__c> quoteLines = [
+            SELECT Id
+            FROM Quote_Line__c
+            WHERE Quote__c =: quoteId
+            AND Type__c != 'Father'
+            ORDER BY Index__c ASC
+        ];
 
         List<Purchase_Order_Line__c> purchaseOrderLines = new List<Purchase_Order_Line__c>();
         Purchase_Order_Line__c purchaseOrderLine;

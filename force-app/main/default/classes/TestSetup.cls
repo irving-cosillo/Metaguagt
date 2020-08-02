@@ -10,6 +10,7 @@ public class TestSetup {
         product.Family__c = 'Sellos Hidráulicos';
         product.Subfamily__c = 'Espirometálico tipo CG';
         product.Unit__c = 'Unidad';
+        product.Stock__c = 50;
         product.Stock_Minimum__c = 0;
         product.Stock_Maximum__c = 100;
         products.add(product);
@@ -20,6 +21,7 @@ public class TestSetup {
         product.Family__c = 'Herramienta de Corte';
         product.Subfamily__c = 'Cortador Vertical';
         product.Unit__c = 'Unidad';
+        product.Stock__c = 50;
         product.Stock_Minimum__c = 0;
         product.Stock_Maximum__c = 100;
         products.add(product);
@@ -30,6 +32,7 @@ public class TestSetup {
         product.Family__c = 'Herramienta de Corte';
         product.Subfamily__c = 'Buril de Cobalto';
         product.Unit__c = 'Unidad';
+        product.Stock__c = 50;
         product.Stock_Minimum__c = 0;
         product.Stock_Maximum__c = 100;
         products.add(product);
