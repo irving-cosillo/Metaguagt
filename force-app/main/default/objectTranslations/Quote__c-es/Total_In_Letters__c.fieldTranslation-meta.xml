@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
-    <label><!-- Total en letras --></label>
-    <name>Total_In_Letters__c</name>
-</CustomFieldTranslation>

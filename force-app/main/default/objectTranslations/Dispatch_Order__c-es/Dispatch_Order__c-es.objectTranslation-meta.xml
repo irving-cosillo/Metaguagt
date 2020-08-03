@@ -9,15 +9,4 @@
         <value>Ordenes de Despacho</value>
     </caseValues>
     <gender>Feminine</gender>
-    <layouts>
-        <layout>Orden de Despacho Layout</layout>
-        <sections>
-            <label><!-- Custom Links --></label>
-            <section>Custom Links</section>
-        </sections>
-    </layouts>
-    <quickActions>
-        <label><!-- Despachar Orden --></label>
-        <name>Dispatch_Order</name>
-    </quickActions>
 </CustomObjectTranslation>

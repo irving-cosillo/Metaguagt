@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
-    <label><!-- Linea de Orden de Compra --></label>
-    <name>Purchase_Order_Line__c</name>
-    <relationshipLabel><!-- Lineas de Orden de Despacho --></relationshipLabel>
-</CustomFieldTranslation>

@@ -9,23 +9,4 @@
         <value>Cotizaciones</value>
     </caseValues>
     <gender>Feminine</gender>
-    <layouts>
-        <layout>Cotización Layout</layout>
-        <sections>
-            <label><!-- Custom Links --></label>
-            <section>Custom Links</section>
-        </sections>
-    </layouts>
-    <validationRules>
-        <errorMessage><!-- La cotización no puede ser editada ya que fue convertida a Orden de Trabajo. --></errorMessage>
-        <name>No_Update_If_Converted</name>
-    </validationRules>
-    <validationRules>
-        <errorMessage><!-- La validez de la oferta debe de ser mayor a 0 días. --></errorMessage>
-        <name>Validez_de_oferta_mayor_a_0_dias</name>
-    </validationRules>
-    <webLinks>
-        <label><!-- Generate_PDF --></label>
-        <name>Generate_PDF</name>
-    </webLinks>
 </CustomObjectTranslation>
