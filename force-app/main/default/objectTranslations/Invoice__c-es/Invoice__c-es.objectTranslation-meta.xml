@@ -9,4 +9,11 @@
         <value>Facturas</value>
     </caseValues>
     <gender>Feminine</gender>
+    <layouts>
+        <layout>Factura Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
 </CustomObjectTranslation>

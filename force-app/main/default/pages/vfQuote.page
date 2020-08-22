@@ -1,11 +1,11 @@
 <apex:page standardController="Quote__c" extensions="QuoteController" title="Cotización"
-    renderAs="PDF" showHeader="false" standardStylesheets="false" 
+    renderAs="PDF" showHeader="false" standardStylesheets="false"
     applyBodyTag="false" applyHtmlTag="false">
 
     <head>
-        <style type="text/css" media="print">       
+        <style type="text/css" media="print">
             @page {
-                margin-top: 180px; 
+                margin-top: 180px;
                 margin-bottom: 260px;
 
                 @top-left {
@@ -20,7 +20,7 @@
             div.header {
                 position: running(header);
             }
-    
+
             div.footer {
                 display: block;
                 position: running(footer);
@@ -36,7 +36,7 @@
             table.products {
                 margin-top: 30px;
                 width: 100%;
-                border: none;  
+                border: none;
             }
 
             table.products td, table.blueTable th {
@@ -61,7 +61,7 @@
     </head>
 
     <body style="font-size: 12px;">
-        <div class="header" name="header">  
+        <div class="header" name="header">
             <table style="width:100%">
                 <tr>
                     <td>
@@ -71,7 +71,7 @@
                     </td>
                     <td class="address">
                         <div>
-                            <b>{!company.Address__c}</b> 
+                            <b>{!company.Address__c}</b>
                         </div>
                         <div>
                             <b>{!company.Phone__c}</b>
@@ -81,7 +81,7 @@
             </table>
         </div>
 
-        <div class="content">        
+        <div class="content">
             <table class="account" style="width: 100%;">
                 <tbody>
                     <tr>
@@ -112,24 +112,29 @@
                     </tr>
                 </tbody>
             </table>
-        
+
             <table cellspacing="0" class="products">
                 <thead>
                     <tr>
                         <th style="width:12%">Código</th>
-                        <th style="width:40%">Descripción del Producto</th> 
+                        <th style="width:40%">Descripción del Producto</th>
                         <th style="width:12%">Entrega</th>
                         <th style="width:12%">Cantidad</th>
                         <th style="width:12%">Precio</th>
-                        <th style="width:12%">Importe</th> 
+                        <th style="width:12%">Importe</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <apex:repeat value="{!fatherLines}" var="line"> 
+                    <apex:repeat value="{!fatherLines}" var="line">
                         <tr>
                             <td style="vertical-align: top;">
                                 <apex:outputText rendered="{!IF(CONTAINS(line.Type__c, 'Child'),false,true)}">
-                                    {!line.Product__r.Name}
+                                    <apex:outputText rendered="{!IF(line.Old_Code__c,false,true)}">
+                                        {!line.Product__r.Name}
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!IF(line.Old_Code__c,true,false)}">
+                                        {!line.Product__r.Old_Code__c}
+                                    </apex:outputText>
                                 </apex:outputText>
                             </td>
                             <td style="vertical-align: top;">
@@ -139,7 +144,7 @@
                                 <apex:outputText rendered="{!IF(CONTAINS(line.Type__c, 'Father'),false,true)}">
                                     <div>{!line.Delivery_Time__c}</div>
                                 </apex:outputText>
-                                <apex:repeat value="{!childLines}" var="child"> 
+                                <apex:repeat value="{!childLines}" var="child">
                                     <apex:outputText rendered="{!IF(CONTAINS(child.Product__c, line.Product__c),true,false)}">
                                         <div>{!child.Delivery_Time__c}</div>
                                     </apex:outputText>
@@ -149,7 +154,7 @@
                                 <apex:outputText rendered="{!IF(CONTAINS(line.Type__c, 'Father'),false,true)}">
                                     <div>{!line.Quantity__c}</div>
                                 </apex:outputText>
-                                <apex:repeat value="{!childLines}" var="child"> 
+                                <apex:repeat value="{!childLines}" var="child">
                                     <apex:outputText rendered="{!IF(CONTAINS(child.Product__c, line.Product__c),true,false)}">
                                         <div>{!child.Quantity__c}</div>
                                     </apex:outputText>
@@ -182,12 +187,12 @@
                                         </apex:outputText>
                                     </apex:outputText>
                                 </apex:outputText>
-                            </td> 
+                            </td>
                         </tr>
                     </apex:repeat>
                 </tbody>
             </table>
-        
+
             <table cellspacing="0" class="total" style="width: 100%; margin-top: 40px;">
                 <tr>
                     <td style="width:70%;">
@@ -246,13 +251,13 @@
                         </b>
                     </td>
                 </tr>
-            </table> 
+            </table>
         </div>
 
-        <div class="footer" name="footer">  
+        <div class="footer" name="footer">
             <div style="margin-bottom: 25px;">
                 <table style="width: 100%">
-                    <tr>     
+                    <tr>
                         <td style="width:50%">
                             <b>Emitir orden de compra a nombre de:</b><br></br>
                             {!company.Legal_Name__c}
@@ -264,7 +269,7 @@
                 </table>
             </div>
 
-            <div style="margin-bottom: 25px; height:80px;">     
+            <div style="margin-bottom: 25px; height:80px;">
                 <table class="payment" style="width:50%; float:left">
                     <tr>
                         <td style="width:22%">
@@ -297,14 +302,14 @@
                         <td>
                             <apex:outputText rendered="{!IF(LEN(quote.Delivery_Address__c) > 0,true,false)}">
                                 {!quote.Delivery_Address__c}
-                            </apex:outputText>  
+                            </apex:outputText>
                         </td>
                     </tr>
                 </table>
                 <table class="payment" style="width:50%; float:right">
                     <tr>
                         <td style="width:20%">
-                            <b>Depositar a No. de cuenta Banco Industrial:</b> 
+                            <b>Depositar a No. de cuenta Banco Industrial:</b>
                         </td>
                         <td style="width:30%">
                             231-006303-3
@@ -320,7 +325,7 @@
                     </tr>
                     <tr>
                         <td colspan="2" style="padding-top:10px; vertical-align:bottom">
-                            <b>SUJETO A PAGOS TRIMESTRALES</b> 
+                            <b>SUJETO A PAGOS TRIMESTRALES</b>
                         </td>
                     </tr>
                 </table>
@@ -334,100 +339,3 @@
         </div>
     </body>
 </apex:page>
-
-<!--
-
-     
-
-
-
-
-<div class="footer" name="footer">  
-            <div style="margin-bottom: 25px;">
-                <table style="width: 100%">
-                    <tr>     
-                        <td>
-                            <b>Emitir orden de compra a nombre de:</b><br></br>
-                            {!company.Legal_Name__c}
-                        </td>
-                        <td style="text-align: right; vertical-align: top;">
-                            <b>NIT:</b> {!company.NIT__c}
-                        </td>
-                    </tr>
-                </table>
-            </div>
-
-            <div style="margin-bottom: 25px">
-                <table style="width:100%;">
-                    <tr>
-                        <td style="width: 30%">
-                            <b>Depositar a No. de cuenta Banco Industrial:</b> 
-                        </td>
-                        <td>
-                            231-006303-3
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <b>Cheque pagadero a:</b>
-                        </td>
-                        <td>
-                            Hugo Rolando López Carranza
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <b>Sujeto a pagos trimestrales</b> 
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            
-            <div style="margin-bottom: 30px;">
-                <table style="width:100%;">
-                    <tr>
-                        <td style="width: 30%">
-                            <b>Validez de nuestra oferta:</b>
-                        </td>
-                        <td>
-                            {!quote.Offer_Time__c} días
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <b>Tiempo de entrega:</b>
-                        </td>
-                        <td>
-                            {!quote.Delivery_Time__c}
-                        </td>
-                    </tr>
-                    <apex:outputText rendered="{!IF(LEN(quote.Delivery_Address__c) > 0,true,false)}">
-                        <tr>
-                            <td>
-                                <b>Dirección de entrega:</b>
-                            </td>
-                            <td>
-                                {!quote.Delivery_Address__c}
-                            </td>
-                        </tr>
-                    </apex:outputText>          
-                    <tr>
-                        <td>
-                            <b>Condiciones de pago:</b>
-                        </td>
-                        <td>
-                            {!quote.Payment__c}
-                        </td>
-                    </tr>
-                </table>
-            </div>
-
-            <div style="text-align: center; margin-bottom: 10px;">
-                <b>
-                    VENTAS INDUSTRIALES Y REPRESENTACIÓN AUTORIZADA DE FÁBRICAS DE PRODUCTOS PARA DIFERENTES INDUSTRIAS
-                </b>
-            </div>
-            <apex:image url="{!$Resource.Quote_Footer}" width="730px" />
-        </div>
-
--->

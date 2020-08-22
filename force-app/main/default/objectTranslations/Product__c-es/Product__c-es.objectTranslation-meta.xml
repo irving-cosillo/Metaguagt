@@ -9,4 +9,23 @@
         <value>Productos</value>
     </caseValues>
     <gender>Masculine</gender>
+    <layouts>
+        <layout>Producto Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <quickActions>
+        <label><!-- Nuevo Precio --></label>
+        <name>New_Price</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Cambio de Precio --></label>
+        <name>Price_Change</name>
+    </quickActions>
+    <webLinks>
+        <label><!-- New_Batch --></label>
+        <name>New_Batch</name>
+    </webLinks>
 </CustomObjectTranslation>

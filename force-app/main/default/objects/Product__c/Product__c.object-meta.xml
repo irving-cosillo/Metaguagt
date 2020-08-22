@@ -168,6 +168,11 @@
         <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Productos</pluralLabel>
+    <profileSearchLayouts>
+        <fields>NAME</fields>
+        <fields>OBJECT_ID</fields>
+        <profileName>Administration</profileName>
+    </profileSearchLayouts>
     <searchLayouts>
         <excludedStandardButtons>OpenListInQuip</excludedStandardButtons>
         <excludedStandardButtons>Accept</excludedStandardButtons>

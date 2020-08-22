@@ -8,6 +8,7 @@ public with sharing class ClassQuote {
     @AuraEnabled
     public static List<Quote_Line__c> getQuoteLines(String quoteId) {
         return [SELECT  Id,
+                        Old_Code__c,
                         Quote__c,
                         Product__c,
                         Index__c,

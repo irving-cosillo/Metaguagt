@@ -1,6 +1,6 @@
 import { LightningElement, api } from 'lwc';
 import { NumeroALetras } from "c/lwcNumbersToLetters";
-
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 export default class LwcQuoteTable extends LightningElement {
     @api quoteId;
     @api quoteLines;
@@ -91,7 +91,8 @@ export default class LwcQuoteTable extends LightningElement {
                     Subfamily__c: false,
                     Unit__c: false,
                     Material__c: false,
-                    Dimensions__c: false
+                    Dimensions__c: false,
+                    Old_Code__c: false,
                 });
             }
         });
@@ -141,6 +142,7 @@ export default class LwcQuoteTable extends LightningElement {
                 Unit__c: item.Unit__c,
                 Material__c: item.Material__c,
                 Dimensions__c: item.Dimensions__c,
+                Old_Code__c: item.Old_Code__c,
                 Subtotal_GTQ__c: product.Price_GTQ__c * item.Quantity__c,
                 Subtotal_USD__c: product.Price_USD__c * item.Quantity__c,
                 Price__c : item.Type__c === "Child" ? null : this.currency === "GTQ" ?
@@ -166,6 +168,7 @@ export default class LwcQuoteTable extends LightningElement {
         }
         if(row.Type__c !== "Child"){
             actions = actions.concat([
+                { name: "Old_Code__c", label: row.Old_Code__c ? "Ocultar Código Anterior" : "Mostrar Código Anterior" },
                 { name: "Brand__c", label: row.Brand__c ? "Ocultar Marca" : "Mostrar Marca" },
                 { name: "Family__c", label: row.Family__c ? "Ocultar Familia" : "Mostrar Familia" },
                 { name: "Subfamily__c", label: row.Subfamily__c ? "Ocultar Subfamilia" : "Mostrar Subfamilia" },
@@ -202,6 +205,13 @@ export default class LwcQuoteTable extends LightningElement {
             const dimensions = updatedRow.Dimensions__c ? ' ' + d : '';
 
             data[index].Description__c = lineProduct.Description__c + brand + family + subfamily + unit + material + dimensions;
+            if(action.name === 'Old_Code__c' && data[index][action.name]){
+                this.dispatchEvent( new ShowToastEvent({
+                    title: '',
+                    message: 'El código anterior se mostrará únicamente en el PDF.',
+                    variant: 'warning'
+                }));
+            }
         }
         this.data = data;
         this.updateTotal();
@@ -250,6 +260,7 @@ export default class LwcQuoteTable extends LightningElement {
             Unit__c: false,
             Material__c: false,
             Dimensions__c: false,
+            Old_Code__c: false
         });
         this.lineProducts = lineProducts;
         return data;

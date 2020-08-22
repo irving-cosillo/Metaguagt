@@ -78,6 +78,10 @@
                 <behavior>Edit</behavior>
                 <field>Dimensions__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Old_Code__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns/>
         <style>TwoColumnsTopToBottom</style>
