@@ -1,9 +1,9 @@
-trigger TriggerProductPrice on Product_Price__c (after insert, after update, after delete) {
+trigger TriggerProductPrice on Product_Price__c (after insert, before update, after delete) {
     if (Trigger.isDelete){
-        ClassTrigger.updateProductStock(Trigger.old, true);
+        ClassTrigger.deletePrices(Trigger.old);
     } else if (Trigger.isInsert){
-        ClassTrigger.updateProductStock(Trigger.new, true);
-    } else {
-        ClassTrigger.updateProductStock(Trigger.new, false);
+        ClassTrigger.addProductStock(Trigger.new);
+    } else if (Trigger.isBefore && Trigger.isUpdate) {
+        ClassTrigger.updateProductStock(Trigger.old);
     }
 }
