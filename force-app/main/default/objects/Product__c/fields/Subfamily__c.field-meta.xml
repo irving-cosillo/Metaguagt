@@ -56,6 +56,26 @@
             <valueName>Modelo 71830</valueName>
         </valueSettings>
         <valueSettings>
+            <controllingFieldValue>Calzado Industrial</controllingFieldValue>
+            <valueName>Modelo 71831</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Calzado Industrial</controllingFieldValue>
+            <valueName>Modelo 71832</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Calzado Industrial</controllingFieldValue>
+            <valueName>Modelo 71833</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Calzado Industrial</controllingFieldValue>
+            <valueName>Modelo 71834</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Calzado Industrial</controllingFieldValue>
+            <valueName>Modelo 71835</valueName>
+        </valueSettings>
+        <valueSettings>
             <controllingFieldValue>Sellos Hidráulicos</controllingFieldValue>
             <valueName>Espirometálico tipo CG</valueName>
         </valueSettings>
@@ -90,6 +110,10 @@
         <valueSettings>
             <controllingFieldValue>Cadena Industrial</controllingFieldValue>
             <valueName>Tipo 3RC</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Sprocket Industrial</controllingFieldValue>
+            <valueName>Tipo B</valueName>
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Herramienta de Corte</controllingFieldValue>
@@ -183,6 +207,46 @@
         <valueSettings>
             <controllingFieldValue>Soldadura</controllingFieldValue>
             <valueName>Robot</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lámina</controllingFieldValue>
+            <valueName>SF2401</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lámina</controllingFieldValue>
+            <valueName>SF2420</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lámina</controllingFieldValue>
+            <valueName>SF5000</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lámina</controllingFieldValue>
+            <valueName>Sigma 500</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lámina</controllingFieldValue>
+            <valueName>Sigma 511</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lámina</controllingFieldValue>
+            <valueName>Sigma 533</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lámina</controllingFieldValue>
+            <valueName>Flexicarb</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lámina</controllingFieldValue>
+            <valueName>SF815</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lámina</controllingFieldValue>
+            <valueName>SF3100</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Lámina</controllingFieldValue>
+            <valueName>SF3300</valueName>
         </valueSettings>
     </valueSet>
 </CustomField>

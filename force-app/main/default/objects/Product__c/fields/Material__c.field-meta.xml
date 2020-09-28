@@ -13,17 +13,27 @@
         <valueSetName>Material</valueSetName>
         <valueSettings>
             <controllingFieldValue>Buril</controllingFieldValue>
+            <controllingFieldValue>Buril de Tungsteno</controllingFieldValue>
             <valueName>Tungsteno</valueName>
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Buril</controllingFieldValue>
+            <controllingFieldValue>Buril de Cobalto</controllingFieldValue>
             <valueName>Cobalto</valueName>
         </valueSettings>
         <valueSettings>
+            <controllingFieldValue>Tipo Domo</controllingFieldValue>
+            <controllingFieldValue>Tipo Oval</controllingFieldValue>
+            <controllingFieldValue>Tipo B</controllingFieldValue>
             <controllingFieldValue>Espirometálico tipo CG</controllingFieldValue>
+            <controllingFieldValue>Espirometálico tipo CGI</controllingFieldValue>
             <valueName>Acero 304</valueName>
         </valueSettings>
         <valueSettings>
+            <controllingFieldValue>Tipo Domo</controllingFieldValue>
+            <controllingFieldValue>Tipo Oval</controllingFieldValue>
+            <controllingFieldValue>Tipo B</controllingFieldValue>
+            <controllingFieldValue>Espirometálico tipo CG</controllingFieldValue>
             <controllingFieldValue>Espirometálico tipo CGI</controllingFieldValue>
             <valueName>Acero 316</valueName>
         </valueSettings>

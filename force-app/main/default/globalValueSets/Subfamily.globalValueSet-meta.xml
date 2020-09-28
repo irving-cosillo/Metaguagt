@@ -240,6 +240,61 @@
         <default>false</default>
         <label>Varios</label>
     </customValue>
+    <customValue>
+        <fullName>Tipo B</fullName>
+        <default>false</default>
+        <label>Tipo B</label>
+    </customValue>
+    <customValue>
+        <fullName>SF2401</fullName>
+        <default>false</default>
+        <label>SF2401</label>
+    </customValue>
+    <customValue>
+        <fullName>SF2420</fullName>
+        <default>false</default>
+        <label>SF2420</label>
+    </customValue>
+    <customValue>
+        <fullName>SF5000</fullName>
+        <default>false</default>
+        <label>SF5000</label>
+    </customValue>
+    <customValue>
+        <fullName>Sigma 500</fullName>
+        <default>false</default>
+        <label>Sigma 500</label>
+    </customValue>
+    <customValue>
+        <fullName>Sigma 511</fullName>
+        <default>false</default>
+        <label>Sigma 511</label>
+    </customValue>
+    <customValue>
+        <fullName>Sigma 533</fullName>
+        <default>false</default>
+        <label>Sigma 533</label>
+    </customValue>
+    <customValue>
+        <fullName>Flexicarb</fullName>
+        <default>false</default>
+        <label>Flexicarb</label>
+    </customValue>
+    <customValue>
+        <fullName>SF815</fullName>
+        <default>false</default>
+        <label>SF815</label>
+    </customValue>
+    <customValue>
+        <fullName>SF3100</fullName>
+        <default>false</default>
+        <label>SF3100</label>
+    </customValue>
+    <customValue>
+        <fullName>SF3300</fullName>
+        <default>false</default>
+        <label>SF3300</label>
+    </customValue>
     <masterLabel>Subfamilia</masterLabel>
     <sorted>false</sorted>
 </GlobalValueSet>

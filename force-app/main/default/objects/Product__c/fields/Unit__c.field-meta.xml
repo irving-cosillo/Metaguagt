@@ -12,26 +12,6 @@
         <restricted>true</restricted>
         <valueSetName>unit</valueSetName>
         <valueSettings>
-            <controllingFieldValue>Modelo 71826</controllingFieldValue>
-            <controllingFieldValue>Modelo 71827</controllingFieldValue>
-            <controllingFieldValue>Modelo 71828</controllingFieldValue>
-            <controllingFieldValue>Modelo 71829</controllingFieldValue>
-            <controllingFieldValue>Modelo 71830</controllingFieldValue>
-            <controllingFieldValue>Modelo 71831</controllingFieldValue>
-            <controllingFieldValue>Modelo 71832</controllingFieldValue>
-            <controllingFieldValue>Modelo 71833</controllingFieldValue>
-            <controllingFieldValue>Modelo 71834</controllingFieldValue>
-            <controllingFieldValue>Modelo 71835</controllingFieldValue>
-            <controllingFieldValue>Varios</controllingFieldValue>
-            <controllingFieldValue>Modelo 71820</controllingFieldValue>
-            <controllingFieldValue>Modelo 71821</controllingFieldValue>
-            <controllingFieldValue>Modelo 71822</controllingFieldValue>
-            <controllingFieldValue>Modelo 71823</controllingFieldValue>
-            <controllingFieldValue>Modelo 71824</controllingFieldValue>
-            <controllingFieldValue>Modelo 71825</controllingFieldValue>
-            <valueName>Par</valueName>
-        </valueSettings>
-        <valueSettings>
             <controllingFieldValue>JCI</controllingFieldValue>
             <controllingFieldValue>JDS</controllingFieldValue>
             <controllingFieldValue>Varios</controllingFieldValue>
@@ -51,25 +31,56 @@
             <controllingFieldValue>Broca</controllingFieldValue>
             <controllingFieldValue>Buril</controllingFieldValue>
             <controllingFieldValue>Tipo Domo</controllingFieldValue>
-            <controllingFieldValue>Buril de Tungsteno</controllingFieldValue>
             <controllingFieldValue>Varios</controllingFieldValue>
             <controllingFieldValue>Tipo Oval</controllingFieldValue>
-            <controllingFieldValue>Buril de Cobalto</controllingFieldValue>
+            <controllingFieldValue>Sigma 533</controllingFieldValue>
             <controllingFieldValue>Tipo Empaque</controllingFieldValue>
-            <controllingFieldValue>Rodos</controllingFieldValue>
+            <controllingFieldValue>Flexicarb</controllingFieldValue>
             <controllingFieldValue>Estopa</controllingFieldValue>
-            <controllingFieldValue>Pines</controllingFieldValue>
+            <controllingFieldValue>SF815</controllingFieldValue>
             <controllingFieldValue>Regalo para cliente</controllingFieldValue>
-            <controllingFieldValue>Bujes</controllingFieldValue>
+            <controllingFieldValue>SF3100</controllingFieldValue>
             <controllingFieldValue>Catálogo</controllingFieldValue>
+            <controllingFieldValue>SF3300</controllingFieldValue>
+            <controllingFieldValue>Tipo B</controllingFieldValue>
+            <controllingFieldValue>SF2401</controllingFieldValue>
+            <controllingFieldValue>SF2420</controllingFieldValue>
+            <controllingFieldValue>SF5000</controllingFieldValue>
+            <controllingFieldValue>Sigma 500</controllingFieldValue>
+            <controllingFieldValue>Sigma 511</controllingFieldValue>
+            <controllingFieldValue>Espirometálico tipo CG</controllingFieldValue>
+            <controllingFieldValue>Espirometálico tipo CGI</controllingFieldValue>
+            <controllingFieldValue>Buril de Tungsteno</controllingFieldValue>
+            <controllingFieldValue>Buril de Cobalto</controllingFieldValue>
+            <controllingFieldValue>Rodos</controllingFieldValue>
+            <controllingFieldValue>Pines</controllingFieldValue>
+            <controllingFieldValue>Bujes</controllingFieldValue>
             <controllingFieldValue>Contrapines</controllingFieldValue>
             <controllingFieldValue>Tablillas</controllingFieldValue>
             <controllingFieldValue>Laterales</controllingFieldValue>
-            <controllingFieldValue>Espirometálico tipo CG</controllingFieldValue>
-            <controllingFieldValue>Espirometálico tipo CGI</controllingFieldValue>
             <controllingFieldValue>Perno</controllingFieldValue>
             <controllingFieldValue>Contraperno</controllingFieldValue>
             <valueName>Unidad</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Varios</controllingFieldValue>
+            <controllingFieldValue>Modelo 71820</controllingFieldValue>
+            <controllingFieldValue>Modelo 71821</controllingFieldValue>
+            <controllingFieldValue>Modelo 71822</controllingFieldValue>
+            <controllingFieldValue>Modelo 71823</controllingFieldValue>
+            <controllingFieldValue>Modelo 71824</controllingFieldValue>
+            <controllingFieldValue>Modelo 71825</controllingFieldValue>
+            <controllingFieldValue>Modelo 71826</controllingFieldValue>
+            <controllingFieldValue>Modelo 71827</controllingFieldValue>
+            <controllingFieldValue>Modelo 71828</controllingFieldValue>
+            <controllingFieldValue>Modelo 71829</controllingFieldValue>
+            <controllingFieldValue>Modelo 71830</controllingFieldValue>
+            <controllingFieldValue>Modelo 71831</controllingFieldValue>
+            <controllingFieldValue>Modelo 71832</controllingFieldValue>
+            <controllingFieldValue>Modelo 71833</controllingFieldValue>
+            <controllingFieldValue>Modelo 71834</controllingFieldValue>
+            <controllingFieldValue>Modelo 71835</controllingFieldValue>
+            <valueName>Par</valueName>
         </valueSettings>
         <valueSettings>
             <controllingFieldValue>Varios</controllingFieldValue>

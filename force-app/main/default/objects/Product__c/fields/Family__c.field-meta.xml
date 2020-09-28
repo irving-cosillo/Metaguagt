@@ -44,6 +44,10 @@
             <valueName>Promocional</valueName>
         </valueSettings>
         <valueSettings>
+            <controllingFieldValue>Flexitallic</controllingFieldValue>
+            <valueName>Lámina</valueName>
+        </valueSettings>
+        <valueSettings>
             <controllingFieldValue>Workland</controllingFieldValue>
             <valueName>Calzado Industrial</valueName>
         </valueSettings>
@@ -54,6 +58,10 @@
         <valueSettings>
             <controllingFieldValue>Kana</controllingFieldValue>
             <valueName>Cadena Industrial</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Kana</controllingFieldValue>
+            <valueName>Sprocket Industrial</valueName>
         </valueSettings>
     </valueSet>
 </CustomField>

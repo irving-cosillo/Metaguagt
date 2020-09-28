@@ -40,6 +40,16 @@
         <default>false</default>
         <label>Herramienta Manual</label>
     </customValue>
+    <customValue>
+        <fullName>Sprocket Industrial</fullName>
+        <default>false</default>
+        <label>Sprocket Industrial</label>
+    </customValue>
+    <customValue>
+        <fullName>Lámina</fullName>
+        <default>false</default>
+        <label>Lámina</label>
+    </customValue>
     <masterLabel>Familia</masterLabel>
     <sorted>false</sorted>
 </GlobalValueSet>
