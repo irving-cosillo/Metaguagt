@@ -92,7 +92,7 @@
                     </tr>
                     <tr>
                         <td>Dirección:</td>
-                        <td>22 Avenida 11-00 Zona 15 Vista Hermosa III</td>
+                        <td>{!account.BillingStreet}</td>
                         <td>Fecha:</td>
                         <td>{!todaysDate}</td>
                     </tr>

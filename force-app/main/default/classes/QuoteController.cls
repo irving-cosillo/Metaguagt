@@ -9,7 +9,7 @@ public with sharing class QuoteController {
 
     public QuoteController(ApexPages.StandardController stdController) {
         Id quoteId = stdController.getRecord().Id;
-        quote = [
+        quote = !Schema.sObjectType.Quote__c.isQueryable() ? null : [
             SELECT
                 Id,
                 Name,
@@ -31,10 +31,14 @@ public with sharing class QuoteController {
             LIMIT 1
         ];
 
-        account = [
+        account = !Schema.sObjectType.Account.isQueryable() ? null : [
             SELECT
                 Name,
-                ShippingAddress,
+                BillingStreet,
+                BillingPostalCode,
+                BillingCity,
+                BillingState,
+                BillingCountry,
                 Phone,
                 NIT__c
             FROM Account
@@ -42,9 +46,14 @@ public with sharing class QuoteController {
             LIMIT 1
         ];
 
-        contact = [SELECT Name FROM Contact WHERE Id =: quote.Contact__c LIMIT 1];
+        contact = !Schema.sObjectType.Contact.isQueryable() ? null : [
+            SELECT Name
+            FROM Contact
+            WHERE Id =: quote.Contact__c
+            LIMIT 1
+        ];
 
-        fatherLines = [
+        fatherLines = !Schema.sObjectType.Quote_Line__c.isQueryable() ? null : [
             SELECT
                 Name,
                 Old_Code__c,
@@ -65,7 +74,7 @@ public with sharing class QuoteController {
             ORDER BY Index__c ASC
         ];
 
-        childLines = [
+        childLines = !Schema.sObjectType.Quote_Line__c.isQueryable() ? null : [
             SELECT
                 Name,
                 Delivery_Time__c,
@@ -83,7 +92,7 @@ public with sharing class QuoteController {
             ORDER BY Index__c ASC
         ];
 
-        company = [
+        company = !Schema.sObjectType.Company_Information__mdt.isQueryable() ? null : [
             SELECT
                 Legal_Name__c,
                 Phone__c,
