@@ -2,15 +2,18 @@ import { LightningElement, api } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getPurchaseOrderInfo from '@salesforce/apex/ClassInvoice.getPurchaseOrderInfo';
 import createInvoice from '@salesforce/apex/ClassInvoice.createInvoice';
+import OrderNumber from '@salesforce/schema/Order.OrderNumber';
 
 export default class LwcInvoice extends LightningElement {
     @api recordId;
 
     quoteId;
     accountId;
+    accountNIT;
     Is_EInvoice__c = true;
     isCambiaria = false;
     isVariableAmount = false;
+    info;
 
     invoice = {
         Purchase_Order__c : null,
@@ -50,9 +53,12 @@ export default class LwcInvoice extends LightningElement {
                     this.dispatchOrderOptions = !info.dispatchOrders ? [] : info.dispatchOrders.map( dispatchOrder => {
                         return { label : dispatchOrder.Name , value : dispatchOrder.Id };
                     });
+                    this.info = info;
+                    this.invoice.Currency_Code__c = info.purchaseOrder.Currency_Code__c;
                     this.invoice.Email__c = info.companyEmail;
                     this.quoteId = info.quote.Id;
                     this.accountId = info.purchaseOrder.Account__c;
+                    this.accountNIT = info.purchaseOrder.Account__r.NIT__c;
                 });
             }
         }
@@ -90,13 +96,16 @@ export default class LwcInvoice extends LightningElement {
     }
 
     @api save(){
-        let invoiceToSend = {...this.invoice};
-        invoiceToSend.Dispatch_Orders__c = this.stringify(invoiceToSend.Dispatch_Orders__c);
-        invoiceToSend.Partial_Payments__c = this.stringify(invoiceToSend.Partial_Payments__c);
-        invoiceToSend.Date__c = new Date(invoiceToSend.Date__c);
-        invoiceToSend.Is_EInvoice__c = invoiceToSend.Is_EInvoice__c === "Si";
+        const nit = this.accountNIT;
+        let invoice = {...this.invoice};
+        invoice.Dispatch_Orders__c = this.stringify(invoice.Dispatch_Orders__c);
+        invoice.Partial_Payments__c = this.stringify(invoice.Partial_Payments__c);
+        invoice.Date__c = new Date(invoice.Date__c);
+        invoice.Is_EInvoice__c = invoice.Is_EInvoice__c === "Si";
         if (!this.isInvalid()){
-            createInvoice({invoice : invoiceToSend}).then( () => {
+            const xml = this.generateXML();
+            createInvoice({invoice, nit, xml}).then( Id => {
+                console.log('Invoice Id: ', Id);
                 this.dispatchEvent(new ShowToastEvent({
                     title: '',
                     message: 'Factura generada con éxito.',
@@ -147,6 +156,7 @@ export default class LwcInvoice extends LightningElement {
         }
         if (result){
             this.dispatchError(result);
+            console.error(result);
             return true;
         } else {
             return false;
@@ -180,5 +190,101 @@ export default class LwcInvoice extends LightningElement {
                 (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))
             ).toString(16)
         );
+    }
+
+    //----------------------------------- XML Generation -----------------------------------------
+
+    generateXML(){
+        const invoice = {...this.invoice};
+        const info = {... this.info};
+
+        let type = '';
+        if ( invoice.Type__c === 'Estandard' ) {
+            type = 'FACT'
+        } else if ( invoice.Type__c === 'Cambiaria' ) {
+            type = 'FACM'
+        }
+
+        const dispatchOrderAdenda = invoice.Dispatch_Orders__c && this.dispatchOrderOptions ?
+            invoice.Dispatch_Orders__c.map(order => {
+                return this.dispatchOrderOptions.find(item => item.value === order).label
+            }).join(", ") : '';
+        const contado = info.quote.Credit__c ? '' : 'x';
+        const credito = info.quote.Credit__c ? 'x' : '';;
+        let xml =
+        `
+            <dte:GTDocumento xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:dte="http://www.sat.gob.gt/dte/fel/0.2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="0.1" xsi:schemaLocation="http://www.sat.gob.gt/dte/fel/0.2.0">
+            <dte:SAT ClaseDocumento="dte">
+            <dte:DTE ID="DatosCertificados">
+                <dte:DatosEmision ID="DatosEmision">
+                <dte:DatosGenerales CodigoMoneda="${invoice.Currency_Code__c}" FechaHoraEmision="${invoice.Date__c}" Tipo="${type}"></dte:DatosGenerales>
+                <dte:Emisor AfiliacionIVA="GEN" CodigoEstablecimiento="1" CorreoEmisor="demo@demo.com.gt" NITEmisor="${info.companyNIT}" NombreComercial="${info.companyName}" NombreEmisor="${info.companyLegalName}">
+                    <dte:DireccionEmisor>
+                    <dte:Direccion>${info.companyAddress}</dte:Direccion>
+                    <dte:CodigoPostal>01001</dte:CodigoPostal>
+                    <dte:Municipio>GUATEMALA</dte:Municipio>
+                    <dte:Departamento>GUATEMALA</dte:Departamento>
+                    <dte:Pais>GT</dte:Pais>
+                    </dte:DireccionEmisor>
+                </dte:Emisor>
+                <dte:Receptor CorreoReceptor="${info.companyEmail}" IDReceptor="${this.accountNIT}" NombreReceptor="{nombreReceptor}">
+                    <dte:DireccionReceptor>
+                    <dte:Direccion>{direccionReceptor}</dte:Direccion>
+                    <dte:CodigoPostal></dte:CodigoPostal>
+                    <dte:Municipio></dte:Municipio>
+                    <dte:Departamento></dte:Departamento>
+                    <dte:Pais></dte:Pais>
+                    </dte:DireccionReceptor>
+                </dte:Receptor>
+                <dte:Frases>
+                    <dte:Frase CodigoEscenario="1" TipoFrase="1"></dte:Frase>
+                    <dte:Frase CodigoEscenario="1" TipoFrase="2"></dte:Frase>
+                </dte:Frases>
+                <dte:Items>
+                    {items}
+                </dte:Items>
+                <dte:Totales>
+                    <dte:TotalImpuestos>
+                    <dte:TotalImpuesto NombreCorto="IVA" TotalMontoImpuesto="{iva}"></dte:TotalImpuesto>
+                    </dte:TotalImpuestos>
+                    <dte:GranTotal>{total}</dte:GranTotal>
+                </dte:Totales>
+        `;
+
+        if (type === 'FACM' && invoice.Partial_Payments__c && invoice.Partial_Payments__c.length){
+            xml += '<dte:Complementos>';
+            invoice.Partial_Payments__c.forEach(payment => {
+                xml +=
+                `
+                    <dte:Complemento IDComplemento="Cambiaria" NombreComplemento="Cambiaria" URIComplemento="http://www.sat.gob.gt/fel/cambiaria.xsd">
+                    <cfc:AbonosFacturaCambiaria xmlns:cfc="http://www.sat.gob.gt/dte/fel/CompCambiaria/0.1.0" Version="1" xsi:schemaLocation="http://www.sat.gob.gt/dte/fel/CompCambiaria/0.1.0 C:\Users\Desktop\SAT_FEL_FINAL_V1\Esquemas\GT_Complemento_Cambiaria-0.1.0.xsd">
+                        <cfc:Abono>
+                        <cfc:NumeroAbono>${payment.paymentName}</cfc:NumeroAbono>
+                        <cfc:FechaVencimiento>${payment.paymentDate}</cfc:FechaVencimiento>
+                        <cfc:MontoAbono>${payment.paymentAmount}</cfc:MontoAbono>
+                        </cfc:Abono>
+                    </cfc:AbonosFacturaCambiaria>
+                    </dte:Complemento>
+                `;
+            });
+            xml += '</dte:Complementos>';
+        }
+
+        xml +=
+        `
+                </dte:DatosEmision>
+            </dte:DTE>
+            <dte:Adenda>
+                <Vendedor>${info.purchaseOrder.Quote__r.Sales_User__c}</Vendedor>
+                <OrdenDeCompra>${info.purchaseOrder.Order_Id__c}</OrdenDeCompra>
+                <OrdenDeEnvio>${dispatchOrderAdenda}</OrdenDeEnvio>
+                <Contado>${contado}</Contado>
+                <Credito><${credito}/Credito>
+            </dte:Adenda>
+            </dte:SAT>
+        </dte:GTDocumento>
+        `;
+
+        return xml;
     }
 }
