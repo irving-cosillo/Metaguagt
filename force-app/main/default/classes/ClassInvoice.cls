@@ -1,6 +1,65 @@
+//Do http request, using http://wsdl2apex.fuseit.com/ for generate the apex classes and test classes from the wsdl url
+    
 public with sharing class ClassInvoice {
+
+    public class EntityInvoiceWrapper {
+        @AuraEnabled
+        public String xmlEncoded;
+        @AuraEnabled
+        public Invoice__c invoice;
+        @AuraEnabled
+        public Purchase_Order__c purchaseOrder;
+        @AuraEnabled
+        public List<Dispatch_Order__c> dispatchOrders;
+    }
+
+    public class EntityInvoiceLine{
+        public String code {get; set;}
+        public String productId {get; set;}
+        public String description {get; set;}
+        public Double quantity {get; set;}
+        public Double price {get; set;}
+    }
+
+    public class EntityInvoice {
+        @AuraEnabled
+        public Quote__c quote {get; set;}
+        @AuraEnabled
+        public Purchase_Order__c purchaseOrder {get; set;}
+        @AuraEnabled
+        public List<Dispatch_Order__c> dispatchOrders {get; set;}
+        @AuraEnabled
+        public List<Dispatch_Order_Line__c> dispatchOrderLines {get; set;}
+        @AuraEnabled
+        public Company_Information__mdt companyInfo {get; set;}
+    }
+
+    public class EntityLegalInformation {
+        @AuraEnabled
+        public String legalName;
+        @AuraEnabled
+        public String legalAddress;
+    }
+
+    public class EntitySignInvoiceResponse {
+        @AuraEnabled
+        public Boolean resultado;
+        @AuraEnabled
+        public String descripcion;
+        @AuraEnabled
+        public string archivo;
+    }
+
+    public class EntityCanelInvoiceInformation {
+        @AuraEnabled
+        public Invoice__c invoice {get; set;}
+        @AuraEnabled
+        public Company_Information__mdt companyInfo {get; set;}
+    }
+
+
     @AuraEnabled
-    public static ClassInvoice.EntityInvoice getPurchaseOrderInfo(String purchaseOrderId){
+    public static EntityInvoice getPurchaseOrderInfo(String purchaseOrderId){
         List<Purchase_Order__c> purchaseOrderList = [
             SELECT
                 Order_Id__c,
@@ -40,38 +99,93 @@ public with sharing class ClassInvoice {
             FROM Dispatch_Order_Line__c
             WHERE Dispatch_Order__c IN  :dispatchOrdersId
         ];
-        Company_Information__mdt company = [
+
+        Company_Information__mdt companyInfo = [
             SELECT
                 Label,
                 Legal_Name__c,
                 NIT__c,
                 Address__c,
-                Invoice_Email__c
+                Invoice_Email__c,
+                Infile_User__c,
+                Infile_NIT__c,
+                Infile_Sign_Key__c,
+                Infile_Sign_Endpoint__c,
+                Infile_Certification_Key__c,
+                Infile_Certification_Endpoint__c,
+                Infile_Anulation_Endpoint__c,
+                Infile_NIT_Endpoint__c
             FROM Company_Information__mdt
             LIMIT 1
         ];
 
-        ClassInvoice.EntityInvoice invoice = new ClassInvoice.EntityInvoice();
+        EntityInvoice invoice = new EntityInvoice();
         invoice.quote = quote;
         invoice.purchaseOrder = purchaseOrder;
         invoice.dispatchOrders = dispatchOrders;
         invoice.dispatchOrderLines = dispatchOrderLines;
+        invoice.companyInfo = companyInfo;
 
-        invoice.companyName = company.Label;
-        invoice.companyLegalName = company.Legal_Name__c;
-        invoice.companyNIT = company.NIT__c;
-        invoice.companyEmail = company.Invoice_Email__c;
-        invoice.companyAddress = company.Address__c;
         return invoice;
     }
 
     @AuraEnabled
-    public static String createInvoice(Invoice__c invoice, String nit, String xml){
+    public static EntityLegalInformation getClientLegalInformation(String nit, Company_Information__mdt companyInfo){
+        String xml = '';
+        xml += '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://services.ws.ingface.com/">';
+        xml += '<soapenv:Header/>';
+        xml += '<soapenv:Body>';
+        xml += '   <ser:nitContribuyentes>';
+        xml += '      <usuario>CONSUMO_NIT</usuario>';
+        xml += '      <clave>58B45D8740C791420C53A49FFC924A1B58B45D8740C791420C53A49FFC924A1B</clave>';
+        xml += '      <nit>' + nit + '</nit>';
+        xml += '   </ser:nitContribuyentes>';
+        xml += '</soapenv:Body>';
+        xml += '</soapenv:Envelope>';
+
+        Http http = new Http();
+        HttpRequest request = new HttpRequest();
+
+        request.setEndpoint(companyInfo.Infile_NIT_Endpoint__c);
+        request.setMethod('POST');
+        request.setHeader('Content-Type', 'text/xml; charset=character encoding');
+        request.setBody(xml);
+
+        if(Test.isRunningTest()){
+            EntityLegalInformation legalInfo = new EntityLegalInformation();
+            legalInfo.legalName = 'Test Legal Name';
+            legalInfo.legalAddress = 'Test Legal Address';
+            return legalInfo;
+        }
+
+        HttpResponse response = http.send(request);
+        String bodyResponse = response.getBody();
+        
+        Integer addressStartIndex = bodyResponse.indexOf('<direccion_completa>') + 20;
+        Integer addressEndIndex = bodyResponse.indexOf('</direccion_completa>');
+        String legalAddress = bodyResponse.substring(addressStartIndex, addressEndIndex);
+
+        Integer nameStartIndex = bodyResponse.indexOf('<nombre>') + 8;
+        Integer nameEndIndex = bodyResponse.indexOf('</nombre>');
+        List<String> legalNameArr = bodyResponse.substring(nameStartIndex, nameEndIndex).split(',');
+        String legalName = String.format('{3} {4} {0} {1}', legalNameArr);
+
+        EntityLegalInformation legalInfo = new EntityLegalInformation();
+        legalInfo.legalName = legalName;
+        legalInfo.legalAddress = legalAddress;
+
+        return legalInfo;
+    }
+
+    @AuraEnabled
+    public static EntityInvoiceWrapper getInvoiceWrapper(Invoice__c invoice, String xml){
+        
         Purchase_Order__c purchaseOrder = [
             SELECT
                 Id,
                 Currency_Code__c,
                 Invoice_Status__c,
+                Billed_Amount__c,
                 Total__c
             FROM Purchase_Order__c
             WHERE Id =: invoice.Purchase_Order__c
@@ -87,19 +201,22 @@ public with sharing class ClassInvoice {
                 FROM Dispatch_Order__c
                 WHERE Id IN : dispatchOrdersId
             ];
+
             List<Dispatch_Order_Line__c> dispatchOrderLines = [
                 SELECT Id, Quantity__c, Purchase_Order_Line__c, Purchase_Order_Line__r.Quote_Line__r.Product__c
                 FROM Dispatch_Order_Line__c
                 WHERE Dispatch_Order__c IN : dispatchOrders
             ];
-            Map<String,InvoiceLine> invoiceDescriptionMap = new Map<String,InvoiceLine>();
-            InvoiceLine line;
+
+            Map<String,EntityInvoiceLine> invoiceDescriptionMap = new Map<String,EntityInvoiceLine>();
+            EntityInvoiceLine line;
             String productId ;
+
             //Repeated lines sum their quantities
             for (Dispatch_Order_Line__c dispatchOrderLine : dispatchOrderLines){
                 productId = dispatchOrderLine.Purchase_Order_Line__r.Quote_Line__r.Product__c;
                 if (invoiceDescriptionMap.get(productId) == null) {
-                    line = new InvoiceLine();
+                    line = new EntityInvoiceLine();
                     line.productId = productId;
                     line.quantity = dispatchOrderLine.Quantity__c;
                     invoiceDescriptionMap.put(productId, line);
@@ -133,51 +250,24 @@ public with sharing class ClassInvoice {
             }
             invoice.Description__c +=  'Total: ' + purchaseOrder.Currency_Code__c + amount;
             invoice.Amount__c = amount;
-
         } else {
             items += generateItem(invoice.Description__c, 1, '', (Double) invoice.Amount__c);
         }
 
-        List<String> accountInfo = getLegalAddress(nit);
         xml = xml.replace('{total}', String.valueOf(invoice.Amount__c.setScale(2)));
         xml = xml.replace('{iva}', String.valueOf((invoice.Amount__c - invoice.Amount__c / 1.12).setScale(2)));
         xml = xml.replace('{items}', items);
-        xml = xml.replace('{nombreReceptor}', accountInfo[0]);
-        xml = xml.replace('{direccionReceptor}', accountInfo[1]);
-
-        //call service and response Id should be inserted in the invoice object
-        insert invoice;
-
-        if (dispatchOrders.size() > 0) {
-            for(Dispatch_Order__c dispatchOrder : dispatchOrders){
-                dispatchOrder.Invoice__c = invoice.Id;
-            }
-            update dispatchOrders;
-        }
-
-        List<Invoice__c> invoices = [SELECT Amount__c FROM Invoice__c WHERE Purchase_Order__c =: purchaseOrder.Id];
-        Double paidAmount = 0;
-        for (Invoice__c paidInvoice : invoices){
-            paidAmount += paidInvoice.Amount__c;
-        }
-
-        if (paidAmount <= 0){
-            purchaseOrder.Invoice_Status__c = 'Pendiente';
-        } else if (paidAmount < purchaseOrder.Total__c){
-            purchaseOrder.Invoice_Status__c = 'Parcialmente';
-        } else if (paidAmount == purchaseOrder.Total__c){
-            purchaseOrder.Invoice_Status__c = 'Completado';
-        } else {
-            throw new AuraHandledException('El monto excede el total de la orden de compra.');
-        }
-        update purchaseOrder;
 
         Blob xmlBlob = Blob.valueOf(xml);
         String xmlEncoded = EncodingUtil.base64Encode(xmlBlob);
 
-        sendInvoice(xmlEncoded);
-        //return invoice.Id;
-        return xml;
+        EntityInvoiceWrapper wrapper = new EntityInvoiceWrapper();
+        wrapper.xmlEncoded = xmlEncoded;
+        wrapper.invoice = invoice;
+        wrapper.purchaseOrder = purchaseOrder;
+        wrapper.dispatchOrders = dispatchOrders;
+
+        return wrapper;
     }
 
     private static String generateItem(String name, Double quantity, String unit, Double unitPrice){
@@ -186,133 +276,220 @@ public with sharing class ClassInvoice {
         Double priceWithoutIva = (totalPrice - iva * 1.0).setScale(2);
         unitPrice = (unitPrice * 1.0).setScale(2);
 
+        String margin = '                    ';
         String item = '';
         item += '<dte:Item BienOServicio="B" NumeroLinea="1">\r\n';
-        item += '<dte:Cantidad>' + quantity + '</dte:Cantidad>\r\n';
-        item += '<dte:UnidadMedida>' + unit + '</dte:UnidadMedida>\r\n';
-        item += '<dte:Descripcion>' + name + '</dte:Descripcion>\r\n';
-        item += '<dte:PrecioUnitario>' + unitPrice + '</dte:PrecioUnitario>\r\n';
-        item += '<dte:Precio>' + unitPrice + '</dte:Precio>\r\n';
-        item += '<dte:Descuento>0.00</dte:Descuento>\r\n';
-        item += '<dte:Impuestos>\r\n';
-        item += '    <dte:Impuesto>\r\n';
-        item += '    <dte:NombreCorto>IVA</dte:NombreCorto>\r\n';
-        item += '    <dte:CodigoUnidadGravable>1</dte:CodigoUnidadGravable>\r\n';
-        item += '    <dte:MontoGravable>' + iva + '</dte:MontoGravable>\r\n';
-        item += '    <dte:MontoImpuesto>' + priceWithoutIva + '</dte:MontoImpuesto>\r\n';
-        item += '    </dte:Impuesto>\r\n';
-        item += '</dte:Impuestos>\r\n';
-        item += '<dte:Total>' + totalPrice + '</dte:Total>\r\n';
-        item += '</dte:Item>\r\n';
+        item += margin + '    <dte:Cantidad>' + quantity + '</dte:Cantidad>\r\n';
+        item += margin + '    <dte:UnidadMedida>UND</dte:UnidadMedida>\r\n';
+        item += margin + '    <dte:Descripcion>' + name + '</dte:Descripcion>\r\n';
+        item += margin + '    <dte:PrecioUnitario>' + unitPrice + '</dte:PrecioUnitario>\r\n';
+        item += margin + '    <dte:Precio>' + unitPrice + '</dte:Precio>\r\n';
+        item += margin + '    <dte:Descuento>0.00</dte:Descuento>\r\n';
+        item += margin + '    <dte:Impuestos>\r\n';
+        item += margin + '        <dte:Impuesto>\r\n';
+        item += margin + '            <dte:NombreCorto>IVA</dte:NombreCorto>\r\n';
+        item += margin + '            <dte:CodigoUnidadGravable>1</dte:CodigoUnidadGravable>\r\n';
+        item += margin + '            <dte:MontoGravable>' + priceWithoutIva + '</dte:MontoGravable>\r\n';
+        item += margin + '            <dte:MontoImpuesto>' + iva + '</dte:MontoImpuesto>\r\n';
+        item += margin + '            </dte:Impuesto>\r\n';
+        item += margin + '    </dte:Impuestos>\r\n';
+        item += margin + '    <dte:Total>' + totalPrice + '</dte:Total>\r\n';
+        item += margin + '</dte:Item>\r\n';
 
         return item;
     }
 
-    private static String sendInvoice(String xmlEncoded){
-        Company_Information__mdt company = [
+    @AuraEnabled
+    public static EntitySignInvoiceResponse signInvoice(String xmlEncoded, Company_Information__mdt companyInfo, Boolean isAnulation ){
+        Http http = new Http();
+        HttpRequest request = new HttpRequest();
+
+        String isAnulationStr = isAnulation ? 'S' : 'N';
+        String json = '';
+        json += '{';
+        json += '   "llave":"' + companyInfo.Infile_Sign_Key__c + '",';
+        json += '   "archivo":"' + xmlEncoded + '",';
+        json += '   "codigo":"0",';
+        json += '   "alias":"' + companyInfo.Infile_User__c + '",';
+        json += '   "es_anulacion":"' + isAnulationStr + '"';
+        json += '}';
+
+        request.setEndpoint(companyInfo.Infile_Sign_Endpoint__c);
+        request.setMethod('POST');
+        request.setHeader('Content-Type', 'application/json');
+        request.setBody(json);
+
+        if(Test.isRunningTest()){
+            EntitySignInvoiceResponse response = new EntitySignInvoiceResponse();
+            response.resultado = true;
+            return response;
+        }
+
+        try {
+            HttpResponse response = http.send(request);
+            String bodyResponse = response.getBody();
+            ClassInvoice.EntitySignInvoiceResponse invoiceResponse = (ClassInvoice.EntitySignInvoiceResponse) System.JSON.deserialize(bodyResponse, ClassInvoice.EntitySignInvoiceResponse.class);
+            return invoiceResponse;
+        } catch (Exception ex){
+            throw new handledException('Server error: ' + ex.getMessage());
+        }
+    }
+
+    @AuraEnabled
+    public static EntityInvoiceResponse processInvoice(String xmlSignedEncoded, Company_Information__mdt companyInfo, String email, String certificateId, Boolean isAnulation){
+        Http http = new Http();
+        HttpRequest request = new HttpRequest();
+
+        String endpoint = isAnulation ? companyInfo.Infile_Anulation_Endpoint__c : companyInfo.Infile_Certification_Endpoint__c;
+        String json = '';
+        json += '{';
+        json += '   "nit_emisor":"' + companyInfo.Infile_NIT__c.replace('-', '') + '",';
+        json += '   "correo_copia":"' + email + '",';
+        json += '   "xml_dte":"' + xmlSignedEncoded + '"';
+        json += '}';
+
+        request.setEndpoint(endpoint);
+        request.setMethod('POST');
+        request.setHeader('Usuario', companyInfo.Infile_User__c);
+        request.setHeader('Llave', companyInfo.Infile_Certification_Key__c);
+        request.setHeader('Identificador', certificateId);
+        request.setHeader('Content-Type', 'application/json');
+        request.setBody(json);
+
+        if(Test.isRunningTest()){
+            EntityInvoiceResponse response = new EntityInvoiceResponse();
+            response.resultado = true;
+            return response;
+        }
+
+        try{
+            HttpResponse response = http.send(request);
+            String bodyResponse = response.getBody();
+            EntityInvoiceResponse invoiceResponse = (EntityInvoiceResponse) System.JSON.deserialize(bodyResponse, EntityInvoiceResponse.class);
+            return invoiceResponse;
+        } catch (Exception ex){
+            throw new handledException('Server error: ' + ex.getMessage());
+        }
+    }
+
+    @AuraEnabled
+    public static String insertInvoiceApex(Invoice__c invoice, Purchase_Order__c purchaseOrder, List<Dispatch_Order__c> dispatchOrders){
+        insert invoice;
+
+        if (dispatchOrders.size() > 0) {
+            for(Dispatch_Order__c dispatchOrder : dispatchOrders){
+                dispatchOrder.Invoice__c = invoice.Id;
+            }
+
+            update dispatchOrders;
+        }
+
+        try {
+            updatePurchaseOrderStateAndAmount(invoice, purchaseOrder);
+        } catch (Exception ex){
+            throw new AuraHandledException(ex.getMessage());
+        }
+
+        return invoice.Id;
+    }
+
+    @AuraEnabled
+    public static void cancelInvoiceApex(String invoiceId, String cancellationReason){
+        Invoice__c invoice = [
+            SELECT 
+                Id,
+                Canceled__c,
+                Cancellation_Reason__c,
+                Purchase_Order__c
+            FROM Invoice__c
+            WHERE Id =: invoiceId
+        ];
+        
+        Purchase_Order__c purchaseOrder = [
+            SELECT 
+                Id,
+                Invoice_Status__c,
+                Billed_Amount__c,
+                Total__c
+            FROM Purchase_Order__c
+            WHERE Id =: invoice.Purchase_Order__c
+        ];
+
+        List<Dispatch_Order__c> dispatchOrders = [
             SELECT
-                NIT__c,
-                Invoice_Email__c
+                Invoice__c
+            FROM Dispatch_Order__c
+            WHERE Invoice__c =: invoiceId
+        ];
+
+        for(Dispatch_Order__c dispatchOrder : dispatchOrders){
+            dispatchOrder.Invoice__c = null;
+        }
+
+        update dispatchOrders;
+
+        invoice.Canceled__c = true;
+        invoice.Cancellation_Reason__c = cancellationReason;
+        update invoice;
+
+        try {
+            updatePurchaseOrderStateAndAmount(invoice, purchaseOrder);    
+        } catch (Exception ex){
+            throw new AuraHandledException(ex.getMessage());
+        }
+    }
+
+    private static void updatePurchaseOrderStateAndAmount(Invoice__c invoice, Purchase_Order__c purchaseOrder){
+
+        List<Invoice__c> relatedInvoices = [
+            SELECT
+                Amount__c,
+                Canceled__c
+            FROM Invoice__c
+            WHERE Purchase_Order__c =: purchaseOrder.Id
+        ];
+
+        Double billedAmount = 0;
+        for (Invoice__c relatedInvoice : relatedInvoices){
+            if (!relatedInvoice.Canceled__c){
+                billedAmount += relatedInvoice.Amount__c;
+            }
+        }
+
+        purchaseOrder.Billed_Amount__c = billedAmount;
+
+        if (billedAmount <= 0){
+            purchaseOrder.Invoice_Status__c = 'Pendiente';
+        } else if (billedAmount < purchaseOrder.Total__c){
+            purchaseOrder.Invoice_Status__c = 'Parcialmente';
+        } else if (billedAmount == purchaseOrder.Total__c){
+            purchaseOrder.Invoice_Status__c = 'Completado';
+        } else {
+            throw new AuraHandledException('El monto excede el total de la orden de compra.');
+        }
+
+        update purchaseOrder;
+    }
+
+    @AuraEnabled
+    public static EntityCanelInvoiceInformation getInvoiceInformation(String invoiceId){
+        Invoice__c invoice = [SELECT Id, Name, Date__c, External_UUID__c, Purchase_Order__r.Account__r.Id FROM Invoice__c WHERE Id =: invoiceId LIMIT 1];
+        Company_Information__mdt companyInfo = [
+            SELECT
+                Invoice_Email__c,
+                Infile_User__c,
+                Infile_NIT__c,
+                Infile_Sign_Key__c,
+                Infile_Certification_Key__c,
+                Infile_Anulation_Endpoint__c,
+                Infile_Sign_Endpoint__c
             FROM Company_Information__mdt
             LIMIT 1
         ];
 
-        String usuario = 'MIGRACION_FEL';
-        String llave = '29486704569DAD70D7D21288C3EA6BD4';
-        String nit = '85346721';
-
-        Http http = new Http();
-        HttpRequest request = new HttpRequest();
-
-        String json = '';
-        json += '{';
-        json += '   "nit_emisor":"' + company.NIT__c + '",';
-        json += '   "correo_copia":"' + company.Invoice_Email__c + '",';
-        json += '   "xml_dte":"' + xmlEncoded + '"';
-        json += '}';
-
-        request.setEndpoint('https://certificador.feel.com.gt/fel/certificacion/v2/dte/');
-        request.setMethod('POST');
-        request.setHeader('Usuario', usuario);
-        request.setHeader('Llave', llave);
-        request.setHeader('Content-Type', 'application/json');
-        request.setBody(json);
-
-        HttpResponse response = http.send(request);
-        System.debug(response);
-
-        return '';
-
-        //https://certificador.feel.com.gt/fel/anulacion/v2/dte/
-        //Do http request, using http://wsdl2apex.fuseit.com/ for generate the apex classes and test classes from the wsdl url
-    }
-
-    private static List<String> getLegalAddress(String nit){
-        String usuario = 'MIGRACION_FEL';
-        String clave = '29486704569DAD70D7D21288C3EA6BD4';
-
-        String xml = '';
-        xml += '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://services.ws.ingface.com/">';
-        xml += '<soapenv:Header/>';
-        xml += '<soapenv:Body>';
-        xml += '   <ser:nitContribuyentes>';
-        xml += '      <usuario>' + usuario + '</usuario>';
-        xml += '      <clave>' + clave + '</clave>';
-        xml += '      <nit>' + '85346721' + '</nit>';
-        xml += '   </ser:nitContribuyentes>';
-        xml += '</soapenv:Body>';
-        xml += '</soapenv:Envelope>';
-
-        Http http = new Http();
-        HttpRequest request = new HttpRequest();
-
-        request.setEndpoint('https://www.ingface.net:443/ServiciosIngface/ingfaceWsServices');
-        request.setMethod('POST');
-        request.setHeader('Content-Type', 'text/xml; charset=character encoding');
-        request.setBody(xml);
-
-        HttpResponse response = http.send(request);
-        System.debug(response);
-
-        /*
-        servicesWsIngfaceCom.ingfaceWsServicesPort service = new servicesWsIngfaceCom.ingfaceWsServicesPort();
-        try {
-            servicesWsIngfaceCom.cliente response = service.nitContribuyentes_Http( usuario, clave, nit);
-        } catch(Exception ex){
-            System.debug(ex.getMessage());
-        }*/
-
-        //convert response and send it in return
-        List<String> arr = new List<String>{'Irving Cosillo','Ciudad'};
-        return arr;
-    }
-
-    public class InvoiceLine{
-        public String code {get; set;}
-        public String productId {get; set;}
-        public String description {get; set;}
-        public Double quantity {get; set;}
-        public Double price {get; set;}
-    }
-
-    public class EntityInvoice {
-        @AuraEnabled
-        public Quote__c quote {get; set;}
-        @AuraEnabled
-        public Purchase_Order__c purchaseOrder {get; set;}
-        @AuraEnabled
-        public List<Dispatch_Order__c> dispatchOrders {get; set;}
-        @AuraEnabled
-        public List<Dispatch_Order_Line__c> dispatchOrderLines {get; set;}
-        @AuraEnabled
-        public String companyName {get; set;}
-        @AuraEnabled
-        public String companyLegalName {get; set;}
-        @AuraEnabled
-        public String companyEmail {get; set;}
-        @AuraEnabled
-        public String companyNIT {get; set;}
-        @AuraEnabled
-        public String companyAddress {get; set;}
+        EntityCanelInvoiceInformation response = new EntityCanelInvoiceInformation();
+        response.invoice = invoice;
+        response.companyInfo = companyInfo;
+        return response;
     }
 }

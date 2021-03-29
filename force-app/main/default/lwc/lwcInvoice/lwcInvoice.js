@@ -1,8 +1,11 @@
 import { LightningElement, api } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getPurchaseOrderInfo from '@salesforce/apex/ClassInvoice.getPurchaseOrderInfo';
-import createInvoice from '@salesforce/apex/ClassInvoice.createInvoice';
-import OrderNumber from '@salesforce/schema/Order.OrderNumber';
+import getClientLegalInformation from '@salesforce/apex/ClassInvoice.getClientLegalInformation';
+import getInvoiceWrapper from '@salesforce/apex/ClassInvoice.getInvoiceWrapper';
+import signInvoice from '@salesforce/apex/ClassInvoice.signInvoice';
+import processInvoice from '@salesforce/apex/ClassInvoice.processInvoice';
+import insertInvoiceApex from '@salesforce/apex/ClassInvoice.insertInvoiceApex';
 
 export default class LwcInvoice extends LightningElement {
     @api recordId;
@@ -13,6 +16,7 @@ export default class LwcInvoice extends LightningElement {
     Is_EInvoice__c = true;
     isCambiaria = false;
     isVariableAmount = false;
+    isLoading = false;
     info;
 
     invoice = {
@@ -55,10 +59,10 @@ export default class LwcInvoice extends LightningElement {
                     });
                     this.info = info;
                     this.invoice.Currency_Code__c = info.purchaseOrder.Currency_Code__c;
-                    this.invoice.Email__c = info.companyEmail;
+                    this.invoice.Email__c = info.companyInfo.Invoice_Email__c;
                     this.quoteId = info.quote.Id;
                     this.accountId = info.purchaseOrder.Account__c;
-                    this.accountNIT = info.purchaseOrder.Account__r.NIT__c;
+                    this.accountNIT = info.purchaseOrder.Account__r.NIT__c.replace('-','');
                 });
             }
         }
@@ -95,36 +99,86 @@ export default class LwcInvoice extends LightningElement {
         return arr && arr.length > 0 ? JSON.stringify(arr) : null;
     }
 
-    @api save(){
+    @api async save(){
         const nit = this.accountNIT;
         let invoice = {...this.invoice};
         invoice.Dispatch_Orders__c = this.stringify(invoice.Dispatch_Orders__c);
         invoice.Partial_Payments__c = this.stringify(invoice.Partial_Payments__c);
         invoice.Date__c = new Date(invoice.Date__c);
         invoice.Is_EInvoice__c = invoice.Is_EInvoice__c === "Si";
-        if (!this.isInvalid()){
-            const xml = this.generateXML();
-            createInvoice({invoice, nit, xml}).then( Id => {
+        
+        if (this.isInvalid()){
+            return;
+        }
+
+        try {
+            this.isLoading = true;
+            const companyInfo = this.info.companyInfo;
+            const clientLegalInfo = await getClientLegalInformation({ nit, companyInfo});
+            console.log('Client Legal Name: ', clientLegalInfo.legalName);
+            console.log('Client Legal Address: ', clientLegalInfo.legalAddress);
+
+            const xml = this.generateXML(clientLegalInfo);
+            console.log('xml: ', {xml});
+
+            const wrapper = await getInvoiceWrapper({invoice, xml});
+            const xmlEncoded = wrapper.xmlEncoded;
+            console.log('Wrapper: ', JSON.parse(JSON.stringify(wrapper)));
+            
+            const isAnulation = false;
+            const signInvoiceResponse = await signInvoice({ xmlEncoded, companyInfo, isAnulation});
+
+            if (!signInvoiceResponse){
+                throw '';
+            } else if ( signInvoiceResponse.resultado === false ){
+                throw {
+                    body: {
+                        message: signInvoiceResponse.descripcion
+                    }
+                };
+            }
+
+            const xmlSignedEncoded = signInvoiceResponse.archivo;
+            console.log('xmlSignedEncoded: ', {xmlSignedEncoded});
+
+            const certificateId = this.generateId();
+            const email = invoice.Email__c;
+            const processInvoiceResponse = await processInvoice({ xmlSignedEncoded, companyInfo, email, certificateId, isAnulation });
+            console.log('Certify Invoice response: ', processInvoiceResponse);
+
+            if (processInvoiceResponse.cantidad_errores === 0) {
+                wrapper.invoice.External_UUID__c = processInvoiceResponse.uuid;
+                wrapper.invoice.External_Serie__c = processInvoiceResponse.serie;
+                wrapper.invoice.External_Number__c = processInvoiceResponse.numero;
+                
+                const Id = await insertInvoiceApex({ 
+                    invoice : wrapper.invoice,
+                    purchaseOrder : wrapper.purchaseOrder,
+                    dispatchOrders : wrapper.dispatchOrders
+                });
+                
                 console.log('Invoice Id: ', Id);
                 this.dispatchEvent(new ShowToastEvent({
                     title: '',
                     message: 'Factura generada con éxito.',
                     variant: 'success'
                 }));
-            }).catch( error => {
-                window.console.log(error);
-                if (error.body && error.body.message) {
-                    this.dispatchError(error.body.message);
-                } else {
-                    this.dispatchError('La factura no pudo ser generada con éxito, por favor intente de nuevo.');
-                }
-            }).finally(() => {
-                this.dispatchEvent(new CustomEvent('cancel'));
-            })
+            } else {
+                processInvoiceResponse.descripcion_errores.forEach( error => {
+                    this.dispatchError(error.mensaje_error);
+                });
+            }
+        } catch (error){
+            const message = error.body && error.body.message ?  error.body.message : 'La factura no pudo ser generada con éxito, por favor intente de nuevo.';
+            this.dispatchError(message);
+        } finally {
+            this.isLoading = false;
+            this.dispatchEvent(new CustomEvent('cancel'));
         }
     }
 
     dispatchError(message){
+        console.error(message);
         this.dispatchEvent(new ShowToastEvent({
             title: '',
             message,
@@ -156,7 +210,6 @@ export default class LwcInvoice extends LightningElement {
         }
         if (result){
             this.dispatchError(result);
-            console.error(result);
             return true;
         } else {
             return false;
@@ -194,7 +247,7 @@ export default class LwcInvoice extends LightningElement {
 
     //----------------------------------- XML Generation -----------------------------------------
 
-    generateXML(){
+    generateXML(clientLegalInfo){
         const invoice = {...this.invoice};
         const info = {... this.info};
 
@@ -211,48 +264,54 @@ export default class LwcInvoice extends LightningElement {
             }).join(", ") : '';
         const contado = info.quote.Credit__c ? '' : 'x';
         const credito = info.quote.Credit__c ? 'x' : '';;
+
+        const invoiceDateTime = invoice.Date__c.split('-').map((val,i)=> { 
+            return i > 0 && val.length === 1 ? '0' + val : val;
+        }).join('-') + 'T00:00:00-06:00';
+
         let xml =
         `
-            <dte:GTDocumento xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:dte="http://www.sat.gob.gt/dte/fel/0.2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="0.1" xsi:schemaLocation="http://www.sat.gob.gt/dte/fel/0.2.0">
-            <dte:SAT ClaseDocumento="dte">
-            <dte:DTE ID="DatosCertificados">
-                <dte:DatosEmision ID="DatosEmision">
-                <dte:DatosGenerales CodigoMoneda="${invoice.Currency_Code__c}" FechaHoraEmision="${invoice.Date__c}" Tipo="${type}"></dte:DatosGenerales>
-                <dte:Emisor AfiliacionIVA="GEN" CodigoEstablecimiento="1" CorreoEmisor="demo@demo.com.gt" NITEmisor="${info.companyNIT}" NombreComercial="${info.companyName}" NombreEmisor="${info.companyLegalName}">
+<dte:GTDocumento xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:dte="http://www.sat.gob.gt/dte/fel/0.2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="0.1" xsi:schemaLocation="http://www.sat.gob.gt/dte/fel/0.2.0">
+    <dte:SAT ClaseDocumento="dte">
+        <dte:DTE ID="DatosCertificados">
+            <dte:DatosEmision ID="DatosEmision">
+                <dte:DatosGenerales CodigoMoneda="${invoice.Currency_Code__c}" FechaHoraEmision="${invoiceDateTime}" Tipo="${type}"></dte:DatosGenerales>
+                <dte:Emisor AfiliacionIVA="GEN" CodigoEstablecimiento="1" CorreoEmisor="demo@demo.com.gt" NITEmisor="${info.companyInfo.Infile_NIT__c.replace('-','')}" NombreComercial="${info.companyInfo.Label}" NombreEmisor="${info.companyInfo.Legal_Name__c}">
                     <dte:DireccionEmisor>
-                    <dte:Direccion>${info.companyAddress}</dte:Direccion>
+                    <dte:Direccion>${info.companyInfo.Address__c}</dte:Direccion>
                     <dte:CodigoPostal>01001</dte:CodigoPostal>
                     <dte:Municipio>GUATEMALA</dte:Municipio>
                     <dte:Departamento>GUATEMALA</dte:Departamento>
                     <dte:Pais>GT</dte:Pais>
                     </dte:DireccionEmisor>
                 </dte:Emisor>
-                <dte:Receptor CorreoReceptor="${info.companyEmail}" IDReceptor="${this.accountNIT}" NombreReceptor="{nombreReceptor}">
+                <dte:Receptor CorreoReceptor="${invoice.Email__c}" IDReceptor="${this.accountNIT}" NombreReceptor="${clientLegalInfo.legalName}">
                     <dte:DireccionReceptor>
-                    <dte:Direccion>{direccionReceptor}</dte:Direccion>
-                    <dte:CodigoPostal></dte:CodigoPostal>
-                    <dte:Municipio></dte:Municipio>
-                    <dte:Departamento></dte:Departamento>
-                    <dte:Pais></dte:Pais>
+                    <dte:Direccion>${clientLegalInfo.legalAddress}</dte:Direccion>
+                    <dte:CodigoPostal>01001</dte:CodigoPostal>
+                    <dte:Municipio>GUATEMALA</dte:Municipio>
+                    <dte:Departamento>GUATEMALA</dte:Departamento>
+                    <dte:Pais>GT</dte:Pais>
                     </dte:DireccionReceptor>
                 </dte:Receptor>
                 <dte:Frases>
                     <dte:Frase CodigoEscenario="1" TipoFrase="1"></dte:Frase>
-                    <dte:Frase CodigoEscenario="1" TipoFrase="2"></dte:Frase>
                 </dte:Frases>
                 <dte:Items>
                     {items}
                 </dte:Items>
                 <dte:Totales>
                     <dte:TotalImpuestos>
-                    <dte:TotalImpuesto NombreCorto="IVA" TotalMontoImpuesto="{iva}"></dte:TotalImpuesto>
+                        <dte:TotalImpuesto NombreCorto="IVA" TotalMontoImpuesto="{iva}"></dte:TotalImpuesto>
                     </dte:TotalImpuestos>
                     <dte:GranTotal>{total}</dte:GranTotal>
                 </dte:Totales>
         `;
 
         if (type === 'FACM' && invoice.Partial_Payments__c && invoice.Partial_Payments__c.length){
-            xml += '<dte:Complementos>';
+            xml += `
+                <dte:Complementos>
+            `;
             invoice.Partial_Payments__c.forEach(payment => {
                 xml +=
                 `
@@ -267,22 +326,24 @@ export default class LwcInvoice extends LightningElement {
                     </dte:Complemento>
                 `;
             });
-            xml += '</dte:Complementos>';
+            xml += `
+                </dte:Complementos>
+            `;
         }
 
         xml +=
         `
-                </dte:DatosEmision>
-            </dte:DTE>
-            <dte:Adenda>
-                <Vendedor>${info.purchaseOrder.Quote__r.Sales_User__c}</Vendedor>
-                <OrdenDeCompra>${info.purchaseOrder.Order_Id__c}</OrdenDeCompra>
-                <OrdenDeEnvio>${dispatchOrderAdenda}</OrdenDeEnvio>
-                <Contado>${contado}</Contado>
-                <Credito><${credito}/Credito>
-            </dte:Adenda>
-            </dte:SAT>
-        </dte:GTDocumento>
+            </dte:DatosEmision>
+        </dte:DTE>
+        <dte:Adenda>
+            <Vendedor>${info.purchaseOrder.Quote__r.Sales_User__c}</Vendedor>
+            <OrdenDeCompra>${info.purchaseOrder.Order_Id__c}</OrdenDeCompra>
+            <OrdenDeEnvio>${dispatchOrderAdenda}</OrdenDeEnvio>
+            <Contado>${contado}</Contado>
+            <Credito><${credito}/Credito>
+        </dte:Adenda>
+    </dte:SAT>
+</dte:GTDocumento>
         `;
 
         return xml;

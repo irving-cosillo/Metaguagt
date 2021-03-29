@@ -8,9 +8,12 @@ public class TestInvoice {
         ClassInvoice.EntityInvoice purchaseOrderInfo = ClassInvoice.getPurchaseOrderInfo(purchaseOrderId);
         System.assertEquals(quote.Id, purchaseOrderInfo.quote.Id, 'Invalid quote retrieved.');
 
+        ClassInvoice.EntityLegalInformation legalInfo = ClassInvoice.getClientLegalInformation('12345678', purchaseOrderInfo.companyInfo);
+        System.assertEquals(true, String.isNotBlank(legalInfo.legalName), 'Legal info not retrieved.');
+        
         String exceptionMsg = null;
         try {
-            ClassInvoice.EntityInvoice purchaseOrderInfoInvalid = ClassInvoice.getPurchaseOrderInfo('Invalid Id');
+            ClassInvoice.EntityInvoice purchaseOrderInfoInvalid = ClassInvoice.getPurchaseOrderInfo('Invalid Id retrieved.');
         } catch (Exception ex){
             exceptionMsg = ex.getMessage();
         }
@@ -33,6 +36,7 @@ public class TestInvoice {
             dispatchOrderLine.Quantity__c = 9 + i;
             dispatchOrderLines.add(dispatchOrderLine);
         }
+
         String dispatchOrderId = ClassDispatchOrder.createDispatchOrder(purchaseOrderId, dispatchOrderLines);
         Invoice__c invoice = new Invoice__c();
         invoice.Date__c = Date.today();
@@ -40,11 +44,47 @@ public class TestInvoice {
         invoice.Category__c = 'Ordenes de Despacho';
         invoice.Purchase_Order__c = purchaseOrderId;
         invoice.Dispatch_Orders__c = dispatchOrderId;
+        String xml = '{total}{iva}{items}';
 
         Test.startTest();
-        ClassInvoice.createInvoice(invoice);
-        Invoice__c expectedInvoice = [SELECT Id, Purchase_Order__c FROM Invoice__c LIMIT 1];
-        System.assertEquals(purchaseOrderId, expectedInvoice.Purchase_Order__c, 'Invoice not generated correctly.');
+        ClassInvoice.EntityInvoiceWrapper wrapper = ClassInvoice.getInvoiceWrapper(invoice, xml);
+        System.assertEquals(true, String.isNotBlank(wrapper.xmlEncoded), 'Empty xmlEncoded response.');
+        String invoiceId = ClassInvoice.insertInvoiceApex(wrapper.invoice, wrapper.purchaseOrder, wrapper.dispatchOrders);
+        System.assertEquals(true, String.isNotBlank(invoiceId), 'Invoice not created.');
+        ClassInvoice.cancelInvoiceApex(invoiceId,'Test Reasson');
+        invoice = [SELECT Canceled__c, Cancellation_Reason__c FROM Invoice__c WHERE Id =: invoiceId];
+        System.assertEquals(true, invoice.Canceled__c, 'Invoice not cancelled correctly.');
+        System.assertEquals('Test Reasson', invoice.Cancellation_Reason__c, 'Incorrect cancel reasson retrieved.');
+        ClassInvoice.EntityCanelInvoiceInformation response = ClassInvoice.getInvoiceInformation(invoiceId);
+        System.assertEquals(invoiceId, response.invoice.Id, 'Incorrect invoice retrieved.');
         Test.stopTest();
+    }
+
+    @IsTest
+    static void externalCalls(){
+        Company_Information__mdt companyInfo = [
+            SELECT
+                Label,
+                Legal_Name__c,
+                NIT__c,
+                Address__c,
+                Invoice_Email__c,
+                Infile_User__c,
+                Infile_NIT__c,
+                Infile_Sign_Key__c,
+                Infile_Sign_Endpoint__c,
+                Infile_Certification_Key__c,
+                Infile_Certification_Endpoint__c,
+                Infile_Anulation_Endpoint__c,
+                Infile_NIT_Endpoint__c
+            FROM Company_Information__mdt
+            LIMIT 1
+        ];
+
+        ClassInvoice.EntitySignInvoiceResponse signInvoiceResponse = ClassInvoice.signInvoice('', companyInfo, true );
+        System.assertEquals(true, signInvoiceResponse.resultado, 'Invalid result.');
+
+        EntityInvoiceResponse processInvoiceResponse = ClassInvoice.processInvoice('', companyInfo, '', '', false);
+        System.assertEquals(true, processInvoiceResponse.resultado, 'Invalid result.');
     }
 }

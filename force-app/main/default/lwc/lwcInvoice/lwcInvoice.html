@@ -1,7 +1,8 @@
 <template>
     <template if:true={recordId}>
+        <lightning-spinner if:true={isLoading} variant="brand"></lightning-spinner>
         <lightning-layout multiple-rows="true">
-            <lightning-layout-item size="12" small-device-size="12" medium-device-size="7" large-device-size="7" padding="horizontal-small">
+            <lightning-layout-item size="12" small-device-size="12" medium-device-size="4" large-device-size="4" padding="horizontal-small">
                 <div onchange={fieldChange}>
                     <lightning-radio-group
                         label="Categoría"
@@ -38,15 +39,10 @@
                             class="slds-m-top_small">
                         </lightning-textarea>
                     </template>
-
-                    <lightning-input
-                        type="date"
-                        label="Fecha"
-                        name="Date__c"
-                        value={invoice.Date__c}
-                        class="slds-m-top_small">
-                    </lightning-input>
-
+                </div>
+            </lightning-layout-item>
+            <lightning-layout-item size="12" small-device-size="12" medium-device-size="4" large-device-size="4" padding="horizontal-small">
+                <div onchange={fieldChange}>
                     <lightning-radio-group
                         label="¿Generar factura electrónica?"
                         name="Is_EInvoice__c"
@@ -56,15 +52,15 @@
                         class="slds-m-top_small">
                     </lightning-radio-group>
 
-                    <template if:true={Is_EInvoice__c}>
-                        <lightning-input
-                            type="Email__c"
-                            label="Correo de envío de factura electrónica"
-                            name="Email__c"
-                            value={invoice.Email__c}
-                            class="slds-m-top_small">
-                        </lightning-input>
+                    <lightning-input
+                        type="date"
+                        label="Fecha"
+                        name="Date__c"
+                        value={invoice.Date__c}
+                        class="slds-m-top_small">
+                    </lightning-input>
 
+                    <template if:true={Is_EInvoice__c}>
                         <lightning-radio-group
                             label="Tipo de factura"
                             name="Type__c"
@@ -74,17 +70,26 @@
                             class="slds-m-top_medium">
                         </lightning-radio-group>
 
+                        <lightning-input
+                            type="Email__c"
+                            label="Correo de envío de factura electrónica"
+                            name="Email__c"
+                            value={invoice.Email__c}
+                            class="slds-m-top_small">
+                        </lightning-input>
+
                         <template if:true={isCambiaria}>
                             <template for:each={invoice.Partial_Payments__c} for:item="payment">
                                 <div key={payment.Id} class="slds-box slds-p-around_small slds-m-top_medium">
                                     <div class="slds-clearfix">
                                         <div class="slds-float_right">
-                                            <lightning-button
+                                            <lightning-button-icon 
+                                                icon-name="utility:delete"
                                                 label="Delete"
                                                 name={payment.Id}
                                                 onclick={deletePayment}
                                                 class="slds-m-top_small">
-                                            </lightning-button>
+                                            </lightning-button-icon>
                                         </div>
                                     </div>
                                     <lightning-input
@@ -125,7 +130,7 @@
                     </template>
                 </div>
             </lightning-layout-item>
-            <lightning-layout-item size="12" small-device-size="12" medium-device-size="5" large-device-size="5" padding="horizontal-small">
+            <lightning-layout-item size="12" small-device-size="12" medium-device-size="4" large-device-size="4" padding="horizontal-small">
                 <lightning-layout multiple-rows="true">
                     <lightning-layout-item size="12" small-device-size="12" medium-device-size="6" large-device-size="6" padding="horizontal-small">
                         <lightning-record-view-form

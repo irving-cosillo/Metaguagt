@@ -1,0 +1,8 @@
+<aura:component implements="force:lightningQuickActionWithoutHeader,force:appHostable,force:hasRecordId,force:hasSObjectName,flexipage:availableForAllPageTypes,lightning:actionOverride">
+    <aura:attribute name="recordId" type="Id" />
+    <c:lwcInvoiceCancellation 
+        recordId="{!v.recordId}"
+        onsave="{!c.save}"
+        oncancel="{!c.cancel}">
+    </c:lwcInvoiceCancellation>
+</aura:component>

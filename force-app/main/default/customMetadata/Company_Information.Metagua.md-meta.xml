@@ -7,8 +7,40 @@
         <value xsi:type="xsd:string">Complejo Indutsrial Rodezno, Bodega 33. Km 63.5 Autopista a Puerto Quetzal, Escuintla - Escuintla, Guatemala.</value>
     </values>
     <values>
+        <field>Infile_Anulation_Endpoint__c</field>
+        <value xsi:type="xsd:string">https://certificador.feel.com.gt/fel/anulacion/v2/dte/</value>
+    </values>
+    <values>
+        <field>Infile_Certification_Endpoint__c</field>
+        <value xsi:type="xsd:string">https://certificador.feel.com.gt/fel/certificacion/v2/dte/</value>
+    </values>
+    <values>
+        <field>Infile_Certification_Key__c</field>
+        <value xsi:type="xsd:string">0656A793B7C118575185EB4AFD99ACBE</value>
+    </values>
+    <values>
+        <field>Infile_NIT_Endpoint__c</field>
+        <value xsi:type="xsd:string">https://www.ingface.net:443/ServiciosIngface/ingfaceWsServices</value>
+    </values>
+    <values>
+        <field>Infile_NIT__c</field>
+        <value xsi:type="xsd:string">11000024K</value>
+    </values>
+    <values>
+        <field>Infile_Sign_Endpoint__c</field>
+        <value xsi:type="xsd:string">https://signer-emisores.feel.com.gt/sign_solicitud_firmas/firma_xml</value>
+    </values>
+    <values>
+        <field>Infile_Sign_Key__c</field>
+        <value xsi:type="xsd:string">c00689f967ea7714ac8a75eab6c3bbc4</value>
+    </values>
+    <values>
+        <field>Infile_User__c</field>
+        <value xsi:type="xsd:string">CARRANZADEMO</value>
+    </values>
+    <values>
         <field>Invoice_Email__c</field>
-        <value xsi:type="xsd:string">correo.pruebas@metaguagt.com</value>
+        <value xsi:type="xsd:string">irving.cosillo@gmail.com</value>
     </values>
     <values>
         <field>Legal_Name__c</field>

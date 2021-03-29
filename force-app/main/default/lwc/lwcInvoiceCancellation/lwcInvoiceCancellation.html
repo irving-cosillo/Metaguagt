@@ -1,0 +1,24 @@
+<template>
+    <lightning-spinner if:true={isLoading} variant="brand"></lightning-spinner>
+    <div class="slds-modal__header" style="margin: -10px -30px 0 -30px;">
+        <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate">Anular Factura</h2>
+    </div>
+    <div id="modal-content-id-1"
+            class="slds-modal__content slds-p-around_medium"
+            style="height: 122px; margin: 0px -30px 0px -30px;">
+        <div class="slds-scrollable_y slds-p-horizontal_small">
+            <lightning-textarea
+                label="Motivo de Anulación"
+                onchange={fieldChange}>
+            </lightning-textarea>
+        </div>
+    </div>
+    <div class="slds-modal__footer" style="margin: 18px -30px -30px -30px; padding: 16px 30px 16px 0px;">
+        <lightning-button
+            label="Cancelar" variant="neutral" onclick={cancel} class="slds-m-right_medium">
+        </lightning-button>
+        <lightning-button
+            label="Anular" variant="brand" onclick={save}>
+        </lightning-button>
+    </div>
+</template>
