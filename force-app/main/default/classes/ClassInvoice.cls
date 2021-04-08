@@ -4,6 +4,8 @@ public with sharing class ClassInvoice {
 
     public class EntityInvoiceWrapper {
         @AuraEnabled
+        public String xml;
+        @AuraEnabled
         public String xmlEncoded;
         @AuraEnabled
         public Invoice__c invoice;
@@ -198,6 +200,7 @@ public with sharing class ClassInvoice {
         String xmlEncoded = EncodingUtil.base64Encode(xmlBlob);
 
         EntityInvoiceWrapper wrapper = new EntityInvoiceWrapper();
+        wrapper.xml = xml;
         wrapper.xmlEncoded = xmlEncoded;
         wrapper.invoice = invoice;
         wrapper.purchaseOrder = purchaseOrder;
