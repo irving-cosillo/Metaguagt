@@ -337,6 +337,7 @@ export default class LwcInvoice extends LightningElement {
         </dte:DTE>
         <dte:Adenda>
             <Vendedor>${info.purchaseOrder.Quote__r.Sales_User__c}</Vendedor>
+            <Telefono>${info.purchaseOrder.Account__r.Phone}</Telefono>
             <OrdenDeCompra>${info.purchaseOrder.Order_Id__c}</OrdenDeCompra>
             <OrdenDeEnvio>${dispatchOrderAdenda}</OrdenDeEnvio>
             <Contado>${contado}</Contado>

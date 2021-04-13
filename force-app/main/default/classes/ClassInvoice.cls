@@ -62,21 +62,72 @@ public with sharing class ClassInvoice {
 
     @AuraEnabled
     public static EntityInvoice getPurchaseOrderInfo(String purchaseOrderId){
-        List<Purchase_Order__c> purchaseOrderList = [SELECT Order_Id__c, Account__c, Account__r.NIT__c, Quote__c, Quote__r.Sales_User__c, Quote__r.Credit__c, Currency_Code__c FROM Purchase_Order__c WHERE Id =: purchaseOrderId LIMIT 1];
+        List<Purchase_Order__c> purchaseOrderList = [
+            SELECT 
+                Order_Id__c, 
+                Account__c,
+                Account__r.NIT__c,
+                Account__r.Phone,
+                Quote__c, 
+                Quote__r.Sales_User__c,
+                Quote__r.Credit__c,
+                Currency_Code__c 
+            FROM Purchase_Order__c 
+            WHERE Id =: purchaseOrderId 
+            LIMIT 1
+        ];
 
         if(purchaseOrderList.size() <= 0){
             throw new AuraHandledException('Error: por favor contactar al administrador del sistema.');
         }
 
         Purchase_Order__c purchaseOrder = purchaseOrderList[0];
-        Quote__c quote = [SELECT Credit__c, Payment__c FROM Quote__c WHERE Id =: purchaseOrder.Quote__c LIMIT 1];
-        Map<Id, Dispatch_Order__c> dispatchOrdersMap = new Map<Id, Dispatch_Order__c>([SELECT Id, Name FROM Dispatch_Order__c WHERE Purchase_Order__c =: purchaseOrderId AND Invoice__c = null ]);
+        Quote__c quote = [
+            SELECT 
+                Credit__c, 
+                Payment__c 
+            FROM Quote__c 
+            WHERE Id =: purchaseOrder.Quote__c 
+            LIMIT 1
+        ];
+        Map<Id, Dispatch_Order__c> dispatchOrdersMap = new Map<Id, Dispatch_Order__c>([
+            SELECT 
+                Id, 
+                Name 
+            FROM Dispatch_Order__c 
+            WHERE 
+                Purchase_Order__c =: purchaseOrderId AND 
+                Invoice__c = null 
+        ]);
 
         Set<Id> dispatchOrdersId = dispatchOrdersMap.keySet();
         List<Dispatch_Order__c> dispatchOrders = dispatchOrdersMap.values();
-        List<Dispatch_Order_Line__c> dispatchOrderLines = [SELECT Product_Name__c, Quantity__c FROM Dispatch_Order_Line__c WHERE Dispatch_Order__c IN  :dispatchOrdersId];
+        List<Dispatch_Order_Line__c> dispatchOrderLines = [
+            SELECT 
+                Product_Name__c, 
+                Quantity__c 
+            FROM Dispatch_Order_Line__c 
+            WHERE Dispatch_Order__c IN  :dispatchOrdersId
+        ];
 
-        Company_Information__mdt companyInfo = [ SELECT Label, Legal_Name__c, NIT__c, Address__c, Invoice_Email__c, Infile_User__c, Infile_NIT__c, Infile_Sign_Key__c, Infile_Sign_Endpoint__c, Infile_Certification_Key__c, Infile_Certification_Endpoint__c, Infile_Anulation_Endpoint__c, Infile_NIT_Endpoint__c FROM Company_Information__mdt LIMIT 1];
+        Company_Information__mdt companyInfo = [
+            SELECT 
+                Label, 
+                Legal_Name__c, 
+                NIT__c, 
+                Address__c, 
+                Invoice_Email__c, 
+                Infile_User__c, 
+                Infile_NIT__c, 
+                Infile_Sign_Key__c, 
+                Infile_Sign_Endpoint__c, 
+                Infile_Certification_Key__c, 
+                Infile_Certification_Endpoint__c, 
+                Infile_Anulation_Endpoint__c, 
+                Infile_NIT_Endpoint__c 
+            FROM Company_Information__mdt 
+            LIMIT 1
+        ];
 
         EntityInvoice invoice = new EntityInvoice();
         invoice.quote = quote;
@@ -140,7 +191,18 @@ public with sharing class ClassInvoice {
     @AuraEnabled
     public static EntityInvoiceWrapper getInvoiceWrapper(Invoice__c invoice, String xml){
         
-        Purchase_Order__c purchaseOrder = [SELECT Id, Currency_Code__c, Invoice_Status__c, Billed_Amount__c, Total__c FROM Purchase_Order__c WHERE Id =: invoice.Purchase_Order__c LIMIT 1];
+        Purchase_Order__c purchaseOrder = [
+            SELECT 
+                Id, 
+                Currency_Code__c, 
+                Invoice_Status__c, 
+                Billed_Amount__c, 
+                Total__c 
+            FROM Purchase_Order__c 
+            WHERE 
+                Id =: invoice.Purchase_Order__c 
+            LIMIT 1
+        ];
 
         String items = '';
         List<Dispatch_Order__c> dispatchOrders = new List<Dispatch_Order__c> ();
@@ -168,7 +230,17 @@ public with sharing class ClassInvoice {
             }
 
             Set<String> productsId = invoiceDescriptionMap.keySet();
-            List<Product__c> products = [SELECT Id, Price_USD__c, Price_GTQ__c, Name, Description__c, Unit__c FROM Product__c WHERE Id IN : productsId];
+            List<Product__c> products = [
+                SELECT 
+                    Id, 
+                    Price_USD__c, 
+                    Price_GTQ__c, 
+                    Name, 
+                    Description__c, 
+                    Unit__c 
+                FROM Product__c 
+                WHERE Id IN : productsId
+            ];
 
             Double price = 0;
             Double amount = 0;
@@ -326,11 +398,32 @@ public with sharing class ClassInvoice {
 
     @AuraEnabled
     public static void cancelInvoiceApex(String invoiceId, String cancellationReason){
-        Invoice__c invoice = [SELECT Id, Canceled__c, Cancellation_Reason__c, Purchase_Order__c FROM Invoice__c WHERE Id =: invoiceId];
+        Invoice__c invoice = [
+            SELECT 
+                Id, 
+                Canceled__c, 
+                Cancellation_Reason__c, 
+                Purchase_Order__c 
+            FROM Invoice__c 
+            WHERE Id =: invoiceId
+        ];
         
-        Purchase_Order__c purchaseOrder = [SELECT Id, Invoice_Status__c, Billed_Amount__c, Total__c FROM Purchase_Order__c WHERE Id =: invoice.Purchase_Order__c ];
+        Purchase_Order__c purchaseOrder = [
+            SELECT 
+                Id, 
+                Invoice_Status__c, 
+                Billed_Amount__c, 
+                Total__c 
+            FROM Purchase_Order__c 
+            WHERE Id =: invoice.Purchase_Order__c 
+        ];
 
-        List<Dispatch_Order__c> dispatchOrders = [SELECT Invoice__c FROM Dispatch_Order__c WHERE Invoice__c =: invoiceId];
+        List<Dispatch_Order__c> dispatchOrders = [
+            SELECT 
+                Invoice__c 
+            FROM Dispatch_Order__c 
+            WHERE Invoice__c =: invoiceId
+        ];
 
         for(Dispatch_Order__c dispatchOrder : dispatchOrders){
             dispatchOrder.Invoice__c = null;
@@ -351,7 +444,13 @@ public with sharing class ClassInvoice {
 
     private static void updatePurchaseOrderStateAndAmount(Invoice__c invoice, Purchase_Order__c purchaseOrder){
 
-        List<Invoice__c> relatedInvoices = [SELECT Amount__c, Canceled__c FROM Invoice__c WHERE Purchase_Order__c =: purchaseOrder.Id];
+        List<Invoice__c> relatedInvoices = [
+            SELECT 
+                Amount__c, 
+                Canceled__c 
+            FROM Invoice__c 
+            WHERE Purchase_Order__c =: purchaseOrder.Id
+        ];
 
         Double billedAmount = 0;
         for (Invoice__c relatedInvoice : relatedInvoices){
@@ -377,8 +476,29 @@ public with sharing class ClassInvoice {
 
     @AuraEnabled
     public static EntityCanelInvoiceInformation getInvoiceInformation(String invoiceId){
-        Invoice__c invoice = [SELECT Id, Name, Date__c, External_UUID__c, Purchase_Order__r.Account__r.Id FROM Invoice__c WHERE Id =: invoiceId LIMIT 1];
-        Company_Information__mdt companyInfo = [SELECT Invoice_Email__c, Infile_User__c, Infile_NIT__c, Infile_Sign_Key__c, Infile_Certification_Key__c, Infile_Anulation_Endpoint__c, Infile_Sign_Endpoint__c FROM Company_Information__mdt LIMIT 1];
+        Invoice__c invoice = [
+            SELECT 
+                Id, 
+                Name, 
+                Date__c, 
+                External_UUID__c, 
+                Purchase_Order__r.Account__r.Id 
+            FROM Invoice__c 
+            WHERE Id =: invoiceId 
+            LIMIT 1
+        ];
+        Company_Information__mdt companyInfo = [
+            SELECT 
+                Invoice_Email__c, 
+                Infile_User__c, 
+                Infile_NIT__c, 
+                Infile_Sign_Key__c, 
+                Infile_Certification_Key__c, 
+                Infile_Anulation_Endpoint__c, 
+                Infile_Sign_Endpoint__c 
+            FROM Company_Information__mdt 
+            LIMIT 1
+        ];
 
         EntityCanelInvoiceInformation response = new EntityCanelInvoiceInformation();
         response.invoice = invoice;
