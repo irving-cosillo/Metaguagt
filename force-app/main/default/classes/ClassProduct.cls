@@ -1,6 +1,6 @@
 public with sharing class ClassProduct {
 
-    @AuraEnabled
+    @AuraEnabled (cacheable = true)
     public static List<Product__c> getProducts(String input){
         String check = input.replace(' ', '');
         String searchValue = check.length() <= 0 ? '' : '%' + input + '%';
@@ -19,6 +19,8 @@ public with sharing class ClassProduct {
                     Price_USD__c
             FROM Product__c
             WHERE Name LIKE : searchValue
-            OR Description__c LIKE : searchValue];
+            OR Description__c LIKE : searchValue
+            LIMIT 20
+        ];
     }
 }

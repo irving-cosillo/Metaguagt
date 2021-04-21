@@ -70,8 +70,9 @@ public with sharing class ClassInvoice {
                 Account__r.Phone,
                 Quote__c, 
                 Quote__r.Sales_User__c,
+                Quote__r.Payment__c,
                 Quote__r.Credit__c,
-                Currency_Code__c 
+                Currency_Code__c
             FROM Purchase_Order__c 
             WHERE Id =: purchaseOrderId 
             LIMIT 1
@@ -93,7 +94,7 @@ public with sharing class ClassInvoice {
         Map<Id, Dispatch_Order__c> dispatchOrdersMap = new Map<Id, Dispatch_Order__c>([
             SELECT 
                 Id, 
-                Name 
+                Name
             FROM Dispatch_Order__c 
             WHERE 
                 Purchase_Order__c =: purchaseOrderId AND 
@@ -103,9 +104,12 @@ public with sharing class ClassInvoice {
         Set<Id> dispatchOrdersId = dispatchOrdersMap.keySet();
         List<Dispatch_Order__c> dispatchOrders = dispatchOrdersMap.values();
         List<Dispatch_Order_Line__c> dispatchOrderLines = [
-            SELECT 
+            SELECT
+                Dispatch_Order__c,
                 Product_Name__c, 
-                Quantity__c 
+                Quantity__c,
+                Purchase_Order_Line__r.Quote_Line__r.Product__r.Price_USD__c,
+                Purchase_Order_Line__r.Quote_Line__r.Product__r.Price_GTQ__c
             FROM Dispatch_Order_Line__c 
             WHERE Dispatch_Order__c IN  :dispatchOrdersId
         ];
@@ -245,6 +249,7 @@ public with sharing class ClassInvoice {
             Double price = 0;
             Double amount = 0;
             Double quantity = 0;
+            Integer itemsCount = 0;
             invoice.Description__c = '';
             for (Product__c product: products) {
                 invoiceDescriptionMap.get(product.Id).code = product.Name;
@@ -256,12 +261,13 @@ public with sharing class ClassInvoice {
                 amount += quantity * price;
 
                 invoice.Description__c += product.Name + ' | ' +  quantity + ' | ' + purchaseOrder.Currency_Code__c + price + ' \r\n';
-                items += generateItem(product.Name, quantity, product.Unit__c, price);
+                itemsCount += 1;
+                items += generateItem(product.Description__c, quantity, product.Unit__c, price, itemsCount);
             }
             invoice.Description__c +=  'Total: ' + purchaseOrder.Currency_Code__c + amount;
             invoice.Amount__c = amount;
         } else {
-            items += generateItem(invoice.Description__c, 1, '', (Double) invoice.Amount__c);
+            items += generateItem(invoice.Description__c, 1, '', (Double) invoice.Amount__c, 1);
         }
 
         xml = xml.replace('{total}', String.valueOf(invoice.Amount__c.setScale(2)));
@@ -281,7 +287,7 @@ public with sharing class ClassInvoice {
         return wrapper;
     }
 
-    private static String generateItem(String name, Double quantity, String unit, Double unitPrice){
+    private static String generateItem(String name, Double quantity, String unit, Double unitPrice, Integer line){
         Double totalPrice = (quantity * unitPrice * 1.0).setScale(2);
         Double iva = (totalPrice - totalPrice / 1.12).setScale(2);
         Double priceWithoutIva = (totalPrice - iva * 1.0).setScale(2);
@@ -289,12 +295,12 @@ public with sharing class ClassInvoice {
 
         String margin = '                    ';
         String item = '';
-        item += '<dte:Item BienOServicio="B" NumeroLinea="1">\r\n';
+        item += '<dte:Item BienOServicio="B" NumeroLinea="' + line + '">\r\n';
         item += margin + '    <dte:Cantidad>' + quantity + '</dte:Cantidad>\r\n';
         item += margin + '    <dte:UnidadMedida>UND</dte:UnidadMedida>\r\n';
         item += margin + '    <dte:Descripcion>' + name + '</dte:Descripcion>\r\n';
         item += margin + '    <dte:PrecioUnitario>' + unitPrice + '</dte:PrecioUnitario>\r\n';
-        item += margin + '    <dte:Precio>' + unitPrice + '</dte:Precio>\r\n';
+        item += margin + '    <dte:Precio>' + totalPrice + '</dte:Precio>\r\n';
         item += margin + '    <dte:Descuento>0.00</dte:Descuento>\r\n';
         item += margin + '    <dte:Impuestos>\r\n';
         item += margin + '        <dte:Impuesto>\r\n';
@@ -370,6 +376,14 @@ public with sharing class ClassInvoice {
         } else {
             HttpResponse response = http.send(request);
             String bodyResponse = response.getBody();
+
+            Integer cont = 0;
+            Integer step = 250;
+            while (cont+step < bodyResponse.length()){
+                System.debug(bodyResponse.substring(cont, cont+step));
+                cont += step;
+            }
+            System.debug(bodyResponse.substring(cont, bodyResponse.length()));
             EntityInvoiceResponse invoiceResponse = (EntityInvoiceResponse) System.JSON.deserialize(bodyResponse, EntityInvoiceResponse.class);
             return invoiceResponse;
         }

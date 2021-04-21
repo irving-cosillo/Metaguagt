@@ -18,6 +18,8 @@ export default class LwcInvoice extends LightningElement {
     isVariableAmount = false;
     isLoading = false;
     info;
+    total = 0;
+    dispatchOrderLines;
 
     invoice = {
         Purchase_Order__c : null,
@@ -62,6 +64,7 @@ export default class LwcInvoice extends LightningElement {
                     this.invoice.Email__c = info.companyInfo.Invoice_Email__c;
                     this.quoteId = info.quote.Id;
                     this.accountId = info.purchaseOrder.Account__c;
+                    this.dispatchOrderLines = info.dispatchOrderLines;
                     this.accountNIT = info.purchaseOrder.Account__r.NIT__c.replace('-','');
                 });
             }
@@ -79,8 +82,20 @@ export default class LwcInvoice extends LightningElement {
                     this.invoice.Description__c = null;
                 }
             }
-            if (event.target.name === "Type__c" && event.target.value === "Estandard"){
+            else if (event.target.name === "Type__c" && event.target.value === "Estandard"){
                 this.invoice.Partial_Payments__c = [];
+            }
+            else if (event.target.name === "Dispatch_Orders__c"){
+                this.total = 0;
+                const selectedOrderIds = JSON.parse(JSON.stringify(event.target.value));
+                const lines = this.dispatchOrderLines.filter( dispatchOrderLine => selectedOrderIds.find( selectedOrderId => selectedOrderId === dispatchOrderLine.Dispatch_Order__c ));
+                lines.forEach( line => {
+                    if ( this.invoice.Currency_Code__c === 'GTQ' ){
+                        this.total += line.Purchase_Order_Line__r.Quote_Line__r.Product__r.Price_GTQ__c;
+                    } else {
+                        this.total += line.Purchase_Order_Line__r.Quote_Line__r.Product__r.Price_USD__c;
+                    }
+                });
             }
         }
         else if(event.target.ariaLabel){
@@ -115,6 +130,11 @@ export default class LwcInvoice extends LightningElement {
             this.isLoading = true;
             const companyInfo = this.info.companyInfo;
             const clientLegalInfo = await getClientLegalInformation({ nit, companyInfo});
+            clientLegalInfo.legalName = clientLegalInfo.legalName.replace("{0}", "");
+            clientLegalInfo.legalName = clientLegalInfo.legalName.replace("{1}", "");
+            clientLegalInfo.legalName = clientLegalInfo.legalName.replace("{2}", "");
+            clientLegalInfo.legalName = clientLegalInfo.legalName.replace("{3}", "");
+            clientLegalInfo.legalName = clientLegalInfo.legalName.replace("{4}", "");
             console.log('Client Legal Name: ', clientLegalInfo.legalName);
             console.log('Client Legal Address: ', clientLegalInfo.legalAddress);
 
@@ -141,6 +161,8 @@ export default class LwcInvoice extends LightningElement {
             const xmlSignedEncoded = signInvoiceResponse.archivo;
             console.log('xmlSignedEncoded: ', {xmlSignedEncoded});
 
+
+            
             const certificateId = this.generateId();
             const email = invoice.Email__c;
             const processInvoiceResponse = await processInvoice({ xmlSignedEncoded, companyInfo, email, certificateId, isAnulation });
@@ -208,6 +230,17 @@ export default class LwcInvoice extends LightningElement {
                 result = "Debe de ingresar una descripción.";
             }
         }
+        if (this.isCambiaria){
+            if( !this.invoice.Partial_Payments__c.length){
+                result = "Debe de ingresar al menos un abono.";
+            } else {
+                const partialPaymentTotal = this.invoice.Partial_Payments__c.reduce((total, payment) => total + payment.paymentAmount, 0) ;
+                if ( partialPaymentTotal > this.total) {
+                    result = "La suma de los montos de los abonos no puede sobrepasar el monto total de la factura."
+                }
+            }
+        }
+
         if (result){
             this.dispatchError(result);
             return true;
@@ -255,7 +288,7 @@ export default class LwcInvoice extends LightningElement {
         if ( invoice.Type__c === 'Estandard' ) {
             type = 'FACT'
         } else if ( invoice.Type__c === 'Cambiaria' ) {
-            type = 'FACM'
+            type = 'FCAM'
         }
 
         const dispatchOrderAdenda = invoice.Dispatch_Orders__c && this.dispatchOrderOptions ?
@@ -264,6 +297,10 @@ export default class LwcInvoice extends LightningElement {
             }).join(", ") : '';
         const contado = info.quote.Credit__c ? '' : 'x';
         const credito = info.quote.Credit__c ? 'x' : '';;
+        const vendedor = info.purchaseOrder.Quote__r.Sales_User__c ? info.purchaseOrder.Quote__r.Sales_User__c : '';
+        const telefono = info.purchaseOrder.Account__r.Phone ? info.purchaseOrder.Account__r.Phone : '';
+        const ordenDeCompra = info.purchaseOrder.Order_Id__c ? info.purchaseOrder.Order_Id__c : '';
+        const formaDePago = info.purchaseOrder.Quote__r.Payment__c ? info.purchaseOrder.Quote__r.Payment__c : '';
 
         const invoiceDateTime = invoice.Date__c.split('-').map((val,i)=> { 
             return i > 0 && val.length === 1 ? '0' + val : val;
@@ -308,25 +345,25 @@ export default class LwcInvoice extends LightningElement {
                 </dte:Totales>
         `;
 
-        if (type === 'FACM' && invoice.Partial_Payments__c && invoice.Partial_Payments__c.length){
+        if (type === 'FCAM' && invoice.Partial_Payments__c && invoice.Partial_Payments__c.length){
             xml += `
                 <dte:Complementos>
+                    <dte:Complemento IDComplemento="Cambiaria" NombreComplemento="Cambiaria" URIComplemento="http://www.sat.gob.gt/fel/cambiaria.xsd">
+                        <cfc:AbonosFacturaCambiaria xmlns:cfc="http://www.sat.gob.gt/dte/fel/CompCambiaria/0.1.0" Version="1" xsi:schemaLocation="http://www.sat.gob.gt/dte/fel/CompCambiaria/0.1.0 C:\Users\Desktop\SAT_FEL_FINAL_V1\Esquemas\GT_Complemento_Cambiaria-0.1.0.xsd">  
             `;
             invoice.Partial_Payments__c.forEach(payment => {
                 xml +=
                 `
-                    <dte:Complemento IDComplemento="Cambiaria" NombreComplemento="Cambiaria" URIComplemento="http://www.sat.gob.gt/fel/cambiaria.xsd">
-                    <cfc:AbonosFacturaCambiaria xmlns:cfc="http://www.sat.gob.gt/dte/fel/CompCambiaria/0.1.0" Version="1" xsi:schemaLocation="http://www.sat.gob.gt/dte/fel/CompCambiaria/0.1.0 C:\Users\Desktop\SAT_FEL_FINAL_V1\Esquemas\GT_Complemento_Cambiaria-0.1.0.xsd">
-                        <cfc:Abono>
-                        <cfc:NumeroAbono>${payment.paymentName}</cfc:NumeroAbono>
-                        <cfc:FechaVencimiento>${payment.paymentDate}</cfc:FechaVencimiento>
-                        <cfc:MontoAbono>${payment.paymentAmount}</cfc:MontoAbono>
-                        </cfc:Abono>
-                    </cfc:AbonosFacturaCambiaria>
-                    </dte:Complemento>
+                            <cfc:Abono>
+                                <cfc:NumeroAbono>${payment.paymentName}</cfc:NumeroAbono>
+                                <cfc:FechaVencimiento>${payment.paymentDate}</cfc:FechaVencimiento>
+                                <cfc:MontoAbono>${payment.paymentAmount}</cfc:MontoAbono>
+                            </cfc:Abono>
                 `;
             });
             xml += `
+                        </cfc:AbonosFacturaCambiaria>
+                    </dte:Complemento>
                 </dte:Complementos>
             `;
         }
@@ -336,12 +373,13 @@ export default class LwcInvoice extends LightningElement {
             </dte:DatosEmision>
         </dte:DTE>
         <dte:Adenda>
-            <Vendedor>${info.purchaseOrder.Quote__r.Sales_User__c}</Vendedor>
-            <Telefono>${info.purchaseOrder.Account__r.Phone}</Telefono>
-            <OrdenDeCompra>${info.purchaseOrder.Order_Id__c}</OrdenDeCompra>
+            <Vendedor>${vendedor}</Vendedor>
+            <Telefono>${telefono}</Telefono>
+            <OrdenDeCompra>${ordenDeCompra}</OrdenDeCompra>
             <OrdenDeEnvio>${dispatchOrderAdenda}</OrdenDeEnvio>
             <Contado>${contado}</Contado>
-            <Credito><${credito}/Credito>
+            <Credito>${credito}</Credito>
+            <FormaDePago>${formaDePago}</FormaDePago>
         </dte:Adenda>
     </dte:SAT>
 </dte:GTDocumento>

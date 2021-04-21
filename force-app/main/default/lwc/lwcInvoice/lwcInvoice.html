@@ -9,7 +9,8 @@
                         name="Category__c"
                         options={categoryOptions}
                         value={invoice.Category__c}
-                        type="button">
+                        type="button"
+                        class="slds-m-top_small">
                     </lightning-radio-group>
 
                     <template if:false={isVariableAmount}>
@@ -23,6 +24,9 @@
                             min=1
                             class="slds-m-top_medium">
                         </lightning-dual-listbox>
+                        <div class="slds-m-top_medium">
+                            <b>Total: </b> {total} {invoice.Currency_Code__c}
+                        </div>
                     </template>
 
                     <template if:true={isVariableAmount}>
@@ -131,6 +135,9 @@
                 </div>
             </lightning-layout-item>
             <lightning-layout-item size="12" small-device-size="12" medium-device-size="4" large-device-size="4" padding="horizontal-small">
+                <div class="slds-m-top_small slds-m-bottom_small slds-text-align_center">
+                    <b>Datos de la Orden de Compra</b>
+                </div>
                 <lightning-layout multiple-rows="true">
                     <lightning-layout-item size="12" small-device-size="12" medium-device-size="6" large-device-size="6" padding="horizontal-small">
                         <lightning-record-view-form

@@ -1,4 +1,5 @@
-import { LightningElement, api } from 'lwc';
+import { LightningElement, api, wire } from 'lwc';
+import { refreshApex } from '@salesforce/apex';
 import searchProducts from '@salesforce/apex/ClassProduct.getProducts';
 
 export default class LwcSearchProduct extends LightningElement {
@@ -12,13 +13,21 @@ export default class LwcSearchProduct extends LightningElement {
         {label: 'Stock', fieldName: 'Stock__c', type: 'number', initialWidth: 70},
     ];
 
+    searchValue = '';
+    @wire (searchProducts, {input : '$searchValue'})
+    handleSearch(result){
+        const {data, error} = result;
+        if (data){
+            this.data = data;
+            this.hasSearchResults = data && data.length;
+        } else if (error) {
+            console.error(error);
+        }
+    }
+
     search(event){
-        const input = event.target.value;
-        
-        searchProducts({ input }).then ( result => {
-            this.data = result;
-            this.hasSearchResults = result && result.length > 0;
-        });
+        this.searchValue = event.target.value;
+        refreshApex(this.handleSearch);
     }
 
     @api add(){
