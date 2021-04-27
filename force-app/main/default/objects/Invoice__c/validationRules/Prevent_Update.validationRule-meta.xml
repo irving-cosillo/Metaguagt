@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Prevent_Update</fullName>
+    <active>true</active>
+    <errorConditionFormula>OR(
+  ISCHANGED( Partial_Payment__c ),
+  ISCHANGED( Category__c ),
+  ISCHANGED( Description__c ),
+  ISCHANGED( Email__c ),
+  ISCHANGED( Is_EInvoice__c ),
+  ISCHANGED( Date__c ),
+  ISCHANGED( Currency_Code__c ),
+  ISCHANGED( Amount__c ),
+  ISCHANGED( External_Number__c ),
+  ISCHANGED( Purchase_Order__c ),
+  ISCHANGED( Dispatch_Orders__c ),
+  ISCHANGED( External_Serie__c ),
+  ISCHANGED( Type__c ),
+  ISCHANGED( External_UUID__c )
+)</errorConditionFormula>
+    <errorMessage>El campo no puede ser editado.</errorMessage>
+</ValidationRule>

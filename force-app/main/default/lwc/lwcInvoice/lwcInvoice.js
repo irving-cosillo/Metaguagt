@@ -72,22 +72,26 @@ export default class LwcInvoice extends LightningElement {
     }
 
     fieldChange(event){
-        if(event.target.name in this.invoice) {
-            this.invoice[event.target.name] = JSON.parse(JSON.stringify(event.target.value));
-            if(event.target.name === "Category__c"){
-                if(event.target.value === "Monto Variable"){
+        let {name, value} = event.target;
+        if(name in this.invoice) {
+            this.invoice[name] = JSON.parse(JSON.stringify(value));
+            if(name === "Category__c"){
+                if(value === "Monto Variable"){
                     this.invoice.Dispatch_Orders__c = [];
                 } else {
                     this.invoice.Amount__c = null;
                     this.invoice.Description__c = null;
                 }
             }
-            else if (event.target.name === "Type__c" && event.target.value === "Estandard"){
+            else if (name === "Amount__c"){
+                this.total = value;
+            }
+            else if (name === "Type__c" && value === "Estandard"){
                 this.invoice.Partial_Payments__c = [];
             }
-            else if (event.target.name === "Dispatch_Orders__c"){
+            else if (name === "Dispatch_Orders__c"){
                 this.total = 0;
-                const selectedOrderIds = JSON.parse(JSON.stringify(event.target.value));
+                const selectedOrderIds = JSON.parse(JSON.stringify(value));
                 const lines = this.dispatchOrderLines.filter( dispatchOrderLine => selectedOrderIds.find( selectedOrderId => selectedOrderId === dispatchOrderLine.Dispatch_Order__c ));
                 lines.forEach( line => {
                     if ( this.invoice.Currency_Code__c === 'GTQ' ){
@@ -234,7 +238,7 @@ export default class LwcInvoice extends LightningElement {
             if( !this.invoice.Partial_Payments__c.length){
                 result = "Debe de ingresar al menos un abono.";
             } else {
-                const partialPaymentTotal = this.invoice.Partial_Payments__c.reduce((total, payment) => total + payment.paymentAmount, 0) ;
+                const partialPaymentTotal = this.invoice.Partial_Payments__c.reduce((total, payment) => total + parseFloat(payment.paymentAmount), 0) ;
                 if ( partialPaymentTotal > this.total) {
                     result = "La suma de los montos de los abonos no puede sobrepasar el monto total de la factura."
                 }

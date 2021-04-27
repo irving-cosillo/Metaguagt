@@ -97,4 +97,21 @@ public with sharing class ClassDispatchOrder {
             WHERE Dispatch_Order__c =: dispatchOrderId
         ];
     }
+
+    @AuraEnabled
+    public static void cancelDispatchOrder(String dispatchOrderId){
+        Dispatch_Order__c dispatchOrder = [SELECT Id, State__c, Invoice__c FROM Dispatch_Order__c WHERE Id =: dispatchOrderId];
+        List<Dispatch_Order_Line__c> dispatchOrderLines = [SELECT Id FROM Dispatch_Order_Line__c WHERE Dispatch_Order__c =: dispatchOrderId];
+        
+        if (dispatchOrder.State__c == 'Despachada'){
+            throw new AuraHandledException('La orden de despacho no puede ser anulada porque ya ha sido despachada.');
+        } else if (String.isNotBlank(dispatchOrder.Invoice__c)){
+            throw new AuraHandledException('La orden de despacho no puede ser anulada porque ya fue facturada.');
+        } else {
+            if(dispatchOrderLines.size() > 0){
+                delete dispatchOrderLines;
+            }
+            delete dispatchOrder;
+        }
+    }
 }

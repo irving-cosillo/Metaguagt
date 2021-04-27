@@ -7,6 +7,7 @@
  AND(ISCHANGED( Delivery_Address__c ), Converted__c ),
  AND(ISCHANGED( Currency_Code__c ), Converted__c ),
  AND(ISCHANGED( Contact__c ), Converted__c ),
+ AND(ISCHANGED( Credit__c ), Converted__c ),
  AND(ISCHANGED( Payment__c ), Converted__c ),
  AND(ISCHANGED( Discount__c ), Converted__c ),
  AND(ISCHANGED( Offer_Time__c ), Converted__c ),

@@ -3,10 +3,10 @@
     <fullName>Invoice</fullName>
     <fields>Name</fields>
     <fields>Purchase_Order__c</fields>
-    <fields>Category__c</fields>
     <fields>Currency_Code__c</fields>
     <fields>Amount__c</fields>
     <fields>Date__c</fields>
-    <fields>CreatedById</fields>
+    <fields>Canceled__c</fields>
+    <fields>Category__c</fields>
     <label>Factura</label>
 </CompactLayout>

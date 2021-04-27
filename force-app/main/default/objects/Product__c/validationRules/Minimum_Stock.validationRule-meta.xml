@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Minimum_Stock</fullName>
+    <active>true</active>
+    <errorConditionFormula>Stock_Minimum__c &gt;  Stock_Maximum__c</errorConditionFormula>
+    <errorMessage>El Stock Mínimo no puede ser mayor al Stock Máximo.</errorMessage>
+</ValidationRule>

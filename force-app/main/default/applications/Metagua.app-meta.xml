@@ -22,6 +22,7 @@
     <tabs>Dispatch_Order__c</tabs>
     <tabs>Invoice__c</tabs>
     <tabs>standard-Task</tabs>
+    <tabs>standard-Event</tabs>
     <tabs>standard-report</tabs>
     <tabs>standard-Dashboard</tabs>
     <uiType>Lightning</uiType>
@@ -53,6 +54,9 @@
         </mappings>
         <mappings>
             <tab>standard-Dashboard</tab>
+        </mappings>
+        <mappings>
+            <tab>standard-Event</tab>
         </mappings>
         <mappings>
             <tab>standard-Task</tab>

@@ -19,6 +19,15 @@ public class TestDispatchOrder {
         String dispatchOrderId = ClassDispatchOrder.createDispatchOrder(purchaseOrderId, dispatchOrderLines);
         Dispatch_Order__c dispatchOrder = [SELECT State__c FROM Dispatch_Order__c WHERE Id =: dispatchOrderId];
         System.assertEquals('Pendiente de despacho', dispatchOrder.State__c, 'Dispatch Order not found or incorrect state was set');
+
+        String exMessage = '';
+        try{
+            ClassDispatchOrder.cancelDispatchOrder(dispatchOrderId);
+        } catch (Exception ex){
+            exMessage = ex.getMessage();
+        }
+
+        System.assertEquals('', exMessage, 'Dispatch Order was not cancelled correctly. ' + exMessage);
         Test.stopTest();
     }
 
@@ -59,6 +68,15 @@ public class TestDispatchOrder {
         ClassDispatchOrder.dispatchOrder(dispatchOrderId2);
         purchaseOrder = [SELECT Dispatch_Status__c FROM Purchase_Order__c WHERE Id =: purchaseOrderId];
         System.assertEquals('Completado', purchaseOrder.Dispatch_Status__c, 'Incorrect dispatch final status from purchase order.');
+        
+        String exMessage = '';
+        try{
+            ClassDispatchOrder.cancelDispatchOrder(dispatchOrder.Id);
+        } catch (Exception ex){
+            exMessage = ex.getMessage();
+        }
+
+        System.assertNotEquals('', exMessage, 'Dispatch Order did not throw the invoice exception.');
         Test.stopTest();
     }
 
