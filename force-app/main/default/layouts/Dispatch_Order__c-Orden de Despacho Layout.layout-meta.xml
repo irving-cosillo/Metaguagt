@@ -93,9 +93,14 @@
             <sortOrder>5</sortOrder>
         </platformActionListItems>
         <platformActionListItems>
-            <actionName>Dispatch_Order__c.Dispatch_Order</actionName>
+            <actionName>Dispatch_Order__c.Dispatch_Order_Cancellation</actionName>
             <actionType>QuickAction</actionType>
             <sortOrder>6</sortOrder>
+        </platformActionListItems>
+        <platformActionListItems>
+            <actionName>Dispatch_Order__c.Dispatch_Order</actionName>
+            <actionType>QuickAction</actionType>
+            <sortOrder>7</sortOrder>
         </platformActionListItems>
     </platformActionList>
     <quickActionList>

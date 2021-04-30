@@ -319,20 +319,20 @@ export default class LwcInvoice extends LightningElement {
                 <dte:DatosGenerales CodigoMoneda="${invoice.Currency_Code__c}" FechaHoraEmision="${invoiceDateTime}" Tipo="${type}"></dte:DatosGenerales>
                 <dte:Emisor AfiliacionIVA="GEN" CodigoEstablecimiento="1" CorreoEmisor="demo@demo.com.gt" NITEmisor="${info.companyInfo.Infile_NIT__c.replace('-','')}" NombreComercial="${info.companyInfo.Label}" NombreEmisor="${info.companyInfo.Legal_Name__c}">
                     <dte:DireccionEmisor>
-                    <dte:Direccion>${info.companyInfo.Address__c}</dte:Direccion>
-                    <dte:CodigoPostal>01001</dte:CodigoPostal>
-                    <dte:Municipio>GUATEMALA</dte:Municipio>
-                    <dte:Departamento>GUATEMALA</dte:Departamento>
-                    <dte:Pais>GT</dte:Pais>
+                        <dte:Direccion>${info.companyInfo.Address__c}</dte:Direccion>
+                        <dte:CodigoPostal>01001</dte:CodigoPostal>
+                        <dte:Municipio>GUATEMALA</dte:Municipio>
+                        <dte:Departamento>GUATEMALA</dte:Departamento>
+                        <dte:Pais>GT</dte:Pais>
                     </dte:DireccionEmisor>
                 </dte:Emisor>
                 <dte:Receptor CorreoReceptor="${invoice.Email__c}" IDReceptor="${this.accountNIT}" NombreReceptor="${clientLegalInfo.legalName}">
                     <dte:DireccionReceptor>
-                    <dte:Direccion>${clientLegalInfo.legalAddress}</dte:Direccion>
-                    <dte:CodigoPostal>01001</dte:CodigoPostal>
-                    <dte:Municipio>GUATEMALA</dte:Municipio>
-                    <dte:Departamento>GUATEMALA</dte:Departamento>
-                    <dte:Pais>GT</dte:Pais>
+                        <dte:Direccion>${clientLegalInfo.legalAddress}</dte:Direccion>
+                        <dte:CodigoPostal>01001</dte:CodigoPostal>
+                        <dte:Municipio>GUATEMALA</dte:Municipio>
+                        <dte:Departamento>GUATEMALA</dte:Departamento>
+                        <dte:Pais>GT</dte:Pais>
                     </dte:DireccionReceptor>
                 </dte:Receptor>
                 <dte:Frases>
