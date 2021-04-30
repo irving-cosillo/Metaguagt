@@ -197,7 +197,7 @@ public with sharing class ClassInvoice {
         
         Purchase_Order__c purchaseOrder = [
             SELECT 
-                Id, 
+                Id,
                 Currency_Code__c, 
                 Invoice_Status__c, 
                 Billed_Amount__c, 
@@ -392,7 +392,7 @@ public with sharing class ClassInvoice {
     @AuraEnabled
     public static String insertInvoiceApex(Invoice__c invoice, Purchase_Order__c purchaseOrder, List<Dispatch_Order__c> dispatchOrders){
         insert invoice;
-
+        
         if (dispatchOrders.size() > 0) {
             for(Dispatch_Order__c dispatchOrder : dispatchOrders){
                 dispatchOrder.Invoice__c = invoice.Id;
@@ -402,7 +402,7 @@ public with sharing class ClassInvoice {
         }
 
         try {
-            updatePurchaseOrderStateAndAmount(invoice, purchaseOrder);
+            updatePurchaseOrderStateAndAmount(invoice);
         } catch (Exception ex){
             throw new AuraHandledException(ex.getMessage());
         }
@@ -420,16 +420,6 @@ public with sharing class ClassInvoice {
                 Purchase_Order__c 
             FROM Invoice__c 
             WHERE Id =: invoiceId
-        ];
-        
-        Purchase_Order__c purchaseOrder = [
-            SELECT 
-                Id, 
-                Invoice_Status__c, 
-                Billed_Amount__c, 
-                Total__c 
-            FROM Purchase_Order__c 
-            WHERE Id =: invoice.Purchase_Order__c 
         ];
 
         List<Dispatch_Order__c> dispatchOrders = [
@@ -450,13 +440,23 @@ public with sharing class ClassInvoice {
         update invoice;
 
         try {
-            updatePurchaseOrderStateAndAmount(invoice, purchaseOrder);    
+            updatePurchaseOrderStateAndAmount(invoice);    
         } catch (Exception ex){
             throw new AuraHandledException(ex.getMessage());
         }
     }
 
-    private static void updatePurchaseOrderStateAndAmount(Invoice__c invoice, Purchase_Order__c purchaseOrder){
+    private static void updatePurchaseOrderStateAndAmount(Invoice__c invoice){
+
+        Purchase_Order__c purchaseOrder = [
+            SELECT
+                Id,
+                Currency_Code__c,
+                Billed_Amount__c, 
+                Total__c 
+            FROM Purchase_Order__c 
+            WHERE Id =: invoice.Purchase_Order__c
+        ];
 
         List<Invoice__c> relatedInvoices = [
             SELECT 

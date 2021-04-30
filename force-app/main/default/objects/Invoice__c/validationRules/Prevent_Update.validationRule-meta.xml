@@ -2,21 +2,23 @@
 <ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Prevent_Update</fullName>
     <active>true</active>
-    <errorConditionFormula>OR(
-  ISCHANGED( Partial_Payment__c ),
-  ISCHANGED( Category__c ),
-  ISCHANGED( Description__c ),
-  ISCHANGED( Email__c ),
-  ISCHANGED( Is_EInvoice__c ),
-  ISCHANGED( Date__c ),
-  ISCHANGED( Currency_Code__c ),
-  ISCHANGED( Amount__c ),
-  ISCHANGED( External_Number__c ),
-  ISCHANGED( Purchase_Order__c ),
-  ISCHANGED( Dispatch_Orders__c ),
-  ISCHANGED( External_Serie__c ),
-  ISCHANGED( Type__c ),
-  ISCHANGED( External_UUID__c )
-)</errorConditionFormula>
+    <errorConditionFormula>
+    OR(
+      AND(ISCHANGED( Partial_Payment__c ), NOT(ISBLANK( Id ))),
+      AND(ISCHANGED( Category__c ), NOT(ISBLANK( Id ))),
+      AND(ISCHANGED( Description__c ), NOT(ISBLANK( Id ))),
+      AND(ISCHANGED( Email__c ), NOT(ISBLANK( Id ))),
+      AND(ISCHANGED( Is_EInvoice__c ), NOT(ISBLANK( Id ))),
+      AND(ISCHANGED( Date__c ), NOT(ISBLANK( Id ))),
+      AND(ISCHANGED( Currency_Code__c ), NOT(ISBLANK( Id ))),
+      AND(ISCHANGED( Amount__c ), NOT(ISBLANK( Id ))),
+      AND(ISCHANGED( External_Number__c ), NOT(ISBLANK( Id ))),
+      AND(ISCHANGED( Purchase_Order__c ), NOT(ISBLANK( Id ))),
+      AND(ISCHANGED( Dispatch_Orders__c ), NOT(ISBLANK( Id ))),
+      AND(ISCHANGED( External_Serie__c ), NOT(ISBLANK( Id ))),
+      AND(ISCHANGED( Type__c ), NOT(ISBLANK( Id ))),
+      AND(ISCHANGED( External_UUID__c ), NOT(ISBLANK( Id )))
+    )
+    </errorConditionFormula>
     <errorMessage>El campo no puede ser editado.</errorMessage>
 </ValidationRule>

@@ -18,7 +18,7 @@ export default class LwcInvoice extends LightningElement {
     isVariableAmount = false;
     isLoading = false;
     info;
-    total = 0;
+    total = 0.00;
     dispatchOrderLines;
 
     invoice = {
@@ -84,20 +84,20 @@ export default class LwcInvoice extends LightningElement {
                 }
             }
             else if (name === "Amount__c"){
-                this.total = value;
+                this.total = value.toFixed(2);
             }
             else if (name === "Type__c" && value === "Estandard"){
                 this.invoice.Partial_Payments__c = [];
             }
             else if (name === "Dispatch_Orders__c"){
-                this.total = 0;
+                this.total = 0.00;
                 const selectedOrderIds = JSON.parse(JSON.stringify(value));
                 const lines = this.dispatchOrderLines.filter( dispatchOrderLine => selectedOrderIds.find( selectedOrderId => selectedOrderId === dispatchOrderLine.Dispatch_Order__c ));
                 lines.forEach( line => {
                     if ( this.invoice.Currency_Code__c === 'GTQ' ){
-                        this.total += line.Purchase_Order_Line__r.Quote_Line__r.Product__r.Price_GTQ__c;
+                        this.total += line.Quantity__c * line.Purchase_Order_Line__r.Quote_Line__r.Product__r.Price_GTQ__c;
                     } else {
-                        this.total += line.Purchase_Order_Line__r.Quote_Line__r.Product__r.Price_USD__c;
+                        this.total += line.Quantity__c * line.Purchase_Order_Line__r.Quote_Line__r.Product__r.Price_USD__c;
                     }
                 });
             }

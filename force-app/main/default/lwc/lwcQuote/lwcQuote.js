@@ -88,11 +88,11 @@ export default class LwcQuote extends NavigationMixin(LightningElement) {
                         variant: 'success'
                     }));
                 }).catch( error => {
-                    this.errorMessage(error.body.message);
+                    this.errorMessage(error);
                 });
             }
         }).catch(error => {
-            this.errorMessage(error.body.message);
+            this.errorMessage(error);
         })
     }
 
@@ -152,7 +152,9 @@ export default class LwcQuote extends NavigationMixin(LightningElement) {
         this.quote = quote;
     }
 
-    errorMessage(message){
+    errorMessage(error){
+        const message = error.body && error.body.message ? error.body.message : error;
+        console.error(message);
         this.dispatchEvent( new ShowToastEvent({
             title: '',
             message: 'Error: ' + message,

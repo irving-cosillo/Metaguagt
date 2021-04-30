@@ -25,7 +25,14 @@
                             class="slds-m-top_medium">
                         </lightning-dual-listbox>
                         <div class="slds-m-top_medium">
-                            <b>Total: </b> {total} {invoice.Currency_Code__c}
+                            <b>Total: </b> 
+                            {invoice.Currency_Code__c} 
+                            <lightning-formatted-number
+                                class="slds-m-left_xxx-small" 
+                                value={total} 
+                                minimum-fraction-digits="2" 
+                                maximum-fraction-digits="2">
+                            </lightning-formatted-number> 
                         </div>
                     </template>
 
