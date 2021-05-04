@@ -84,7 +84,7 @@ export default class LwcInvoice extends LightningElement {
                 }
             }
             else if (name === "Amount__c"){
-                this.total = value.toFixed(2);
+                this.total = (value * 1).toFixed(2);
             }
             else if (name === "Type__c" && value === "Estandard"){
                 this.invoice.Partial_Payments__c = [];
@@ -148,7 +148,7 @@ export default class LwcInvoice extends LightningElement {
             const wrapper = await getInvoiceWrapper({invoice, xml});
             const xmlEncoded = wrapper.xmlEncoded;
             console.log('Wrapper: ', JSON.parse(JSON.stringify(wrapper)));
-            
+
             const isAnulation = false;
             const signInvoiceResponse = await signInvoice({ xmlEncoded, companyInfo, isAnulation});
 
@@ -164,8 +164,6 @@ export default class LwcInvoice extends LightningElement {
 
             const xmlSignedEncoded = signInvoiceResponse.archivo;
             console.log('xmlSignedEncoded: ', {xmlSignedEncoded});
-
-
             
             const certificateId = this.generateId();
             const email = invoice.Email__c;
