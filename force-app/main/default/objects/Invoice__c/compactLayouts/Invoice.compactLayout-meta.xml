@@ -6,7 +6,8 @@
     <fields>Currency_Code__c</fields>
     <fields>Amount__c</fields>
     <fields>Date__c</fields>
-    <fields>Canceled__c</fields>
     <fields>Category__c</fields>
+    <fields>Type__c</fields>
+    <fields>Canceled__c</fields>
     <label>Factura</label>
 </CompactLayout>

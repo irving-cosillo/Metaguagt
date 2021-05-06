@@ -100,6 +100,9 @@ export default class LwcInvoice extends LightningElement {
                         this.total += line.Quantity__c * line.Purchase_Order_Line__r.Quote_Line__r.Product__r.Price_USD__c;
                     }
                 });
+                
+                const discount = this.info.purchaseOrder.Quote__r.Discount__c ? this.info.purchaseOrder.Quote__r.Discount__c : 0;
+                this.total = this.total * (1 - discount/100);
             }
         }
         else if(event.target.ariaLabel){
@@ -149,32 +152,53 @@ export default class LwcInvoice extends LightningElement {
             const xmlEncoded = wrapper.xmlEncoded;
             console.log('Wrapper: ', JSON.parse(JSON.stringify(wrapper)));
 
-            const isAnulation = false;
-            const signInvoiceResponse = await signInvoice({ xmlEncoded, companyInfo, isAnulation});
-
-            if (!signInvoiceResponse){
-                throw '';
-            } else if ( signInvoiceResponse.resultado === false ){
-                throw {
-                    body: {
-                        message: signInvoiceResponse.descripcion
-                    }
-                };
-            }
-
-            const xmlSignedEncoded = signInvoiceResponse.archivo;
-            console.log('xmlSignedEncoded: ', {xmlSignedEncoded});
-            
-            const certificateId = this.generateId();
-            const email = invoice.Email__c;
-            const processInvoiceResponse = await processInvoice({ xmlSignedEncoded, companyInfo, email, certificateId, isAnulation });
-            console.log('Certify Invoice response: ', processInvoiceResponse);
-
-            if (processInvoiceResponse.cantidad_errores === 0) {
-                wrapper.invoice.External_UUID__c = processInvoiceResponse.uuid;
-                wrapper.invoice.External_Serie__c = processInvoiceResponse.serie;
-                wrapper.invoice.External_Number__c = processInvoiceResponse.numero;
+            if (invoice.Is_EInvoice__c){
+                console.log('Creating EInvoice');
+                const isAnulation = false;
+                const signInvoiceResponse = await signInvoice({ xmlEncoded, companyInfo, isAnulation});
+    
+                if (!signInvoiceResponse){
+                    throw '';
+                } else if ( signInvoiceResponse.resultado === false ){
+                    throw {
+                        body: {
+                            message: signInvoiceResponse.descripcion
+                        }
+                    };
+                }
+    
+                const xmlSignedEncoded = signInvoiceResponse.archivo;
+                console.log('xmlSignedEncoded: ', {xmlSignedEncoded});
                 
+                const certificateId = this.generateId();
+                const email = invoice.Email__c;
+                const processInvoiceResponse = await processInvoice({ xmlSignedEncoded, companyInfo, email, certificateId, isAnulation });
+                console.log('Certify Invoice response: ', processInvoiceResponse);
+    
+                if (processInvoiceResponse.cantidad_errores !== 0) {
+                    processInvoiceResponse.descripcion_errores.forEach( error => {
+                        this.dispatchError(error.mensaje_error);
+                    });
+                } else {
+                    wrapper.invoice.External_UUID__c = processInvoiceResponse.uuid;
+                    wrapper.invoice.External_Serie__c = processInvoiceResponse.serie;
+                    wrapper.invoice.External_Number__c = processInvoiceResponse.numero;
+                    
+                    const Id = await insertInvoiceApex({ 
+                        invoice : wrapper.invoice,
+                        purchaseOrder : wrapper.purchaseOrder,
+                        dispatchOrders : wrapper.dispatchOrders
+                    });
+                    
+                    console.log('Invoice Id: ', Id);
+                    this.dispatchEvent(new ShowToastEvent({
+                        title: '',
+                        message: 'Factura generada con éxito.',
+                        variant: 'success'
+                    }));  
+                }
+            } else {
+                console.log('EInvoice not created');
                 const Id = await insertInvoiceApex({ 
                     invoice : wrapper.invoice,
                     purchaseOrder : wrapper.purchaseOrder,
@@ -186,11 +210,7 @@ export default class LwcInvoice extends LightningElement {
                     title: '',
                     message: 'Factura generada con éxito.',
                     variant: 'success'
-                }));
-            } else {
-                processInvoiceResponse.descripcion_errores.forEach( error => {
-                    this.dispatchError(error.mensaje_error);
-                });
+                })); 
             }
         } catch (error){
             const message = error.body && error.body.message ?  error.body.message : 'La factura no pudo ser generada con éxito, por favor intente de nuevo.';
@@ -315,7 +335,7 @@ export default class LwcInvoice extends LightningElement {
         <dte:DTE ID="DatosCertificados">
             <dte:DatosEmision ID="DatosEmision">
                 <dte:DatosGenerales CodigoMoneda="${invoice.Currency_Code__c}" FechaHoraEmision="${invoiceDateTime}" Tipo="${type}"></dte:DatosGenerales>
-                <dte:Emisor AfiliacionIVA="GEN" CodigoEstablecimiento="1" CorreoEmisor="demo@demo.com.gt" NITEmisor="${info.companyInfo.Infile_NIT__c.replace('-','')}" NombreComercial="${info.companyInfo.Label}" NombreEmisor="${info.companyInfo.Legal_Name__c}">
+                <dte:Emisor AfiliacionIVA="GEN" CodigoEstablecimiento="2" CorreoEmisor="demo@demo.com.gt" NITEmisor="${info.companyInfo.Infile_NIT__c.replace('-','')}" NombreComercial="${info.companyInfo.Label}" NombreEmisor="${info.companyInfo.Legal_Name__c}">
                     <dte:DireccionEmisor>
                         <dte:Direccion>${info.companyInfo.Address__c}</dte:Direccion>
                         <dte:CodigoPostal>01001</dte:CodigoPostal>

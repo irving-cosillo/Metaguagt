@@ -49,8 +49,16 @@ public class TestInvoice {
         Test.startTest();
         ClassInvoice.EntityInvoiceWrapper wrapper = ClassInvoice.getInvoiceWrapper(invoice, xml);
         System.assertEquals(true, String.isNotBlank(wrapper.xmlEncoded), 'Empty xmlEncoded response.');
-        String invoiceId = ClassInvoice.insertInvoiceApex(wrapper.invoice, wrapper.purchaseOrder, wrapper.dispatchOrders);
+        String invoiceId;
+        String exMessage;
+        try{
+            invoiceId = ClassInvoice.insertInvoiceApex(wrapper.invoice, wrapper.purchaseOrder, wrapper.dispatchOrders);
+        } catch(Exception ex){
+            exMessage = ex.getMessage();
+        } 
+        System.assertEquals(true, String.isBlank(exMessage), 'Exception thrown: ' + exMessage);
         System.assertEquals(true, String.isNotBlank(invoiceId), 'Invoice not created.');
+
         ClassInvoice.cancelInvoiceApex(invoiceId,'Test Reasson');
         invoice = [SELECT Canceled__c, Cancellation_Reason__c FROM Invoice__c WHERE Id =: invoiceId];
         System.assertEquals(true, invoice.Canceled__c, 'Invoice not cancelled correctly.');

@@ -70,6 +70,7 @@ public with sharing class ClassInvoice {
                 Account__r.Phone,
                 Quote__c, 
                 Quote__r.Sales_User__c,
+                Quote__r.Discount__c,
                 Quote__r.Payment__c,
                 Quote__r.Credit__c,
                 Currency_Code__c
@@ -200,13 +201,15 @@ public with sharing class ClassInvoice {
                 Id,
                 Currency_Code__c, 
                 Invoice_Status__c, 
-                Billed_Amount__c, 
+                Billed_Amount__c,
+                Quote__r.Discount__c,
                 Total__c 
             FROM Purchase_Order__c 
             WHERE 
                 Id =: invoice.Purchase_Order__c 
             LIMIT 1
         ];
+        Double discount = purchaseOrder.Quote__r.Discount__c == null ? 0 : purchaseOrder.Quote__r.Discount__c;
 
         String items = '';
         List<Dispatch_Order__c> dispatchOrders = new List<Dispatch_Order__c> ();
@@ -246,6 +249,22 @@ public with sharing class ClassInvoice {
                 WHERE Id IN : productsId
             ];
 
+            List<Invoice__c> relatedInvoices = [
+                SELECT 
+                    Amount__c, 
+                    Canceled__c 
+                FROM Invoice__c 
+                WHERE Purchase_Order__c =: purchaseOrder.Id
+            ];
+            
+            Double billedAmount = 0;
+            for (Invoice__c relatedInvoice : relatedInvoices){
+                if (!relatedInvoice.Canceled__c){
+                    billedAmount += relatedInvoice.Amount__c;
+                }
+            }
+            billedAmount = (billedAmount * 1.0).setScale(2);
+
             Double price = 0;
             Double amount = 0;
             Double quantity = 0;
@@ -262,12 +281,23 @@ public with sharing class ClassInvoice {
 
                 invoice.Description__c += product.Name + ' | ' +  quantity + ' | ' + purchaseOrder.Currency_Code__c + price + ' \r\n';
                 itemsCount += 1;
-                items += generateItem(product.Description__c, quantity, product.Unit__c, price, itemsCount);
+                items += generateItem(product.Description__c, quantity, product.Unit__c, price, itemsCount, discount);
             }
-            invoice.Description__c +=  'Total: ' + purchaseOrder.Currency_Code__c + amount;
-            invoice.Amount__c = amount;
+
+            Double invoiceTotal = (amount * (1 - discount/100) * 1.0).setScale(2);
+            amount = (amount * 1.0).setScale(2);
+            Double difference = billedAmount + invoiceTotal - purchaseOrder.Total__c;
+
+            if (difference < 0.02 && difference > 0 ){
+                invoiceTotal = purchaseOrder.Total__c - billedAmount;
+            }
+
+            invoice.Description__c +=  'SubTotal: ' + purchaseOrder.Currency_Code__c + amount;
+            invoice.Description__c +=  'Descuento: ' + (discount * 1.0).setScale(2);
+            invoice.Description__c +=  'Total: ' + purchaseOrder.Currency_Code__c + invoiceTotal;
+            invoice.Amount__c = invoiceTotal;
         } else {
-            items += generateItem(invoice.Description__c, 1, '', (Double) invoice.Amount__c, 1);
+            items += generateItem(invoice.Description__c, 1, '', (Double) invoice.Amount__c, 1, discount);
         }
 
         xml = xml.replace('{total}', String.valueOf(invoice.Amount__c.setScale(2)));
@@ -287,12 +317,14 @@ public with sharing class ClassInvoice {
         return wrapper;
     }
 
-    private static String generateItem(String name, Double quantity, String unit, Double unitPrice, Integer line){
-        Double totalPrice = (quantity * unitPrice * 1.0).setScale(2);
-        Double iva = (totalPrice - totalPrice / 1.12).setScale(2);
-        Double priceWithoutIva = (totalPrice - iva * 1.0).setScale(2);
+    private static String generateItem(String name, Double quantity, String unit, Double unitPrice, Integer line, Double discount){
+        Double price = (quantity * unitPrice * 1.0).setScale(2);
+        Double discountApplied = (quantity * unitPrice * discount/100 * 1.0).setScale(2);
+        Double total = (quantity * unitPrice * (1 - discount/100) * 1.0).setScale(2);
+        Double iva = (total - total / 1.12).setScale(2);
+        Double amount = (total - iva * 1.0).setScale(2);
         unitPrice = (unitPrice * 1.0).setScale(2);
-
+        
         String margin = '                    ';
         String item = '';
         item += '<dte:Item BienOServicio="B" NumeroLinea="' + line + '">\r\n';
@@ -300,17 +332,17 @@ public with sharing class ClassInvoice {
         item += margin + '    <dte:UnidadMedida>UND</dte:UnidadMedida>\r\n';
         item += margin + '    <dte:Descripcion>' + name + '</dte:Descripcion>\r\n';
         item += margin + '    <dte:PrecioUnitario>' + unitPrice + '</dte:PrecioUnitario>\r\n';
-        item += margin + '    <dte:Precio>' + totalPrice + '</dte:Precio>\r\n';
-        item += margin + '    <dte:Descuento>0.00</dte:Descuento>\r\n';
+        item += margin + '    <dte:Precio>' + price + '</dte:Precio>\r\n';
+        item += margin + '    <dte:Descuento>' + discountApplied + '</dte:Descuento>\r\n';
         item += margin + '    <dte:Impuestos>\r\n';
         item += margin + '        <dte:Impuesto>\r\n';
         item += margin + '            <dte:NombreCorto>IVA</dte:NombreCorto>\r\n';
         item += margin + '            <dte:CodigoUnidadGravable>1</dte:CodigoUnidadGravable>\r\n';
-        item += margin + '            <dte:MontoGravable>' + priceWithoutIva + '</dte:MontoGravable>\r\n';
+        item += margin + '            <dte:MontoGravable>' + amount + '</dte:MontoGravable>\r\n';
         item += margin + '            <dte:MontoImpuesto>' + iva + '</dte:MontoImpuesto>\r\n';
         item += margin + '            </dte:Impuesto>\r\n';
         item += margin + '    </dte:Impuestos>\r\n';
-        item += margin + '    <dte:Total>' + totalPrice + '</dte:Total>\r\n';
+        item += margin + '    <dte:Total>' + total + '</dte:Total>\r\n';
         item += margin + '</dte:Item>\r\n';
 
         return item;
@@ -397,7 +429,7 @@ public with sharing class ClassInvoice {
             for(Dispatch_Order__c dispatchOrder : dispatchOrders){
                 dispatchOrder.Invoice__c = invoice.Id;
             }
-
+            
             update dispatchOrders;
         }
 
@@ -442,22 +474,24 @@ public with sharing class ClassInvoice {
         try {
             updatePurchaseOrderStateAndAmount(invoice);    
         } catch (Exception ex){
-            throw new AuraHandledException(ex.getMessage());
+            AuraHandledException e = new AuraHandledException(ex.getMessage());
+            e.setMessage(ex.getMessage());
+            throw e;
         }
     }
 
     private static void updatePurchaseOrderStateAndAmount(Invoice__c invoice){
-
         Purchase_Order__c purchaseOrder = [
             SELECT
                 Id,
                 Currency_Code__c,
                 Billed_Amount__c, 
-                Total__c 
+                Total__c,
+                Quote__r.Discount__c
             FROM Purchase_Order__c 
             WHERE Id =: invoice.Purchase_Order__c
         ];
-
+        
         List<Invoice__c> relatedInvoices = [
             SELECT 
                 Amount__c, 
@@ -465,7 +499,7 @@ public with sharing class ClassInvoice {
             FROM Invoice__c 
             WHERE Purchase_Order__c =: purchaseOrder.Id
         ];
-
+        
         Double billedAmount = 0;
         for (Invoice__c relatedInvoice : relatedInvoices){
             if (!relatedInvoice.Canceled__c){
@@ -474,17 +508,19 @@ public with sharing class ClassInvoice {
         }
 
         purchaseOrder.Billed_Amount__c = billedAmount;
-
-        if (billedAmount <= 0){
+        if (billedAmount <= 0 && purchaseOrder.Total__c > 0){
             purchaseOrder.Invoice_Status__c = 'Pendiente';
         } else if (billedAmount < purchaseOrder.Total__c){
             purchaseOrder.Invoice_Status__c = 'Parcialmente';
         } else if (billedAmount == purchaseOrder.Total__c){
             purchaseOrder.Invoice_Status__c = 'Completado';
         } else {
-            throw new AuraHandledException('El monto excede el total de la orden de compra.');
+            String errorMessage = 'El monto excede el total de la orden de compra. cantidad facturada: ' + billedAmount  ;
+            AuraHandledException ex = new AuraHandledException(errorMessage);
+            ex.setMessage(errorMessage);
+            throw ex;
         }
-
+        
         update purchaseOrder;
     }
 
@@ -496,7 +532,7 @@ public with sharing class ClassInvoice {
                 Name, 
                 Date__c, 
                 External_UUID__c, 
-                Purchase_Order__r.Account__r.Id 
+                Purchase_Order__r.Account__r.NIT__c
             FROM Invoice__c 
             WHERE Id =: invoiceId 
             LIMIT 1

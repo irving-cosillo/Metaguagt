@@ -57,6 +57,16 @@ export default class LwcInvoiceCancellation extends LightningElement {
             const processInvoiceResponse = await processInvoice({ xmlSignedEncoded, companyInfo, email, certificateId, isAnulation });
             console.log('Certify Invoice response: ', processInvoiceResponse);
             
+            if (!processInvoiceResponse){
+                throw '';
+            } else if ( processInvoiceResponse.resultado === false ){
+                throw {
+                    body: {
+                        message: processInvoiceResponse.descripcion
+                    }
+                };
+            }
+            
             await cancelInvoiceApex({ invoiceId, cancellationReason})
             this.cancel();
             this.dispatchEvent(new ShowToastEvent({
@@ -91,21 +101,13 @@ export default class LwcInvoiceCancellation extends LightningElement {
 
         const nitEmisor = info.companyInfo.Infile_NIT__c;
         const documentNumber = info.invoice.External_UUID__c;
-        const accountId = info.invoice.Purchase_Order__r.Account__r.Id;
+        const accountNIT = info.invoice.Purchase_Order__r.Account__r.NIT__c;
 
         return `
             <dte:GTAnulacionDocumento xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:dte="http://www.sat.gob.gt/dte/fel/0.1.0" xmlns:n1="http://www.altova.com/samplexml/other-namespace" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="0.1" xsi:schemaLocation="http://www.sat.gob.gt/dte/fel/0.1.0">
                 <dte:SAT>
                     <dte:AnulacionDTE ID="DatosCertificados">
-                        <dte:DatosGenerales 
-                            FechaEmisionDocumentoAnular="${emisionDate}"
-                            FechaHoraAnulacion="${anulationDate}"
-                            ID="DatosAnulacion" 
-                            IDReceptor="${accountId}" 
-                            MotivoAnulacion="${this.cancellationReason}" 
-                            NITEmisor="${nitEmisor}"
-                            NumeroDocumentoAAnular="${documentNumber}">
-                        </dte:DatosGenerales>
+                        <dte:DatosGenerales FechaEmisionDocumentoAnular="${emisionDate}" FechaHoraAnulacion="${anulationDate}" ID="DatosAnulacion" IDReceptor="${accountNIT}" MotivoAnulacion="${this.cancellationReason}" NITEmisor="${nitEmisor}" NumeroDocumentoAAnular="${documentNumber}"></dte:DatosGenerales>
                     </dte:AnulacionDTE>
                 </dte:SAT>
             </dte:GTAnulacionDocumento>
