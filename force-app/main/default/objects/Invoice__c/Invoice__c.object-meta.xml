@@ -178,6 +178,13 @@
         <lookupDialogsAdditionalFields>Amount__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>Date__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>Category__c</lookupDialogsAdditionalFields>
+        <searchResultsAdditionalFields>Purchase_Order__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Category__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Type__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Currency_Code__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Amount__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Canceled__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Date__c</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
     <visibility>Public</visibility>

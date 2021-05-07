@@ -6,7 +6,5 @@
     <fields>Account__c</fields>
     <fields>State__c</fields>
     <fields>Invoice__c</fields>
-    <fields>CreatedById</fields>
-    <fields>LastModifiedById</fields>
     <label>Orden de Despacho</label>
 </CompactLayout>

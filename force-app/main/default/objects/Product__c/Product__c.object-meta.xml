@@ -178,6 +178,11 @@
         <searchResultsAdditionalFields>Brand__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>Family__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>Subfamily__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Material__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Unit__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Inventory_State__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Stock__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Price_GTQ__c</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
     <visibility>Public</visibility>

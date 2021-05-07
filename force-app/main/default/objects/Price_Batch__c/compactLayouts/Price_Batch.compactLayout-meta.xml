@@ -2,7 +2,6 @@
 <CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Price_Batch</fullName>
     <fields>Name</fields>
-    <fields>CreatedById</fields>
     <fields>Converted__c</fields>
     <fields>Total_GTQ__c</fields>
     <fields>Dollar_Cost__c</fields>

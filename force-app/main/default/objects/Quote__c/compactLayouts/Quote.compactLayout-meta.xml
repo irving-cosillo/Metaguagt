@@ -6,8 +6,7 @@
     <fields>Contact__c</fields>
     <fields>Currency_Code__c</fields>
     <fields>Total__c</fields>
-    <fields>Delivery_Time__c</fields>
-    <fields>CreatedById</fields>
-    <fields>LastModifiedById</fields>
+    <fields>Sales_User__c</fields>
+    <fields>Converted__c</fields>
     <label>Cotización</label>
 </CompactLayout>

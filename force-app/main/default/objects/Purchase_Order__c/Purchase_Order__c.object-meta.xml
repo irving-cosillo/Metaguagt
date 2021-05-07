@@ -168,7 +168,17 @@
         <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Ordenes de Compra</pluralLabel>
-    <searchLayouts></searchLayouts>
+    <searchLayouts>
+        <searchResultsAdditionalFields>Quote__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Account__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Contact__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Currency_Code__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Total__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Dispatch_Status__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Invoice_Status__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Billed_Amount__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CREATED_DATE</searchResultsAdditionalFields>
+    </searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
     <visibility>Public</visibility>
 </CustomObject>

@@ -168,7 +168,17 @@
         <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Lotes de Precios</pluralLabel>
-    <searchLayouts></searchLayouts>
+    <searchLayouts>
+        <searchResultsAdditionalFields>Converted__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Dollar_Cost__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>External_Shipping_GTQ__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>External_Shipping_USD__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Internal_Shipping__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Taxes__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Total_GTQ__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CREATEDBY_USER</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CREATED_DATE</searchResultsAdditionalFields>
+    </searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
     <visibility>Public</visibility>
 </CustomObject>

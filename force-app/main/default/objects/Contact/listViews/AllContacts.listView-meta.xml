@@ -5,6 +5,7 @@
     <columns>ACCOUNT.NAME</columns>
     <columns>CONTACT.PHONE1</columns>
     <columns>CONTACT.EMAIL</columns>
+    <columns>Account.NIT__c</columns>
     <filterScope>Everything</filterScope>
     <label>All Contacts</label>
 </ListView>

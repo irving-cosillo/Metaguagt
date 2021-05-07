@@ -2,6 +2,7 @@
 <CompactLayout xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Purcharse_Order</fullName>
     <fields>Name</fields>
+    <fields>Quote__c</fields>
     <fields>Account__c</fields>
     <fields>Contact__c</fields>
     <fields>Dispatch_Status__c</fields>

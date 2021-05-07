@@ -175,6 +175,13 @@
         <excludedStandardButtons>Accept</excludedStandardButtons>
         <searchResultsAdditionalFields>Account__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>Contact__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Currency_Code__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Total__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Credit__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Sales_User__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Delivery_Time__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Converted__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CREATED_DATE</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>
     <visibility>Public</visibility>

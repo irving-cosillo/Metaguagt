@@ -5,10 +5,11 @@
     <columns>Account__c</columns>
     <columns>Contact__c</columns>
     <columns>Quote__c</columns>
-    <columns>Dispatch_Status__c</columns>
-    <columns>Invoice_Status__c</columns>
     <columns>Currency_Code__c</columns>
     <columns>Total__c</columns>
+    <columns>Dispatch_Status__c</columns>
+    <columns>Invoice_Status__c</columns>
+    <columns>Billed_Amount__c</columns>
     <columns>CREATED_DATE</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>

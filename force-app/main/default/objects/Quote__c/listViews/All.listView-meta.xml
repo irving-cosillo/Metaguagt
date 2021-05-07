@@ -4,8 +4,13 @@
     <columns>NAME</columns>
     <columns>Account__c</columns>
     <columns>Contact__c</columns>
+    <columns>Currency_Code__c</columns>
+    <columns>Total__c</columns>
+    <columns>Credit__c</columns>
+    <columns>Sales_User__c</columns>
     <columns>Delivery_Time__c</columns>
-    <columns>LAST_UPDATE</columns>
+    <columns>Converted__c</columns>
+    <columns>CREATED_DATE</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>
 </ListView>
