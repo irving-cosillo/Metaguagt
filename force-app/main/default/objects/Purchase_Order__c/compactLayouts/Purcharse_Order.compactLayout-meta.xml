@@ -4,7 +4,6 @@
     <fields>Name</fields>
     <fields>Quote__c</fields>
     <fields>Account__c</fields>
-    <fields>Contact__c</fields>
     <fields>Dispatch_Status__c</fields>
     <fields>Invoice_Status__c</fields>
     <fields>Currency_Code__c</fields>

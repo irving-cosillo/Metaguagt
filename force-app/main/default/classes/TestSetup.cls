@@ -38,6 +38,40 @@ public class TestSetup {
         products.add(product);
 
         insert products;
+
+        List<Product_Price__c> prices = new List<Product_Price__c>();
+        Product_Price__c price = new Product_Price__c();
+        price.Quantity__c = 5;
+        price.Profit__c = 50;
+        price.Unit_Cost_GTQ__c = 100;
+        price.Unit_Price_GTQ__c = 150;
+        price.Product__c = products[0].Id;
+        prices.add(price);
+
+        price = new Product_Price__c();
+        price.Quantity__c = 6;
+        price.Profit__c = 50;
+        price.Unit_Cost_GTQ__c = 200;
+        price.Unit_Price_GTQ__c = 300;
+        price.Product__c = products[1].Id;
+        prices.add(price);
+
+        price = new Product_Price__c();
+        price.Quantity__c = 7;
+        price.Profit__c = 50;
+        price.Unit_Cost_GTQ__c = 400;
+        price.Unit_Price_GTQ__c = 600;
+        price.Product__c = products[2].Id;
+        prices.add(price);
+
+        insert prices;
+
+        products[0].Related_Price__c = prices[0].Id;
+        products[1].Related_Price__c = prices[1].Id;
+        products[2].Related_Price__c = prices[2].Id;
+
+        update products;
+
         return products;
     }
 
@@ -70,8 +104,11 @@ public class TestSetup {
         quoteLine.Quote__c = quote.Id;
         quoteLine.Index__c = 0;
         quoteLine.Product__c = products[0].Id;
+        quoteLine.Product_Price__c = products[0].Related_Price__c;
         quoteLine.Time__c = 10;
         quoteLine.Type__c = 'Normal';
+        quoteLine.Subtotal_GTQ__C = 10*150;
+        quoteLine.Subtotal_USD__C = 15;
         quoteLines.add(quoteLine);
 
         quoteLine = new Quote_Line__c();
@@ -79,8 +116,11 @@ public class TestSetup {
         quoteLine.Quote__c = quote.Id;
         quoteLine.Index__c = 1;
         quoteLine.Product__c = products[1].Id;
+        quoteLine.Product_Price__c = products[1].Related_Price__c;
         quoteLine.Time__c = 11;
         quoteLine.Type__c = 'Normal';
+        quoteLine.Subtotal_GTQ__C = 11*300;
+        quoteLine.Subtotal_USD__C = 15;
         quoteLines.add(quoteLine);
 
         quoteLine = new Quote_Line__c();
@@ -88,8 +128,11 @@ public class TestSetup {
         quoteLine.Quote__c = quote.Id;
         quoteLine.Index__c = 2;
         quoteLine.Product__c = products[2].Id;
+        quoteLine.Product_Price__c = products[2].Related_Price__c;
         quoteLine.Time__c = 12;
         quoteLine.Type__c = 'Normal';
+        quoteLine.Subtotal_GTQ__C = 12*600;
+        quoteLine.Subtotal_USD__C = 15;
         quoteLines.add(quoteLine);
 
         insert quoteLines;

@@ -2,7 +2,7 @@
 <ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Quantity</fullName>
     <active>true</active>
-    <errorConditionFormula>Quantity__c &lt;= 0</errorConditionFormula>
+    <errorConditionFormula>Quantity__c &lt; 0</errorConditionFormula>
     <errorDisplayField>Quantity__c</errorDisplayField>
-    <errorMessage>La cantidad no puede ser menor o igual a 0</errorMessage>
+    <errorMessage>La cantidad no puede ser menor a 0</errorMessage>
 </ValidationRule>

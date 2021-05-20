@@ -80,7 +80,10 @@ public with sharing class ClassInvoice {
         ];
 
         if(purchaseOrderList.size() <= 0){
-            throw new AuraHandledException('Error: por favor contactar al administrador del sistema.');
+            String errorMessage = 'Error: por favor contactar al administrador del sistema. ';
+            AuraHandledException ex = new AuraHandledException(errorMessage);
+            ex.setMessage(errorMessage);
+            throw ex;
         }
 
         Purchase_Order__c purchaseOrder = purchaseOrderList[0];
@@ -109,8 +112,9 @@ public with sharing class ClassInvoice {
                 Dispatch_Order__c,
                 Product_Name__c, 
                 Quantity__c,
-                Purchase_Order_Line__r.Quote_Line__r.Product__r.Price_USD__c,
-                Purchase_Order_Line__r.Quote_Line__r.Product__r.Price_GTQ__c
+                Purchase_Order_Line__r.Quote_Line__r.Product__c,
+                Purchase_Order_Line__r.Quote_Line__r.Product_Price__r.Unit_Price_GTQ__c,
+                Purchase_Order_Line__r.Quote_Line__r.Product_Price__r.Unit_Price_USD__c
             FROM Dispatch_Order_Line__c 
             WHERE Dispatch_Order__c IN  :dispatchOrdersId
         ];
@@ -215,13 +219,34 @@ public with sharing class ClassInvoice {
         List<Dispatch_Order__c> dispatchOrders = new List<Dispatch_Order__c> ();
         if (invoice.Category__c == 'Ordenes de Despacho' && String.isNotBlank(invoice.Dispatch_Orders__c)){
             List<String> dispatchOrdersId = invoice.Dispatch_Orders__c.remove('"').remove('[').remove(']').split(',');
-            dispatchOrders = [ SELECT Id, State__c, Purchase_Order__c FROM Dispatch_Order__c WHERE Id IN : dispatchOrdersId];
+            dispatchOrders = [
+                SELECT 
+                    Id, 
+                    State__c, 
+                    Purchase_Order__c 
+                FROM Dispatch_Order__c 
+                WHERE 
+                    Id IN : dispatchOrdersId
+            ];
 
-            List<Dispatch_Order_Line__c> dispatchOrderLines = [SELECT Id, Quantity__c, Purchase_Order_Line__c, Purchase_Order_Line__r.Quote_Line__r.Product__c FROM Dispatch_Order_Line__c WHERE Dispatch_Order__c IN : dispatchOrders];
+            List<Dispatch_Order_Line__c> dispatchOrderLines = [
+                SELECT 
+                    Id, 
+                    Quantity__c, 
+                    Purchase_Order_Line__c, 
+                    Purchase_Order_Line__r.Quote_Line__r.Product__c,
+                    Purchase_Order_Line__r.Quote_Line__r.Product_Price__r.Unit_Price_GTQ__c,
+                    Purchase_Order_Line__r.Quote_Line__r.Product_Price__r.Unit_Price_USD__c
+                FROM Dispatch_Order_Line__c 
+                WHERE 
+                    Dispatch_Order__c IN : dispatchOrders
+            ];
 
             Map<String,EntityInvoiceLine> invoiceDescriptionMap = new Map<String,EntityInvoiceLine>();
             EntityInvoiceLine line;
-            String productId ;
+            String productId;
+            Double priceGTQ;
+            Double priceUSD;
 
             //Repeated lines sum their quantities
             for (Dispatch_Order_Line__c dispatchOrderLine : dispatchOrderLines){
@@ -230,6 +255,9 @@ public with sharing class ClassInvoice {
                     line = new EntityInvoiceLine();
                     line.productId = productId;
                     line.quantity = dispatchOrderLine.Quantity__c;
+                    priceGTQ = dispatchOrderLine.Purchase_Order_Line__r.Quote_Line__r.Product_Price__r.Unit_Price_GTQ__c;
+                    priceUSD = dispatchOrderLine.Purchase_Order_Line__r.Quote_Line__r.Product_Price__r.Unit_Price_USD__c;
+                    line.price = purchaseOrder.Currency_Code__c == 'GTQ' ?  priceGTQ : priceUSD;
                     invoiceDescriptionMap.put(productId, line);
                 } else {
                     invoiceDescriptionMap.get(productId).quantity += dispatchOrderLine.Quantity__c;
@@ -274,9 +302,7 @@ public with sharing class ClassInvoice {
                 invoiceDescriptionMap.get(product.Id).code = product.Name;
                 invoiceDescriptionMap.get(product.Id).description = product.Description__c;
                 quantity = invoiceDescriptionMap.get(product.Id).quantity;
-
-                price = purchaseOrder.Currency_Code__c == 'GTQ' ? product.Price_GTQ__c : product.Price_USD__c;
-                invoiceDescriptionMap.get(product.Id).price = price;
+                price = invoiceDescriptionMap.get(product.Id).price;
                 amount += quantity * price;
 
                 invoice.Description__c += product.Name + ' | ' +  quantity + ' | ' + purchaseOrder.Currency_Code__c + price + ' \r\n';
@@ -436,7 +462,10 @@ public with sharing class ClassInvoice {
         try {
             updatePurchaseOrderStateAndAmount(invoice);
         } catch (Exception ex){
-            throw new AuraHandledException(ex.getMessage());
+            String errorMessage = ex.getMessage();
+            AuraHandledException ex2 = new AuraHandledException(errorMessage);
+            ex2.setMessage(errorMessage);
+            throw ex2;
         }
 
         return invoice.Id;
@@ -515,7 +544,7 @@ public with sharing class ClassInvoice {
         } else if (billedAmount == purchaseOrder.Total__c){
             purchaseOrder.Invoice_Status__c = 'Completado';
         } else {
-            String errorMessage = 'El monto excede el total de la orden de compra. cantidad facturada: ' + billedAmount  ;
+            String errorMessage = 'El monto excede el total de la orden de compra. Cantidad facturada: ' + billedAmount + ', cantidad de la orden de compra: ' + purchaseOrder.Total__c;
             AuraHandledException ex = new AuraHandledException(errorMessage);
             ex.setMessage(errorMessage);
             throw ex;

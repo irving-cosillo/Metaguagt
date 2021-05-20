@@ -1,8 +1,16 @@
 public with sharing class ClassQuote {
     @AuraEnabled
     public static Quote__c getQuote(String quoteId) {
-        return [SELECT Name, Currency_Code__c, Discount__c, Total_In_Letters__c, Converted__c
-                FROM Quote__c WHERE Id =: quoteId];
+        return [
+            SELECT 
+                Name, 
+                Currency_Code__c, 
+                Discount__c, 
+                Total_In_Letters__c, 
+                Converted__c
+            FROM Quote__c 
+            WHERE Id =: quoteId
+        ];
     }
 
     @AuraEnabled
@@ -23,7 +31,10 @@ public with sharing class ClassQuote {
                         Subfamily__c,
                         Unit__c,
                         Material__c,
-                        Dimensions__c
+                        Dimensions__c,
+                        Product_Price__c,
+                        Product_Price__r.Unit_Price_GTQ__c,
+                        Product_Price__r.Unit_Price_USD__c
                 FROM Quote_Line__c
                 WHERE Quote__c =: quoteId
                 ORDER BY Index__c ASC];
@@ -44,7 +55,10 @@ public with sharing class ClassQuote {
                         Product__r.Stock__c,
                         Product__r.Inventory_State__c,
                         Product__r.Price_GTQ__c,
-                        Product__r.Price_USD__c
+                        Product__r.Price_USD__c,
+                        Product__r.Related_Price__c,
+                        Product__r.Related_Price__r.Unit_Price_GTQ__c,
+                        Product__r.Related_Price__r.Unit_Price_USD__c
                 FROM Quote_Line__c
                 WHERE Quote__c =: quoteId
                 ORDER BY Index__c ASC];

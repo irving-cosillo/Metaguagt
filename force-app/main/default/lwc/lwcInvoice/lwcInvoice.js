@@ -93,11 +93,14 @@ export default class LwcInvoice extends LightningElement {
                 this.total = 0.00;
                 const selectedOrderIds = JSON.parse(JSON.stringify(value));
                 const lines = this.dispatchOrderLines.filter( dispatchOrderLine => selectedOrderIds.find( selectedOrderId => selectedOrderId === dispatchOrderLine.Dispatch_Order__c ));
+                console.log(lines);
                 lines.forEach( line => {
-                    if ( this.invoice.Currency_Code__c === 'GTQ' ){
-                        this.total += line.Quantity__c * line.Purchase_Order_Line__r.Quote_Line__r.Product__r.Price_GTQ__c;
-                    } else {
-                        this.total += line.Quantity__c * line.Purchase_Order_Line__r.Quote_Line__r.Product__r.Price_USD__c;
+                    if (line.Purchase_Order_Line__r.Quote_Line__r.Product_Price__r){
+                        if ( this.invoice.Currency_Code__c === 'GTQ' ){
+                            this.total += line.Quantity__c * line.Purchase_Order_Line__r.Quote_Line__r.Product_Price__r.Unit_Price_GTQ__c;
+                        } else {
+                            this.total += line.Quantity__c * line.Purchase_Order_Line__r.Quote_Line__r.Product_Price__r.Unit_Price_USD__c;
+                        }
                     }
                 });
                 

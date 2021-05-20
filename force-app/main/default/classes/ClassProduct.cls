@@ -16,7 +16,10 @@ public with sharing class ClassProduct {
                     Stock__c,
                     Inventory_State__c,
                     Price_GTQ__c,
-                    Price_USD__c
+                    Price_USD__c,
+                    Related_Price__c,
+                    Related_Price__r.Unit_Price_GTQ__c,
+                    Related_Price__r.Unit_Price_USD__c
             FROM Product__c
             WHERE Name LIKE : searchValue
             OR Description__c LIKE : searchValue

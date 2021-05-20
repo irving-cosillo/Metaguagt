@@ -26,7 +26,12 @@ public class TestInvoice {
     static void createInvoice(){
         Quote__c quote = TestSetup.createQuote();
         String purchaseOrderId = ClassPurchaseOrder.createPurchaseOrder(quote.Id, quote.Contact__c, null);
-        List<Purchase_Order_Line__c> purchaseOrderLines = [SELECT Id FROM Purchase_Order_Line__c WHERE Purchase_Order__c =: purchaseOrderId];
+        List<Purchase_Order_Line__c> purchaseOrderLines = [
+            SELECT 
+                Id 
+            FROM Purchase_Order_Line__c 
+            WHERE Purchase_Order__c =: purchaseOrderId
+        ];
 
         Dispatch_Order_Line__c dispatchOrderLine;
         List<Dispatch_Order_Line__c> dispatchOrderLines = new List<Dispatch_Order_Line__c>();

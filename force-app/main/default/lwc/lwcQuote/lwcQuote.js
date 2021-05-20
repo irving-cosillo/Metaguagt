@@ -52,7 +52,7 @@ export default class LwcQuote extends NavigationMixin(LightningElement) {
     }
 
     save(action){
-        const data = this.template.querySelector("c-lwc-quote-table").getData();
+        let data = this.template.querySelector("c-lwc-quote-table").getData();
         const totalInLetters = this.template.querySelector("c-lwc-quote-table").getTotalInLetters();
 
         let deliveryTime;
@@ -66,6 +66,13 @@ export default class LwcQuote extends NavigationMixin(LightningElement) {
         this.quote.Total_In_Letters__c = totalInLetters;
         this.quote.Delivery_Time__c = deliveryTime;
         this.showModal = false;
+        console.log('data to be saved: ', data);
+        data = data.map( row => {
+            row.Product_Price__r = undefined;
+            return row;
+        });
+        console.log('data to be saved: ', data);
+        
 
         saveQuote({ quote : this.quote, data}).then(() => {
             if (action !== 'convert'){

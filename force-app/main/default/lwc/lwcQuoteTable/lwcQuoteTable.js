@@ -70,6 +70,9 @@ export default class LwcQuoteTable extends LightningElement {
         products.forEach(product => {
             if (!this.data.find( item => item.Name === product.Name)){
                 lineProducts.push(product);
+                const priceGTQ = product.Related_Price__c ? product.Related_Price__r.Unit_Price_GTQ__c : null;
+                const priceUSD = product.Related_Price__c ? product.Related_Price__r.Unit_Price_USD__c : null;
+
                 data.push({
                     rowId: this.generateId(),
                     Index__c: data.length,
@@ -81,10 +84,15 @@ export default class LwcQuoteTable extends LightningElement {
                     Quantity__c: 1,
                     Type__c: "Normal",
                     Delivery_Time__c: "Inmediato",
-                    Price__c : this.currency === "GTQ" ? product.Price_GTQ__c : product.Price_USD__c,
-                    Subtotal__c: this.currency === "GTQ" ? product.Price_GTQ__c : product.Price_USD__c,
-                    Subtotal_GTQ__c: product.Price_GTQ__c,
-                    Subtotal_USD__c: product.Price_USD__c,
+                    Price__c : this.currency === "GTQ" ? priceGTQ : priceUSD,
+                    Product_Price__c : product.Related_Price__c,
+                    Product_Price__r : {
+                        Unit_Price_GTQ__c : priceGTQ,
+                        Unit_Price_USD__c : priceUSD
+                    },
+                    Subtotal__c: this.currency === "GTQ" ? priceGTQ : priceUSD,
+                    Subtotal_GTQ__c: priceGTQ,
+                    Subtotal_USD__c: priceUSD,
                     Time_In_Days__c: true,
                     Brand__c: false,
                     Family__c: false,
@@ -119,10 +127,10 @@ export default class LwcQuoteTable extends LightningElement {
 
     connectedCallback() {
         this.setColumnsCurrencyCode();
-
         const data = [];
         this.quoteLines.forEach( (item, index) => {
             const product = this.productsOfLines[index];
+            console.log(item);
             data.push({
                 Id: item.Id,
                 rowId: this.generateId(),
@@ -143,12 +151,17 @@ export default class LwcQuoteTable extends LightningElement {
                 Material__c: item.Material__c,
                 Dimensions__c: item.Dimensions__c,
                 Old_Code__c: item.Old_Code__c,
-                Subtotal_GTQ__c: product.Price_GTQ__c * item.Quantity__c,
-                Subtotal_USD__c: product.Price_USD__c * item.Quantity__c,
+                Subtotal_GTQ__c: item.Subtotal_GTQ__c,
+                Subtotal_USD__c: item.Subtotal_USD__c,
+                Product_Price__c: item.Product_Price__c,
+                Product_Price__r : item.Type__c === "Child" ? null : {
+                    Unit_Price_GTQ__c : item.Product_Price__r.Unit_Price_GTQ__c,
+                    Unit_Price_USD__c : item.Product_Price__r.Unit_Price_USD__c
+                },
                 Price__c : item.Type__c === "Child" ? null : this.currency === "GTQ" ?
-                            product.Price_GTQ__c : product.Price_USD__c,
+                    item.Product_Price__r.Unit_Price_GTQ__c : item.Product_Price__r.Unit_Price_USD__c,
                 Subtotal__c: item.Type__c === "Child" ? null : this.currency === "GTQ" ?
-                                product.Price_GTQ__c * item.Quantity__c : product.Price_USD__c * item.Quantity__c
+                    item.Subtotal_GTQ__c : item.Subtotal_USD__c
             });
         });
 
@@ -236,7 +249,12 @@ export default class LwcQuoteTable extends LightningElement {
         const fatherIndex = data.findIndex(item => item.Name === data[index].Name);
         const childs = this.data.filter(item => item.Type__c === "Child" && item.Name === data[index].Name);
         data[fatherIndex].Type__c = "Father";
-
+        console.log('Adding child');
+        console.log('Father product price: ', data[fatherIndex].Product_Price__c);
+        console.log({
+            Unit_Price_GTQ__c : data[fatherIndex].Product_Price__r.Unit_Price_GTQ__c,
+            Unit_Price_USD__c : data[fatherIndex].Product_Price__r.Unit_Price_USD__c
+        });
         lineProducts.splice(index + 1, 0, product);
         data.splice(index + 1, 0, {
             rowId: this.generateId(),
@@ -250,6 +268,11 @@ export default class LwcQuoteTable extends LightningElement {
             Delivery_Time__c: data[fatherIndex].Delivery_Time__c,
             Price__c : null,
             Quantity__c: childs.length <= 0 ? data[fatherIndex].Quantity__c : 1,
+            Product_Price__c: data[fatherIndex].Product_Price__c,
+            Product_Price__r : {
+                Unit_Price_GTQ__c : data[fatherIndex].Product_Price__r.Unit_Price_GTQ__c,
+                Unit_Price_USD__c : data[fatherIndex].Product_Price__r.Unit_Price_USD__c
+            },
             Subtotal_GTQ__c: null,
             Subtotal_USD__c: null,
             Subtotal__c: null,
@@ -282,16 +305,16 @@ export default class LwcQuoteTable extends LightningElement {
                     const sameDelivery = childs.every( (val, i, arr) => val.Delivery_Time__c === arr[0].Delivery_Time__c );
                     row.Quantity__c = quantity;
                     row.Subtotal__c = row.Price__c * quantity;
-                    row.Subtotal_GTQ__c = this.lineProducts[index].Price_GTQ__c * quantity;
-                    row.Subtotal_USD__c = this.lineProducts[index].Price_USD__c * quantity;
+                    row.Subtotal_GTQ__c = row.Product_Price__r.Unit_Price_GTQ__c * quantity;
+                    row.Subtotal_USD__c = row.Product_Price__r.Unit_Price_USD__c * quantity;
                     row.Delivery_Time__c = sameDelivery ? childs[0].Delivery_Time__c : "A Convenir";
                     row.Time__c = sameDelivery ? childs[0].Time__c : 0;
                 }
             }
             if (row.Type__c === "Normal"){
                 row.Subtotal__c = row.Price__c * row.Quantity__c;
-                row.Subtotal_GTQ__c = this.lineProducts[index].Price_GTQ__c * row.Quantity__c;
-                row.Subtotal_USD__c = this.lineProducts[index].Price_USD__c * row.Quantity__c;
+                row.Subtotal_GTQ__c = row.Product_Price__r.Unit_Price_GTQ__c * row.Quantity__c;
+                row.Subtotal_USD__c = row.Product_Price__r.Unit_Price_USD__c * row.Quantity__c;
             }
             if (row.Type__c === "Child"){
                 row.Subtotal__c = null;
@@ -373,10 +396,11 @@ export default class LwcQuoteTable extends LightningElement {
     changeDataCurrency(){
         this.data = this.data.map((row, index) =>{
             if (row.Type__c !== "Child"){
-                const product = this.lineProducts[index];
-                row.Subtotal_USD__c = product.Price_USD__c * row.Quantity__c;
-                row.Subtotal_GTQ__c = product.Price_GTQ__c * row.Quantity__c;
-                row.Price__c = this.currency === "GTQ" ? product.Price_GTQ__c : product.Price_USD__c;
+                const priceGTQ = row.Product_Price__r.Unit_Price_GTQ__c;
+                const priceUSD = row.Product_Price__r.Unit_Price_USD__c;
+                row.Subtotal_USD__c = priceUSD * row.Quantity__c;
+                row.Subtotal_GTQ__c = priceGTQ * row.Quantity__c;
+                row.Price__c = this.currency === "GTQ" ? priceGTQ : priceUSD;
                 row.Subtotal__c = this.currency === "GTQ" ? row.Subtotal_GTQ__c : row.Subtotal_USD__c;
             }
             return row;
