@@ -181,18 +181,24 @@ public with sharing class ClassInvoice {
             bodyResponse = response.getBody();
         }
         
+        EntityLegalInformation legalInfo = new EntityLegalInformation();
         Integer addressStartIndex = bodyResponse.indexOf('<direccion_completa>') + 20;
         Integer addressEndIndex = bodyResponse.indexOf('</direccion_completa>');
-        String legalAddress = bodyResponse.substring(addressStartIndex, addressEndIndex);
-
         Integer nameStartIndex = bodyResponse.indexOf('<nombre>') + 8;
         Integer nameEndIndex = bodyResponse.indexOf('</nombre>');
-        List<String> legalNameArr = bodyResponse.substring(nameStartIndex, nameEndIndex).split(',');
-        String legalName = String.format('{3} {4} {0} {1}', legalNameArr);
+        
+        try{
+            String legalAddress = bodyResponse.substring(addressStartIndex, addressEndIndex);
+            List<String> legalNameArr = bodyResponse.substring(nameStartIndex, nameEndIndex).split(',');
+            String legalName = String.format('{3} {4} {0} {1}', legalNameArr);
+    
+            legalInfo.legalName = legalName;
+            legalInfo.legalAddress = legalAddress;
 
-        EntityLegalInformation legalInfo = new EntityLegalInformation();
-        legalInfo.legalName = legalName;
-        legalInfo.legalAddress = legalAddress;
+        } catch (Exception ex){
+            legalInfo.legalName = '';
+            legalInfo.legalAddress = '';
+        }
 
         return legalInfo;
     }

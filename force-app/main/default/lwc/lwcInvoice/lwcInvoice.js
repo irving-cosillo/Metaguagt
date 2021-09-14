@@ -106,6 +106,7 @@ export default class LwcInvoice extends LightningElement {
                 
                 const discount = this.info.purchaseOrder.Quote__r.Discount__c ? this.info.purchaseOrder.Quote__r.Discount__c : 0;
                 this.total = this.total * (1 - discount/100);
+                this.total = (this.total * 1).toFixed(2);
             }
         }
         else if(event.target.ariaLabel){

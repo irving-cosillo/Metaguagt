@@ -45,6 +45,7 @@ export default class LwcDispatchOrder extends NavigationMixin(LightningElement) 
     cellChange(event){
         let data = [...this.data];
         const draftValue = event.detail.draftValues[0];
+        draftValue.Dispatch_Quantity__c = parseInt(draftValue.Dispatch_Quantity__c);
         const index = data.findIndex(x => x.Id === draftValue.Id);
         this.template.querySelector("lightning-datatable").draftValues = [];
         Object.assign(data[index], draftValue);
@@ -95,7 +96,7 @@ export default class LwcDispatchOrder extends NavigationMixin(LightningElement) 
         let noLines = true;
 
         this.data.forEach(line => {
-            if(line.Dispatch_Quantity__c > line.Quantity__c - line.Dispatch_Pending_Quantity__c ){
+            if(line.Quantity__c < line.Dispatch_Pending_Quantity__c + line.Dispatched_Quantity__c + line.Dispatch_Quantity__c ){
                 isGreater = true;
             }
             if(line.Dispatch_Quantity__c < 0 ){
@@ -117,7 +118,7 @@ export default class LwcDispatchOrder extends NavigationMixin(LightningElement) 
         if(isGreater){
             this.dispatchEvent( new ShowToastEvent({
                 title: '',
-                message: 'Error: La cantidad ingresada excede la cantidad pendiente de despachar.',
+                message: 'Error: La cantidad ingresada excede la cantidad pedida.',
                 variant: 'error'
             }));
         }
